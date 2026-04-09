@@ -2,24 +2,31 @@ pre-commit:
   parallel: true
   commands:
     backend-lint:
-      glob: "backend/**/*.py"
-      run: cd backend && uv run ruff check {staged_files}
+      root: "backend"
+      glob: "**/*.py"
+      run: uv run ruff check {staged_files}
     backend-format:
-      glob: "backend/**/*.py"
-      run: cd backend && uv run ruff format --check {staged_files}
+      root: "backend"
+      glob: "**/*.py"
+      run: uv run ruff format --check {staged_files}
     frontend-lint:
-      glob: "frontend/src/**/*.{js,vue}"
-      run: cd frontend && npm run lint
+      root: "frontend"
+      glob: "src/**/*.{js,vue}"
+      run: npm run lint
     frontend-format:
-      glob: "frontend/src/**/*.{js,vue}"
-      run: cd frontend && npm run fmt:check
+      root: "frontend"
+      glob: "src/**/*.{js,vue}"
+      run: npm run fmt:check
 
 pre-push:
   parallel: true
   commands:
     backend-typecheck:
-      run: cd backend && uv run ty check
+      root: "backend"
+      run: uv run ty check
     backend-test:
-      run: cd backend && uv run pytest
+      root: "backend"
+      run: uv run pytest
     frontend-test:
-      run: cd frontend && npm run test:run
+      root: "frontend"
+      run: npm run test:run

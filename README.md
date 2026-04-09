@@ -51,3 +51,5 @@ The easiest way to run the entire application stack (Frontend, Backend, and Data
   - `models.py` - Database schema models.
   - `auth_utils.py` - Handling of JWT generation and Google token validation.
 - `docker-compose.yml` - Orchestration configuration to run Postgres, the backend API, and the frontend server.
+
+
