@@ -1,0 +1,33 @@
+{
+  "name": "uscornie-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "npx oxlint ./src",
+    "fmt": "npx oxfmt ./src",
+    "fmt:check": "npx oxfmt --check ./src",
+    "test": "vitest",
+    "test:run": "vitest run"
+  },
+  "dependencies": {
+    "vue": "^3.3.4",
+    "vue-router": "^4.2.4",
+    "axios": "^1.4.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.2.3",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.27",
+    "tailwindcss": "^3.3.3",
+    "vite": "^4.4.5",
+    "oxlint": "latest",
+    "oxfmt": "latest",
+    "vitest": "^1.5.0",
+    "@vue/test-utils": "^2.4.5",
+    "happy-dom": "^14.7.1"
+  }
+}
