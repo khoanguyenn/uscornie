@@ -2,28 +2,28 @@ pre-commit:
   parallel: true
   commands:
     staged-diff-check:
-      # Check for whitespace errors and conflict markers in staged changes
+      desc: Check for whitespace errors and conflict markers in staged changes
       run: git diff --cached --check
     large-added-files:
-      # Prevent accidental commit of large binary files
+      desc: Prevent accidental commit of large binary files
       run: scripts/check-added-files-size.sh
     backend-lint:
-      # Run Ruff linter on staged Python files
+      desc: Run Ruff linter on staged Python files
       root: "backend"
       glob: "**/*.py"
       run: uv run ruff check {staged_files}
     backend-format:
-      # Verify Python code formatting with Ruff
+      desc: Verify Python code formatting with Ruff
       root: "backend"
       glob: "**/*.py"
       run: uv run ruff format --check {staged_files}
     frontend-lint:
-      # Run ESLint on staged Javascript and Vue files
+      desc: Run ESLint on staged Javascript and Vue files
       root: "frontend"
       glob: "src/**/*.{js,vue}"
       run: npm run lint
     frontend-format:
-      # Verify frontend code formatting
+      desc: Verify frontend code formatting
       root: "frontend"
       glob: "src/**/*.{js,vue}"
       run: npm run fmt:check
@@ -32,17 +32,17 @@ pre-push:
   parallel: true
   commands:
     secret-scan:
-      # Scan for accidental secret leaks using gitleaks
+      desc: Scan for accidental secret leaks using gitleaks
       run: gitleaks dir --no-banner --redact .
     backend-typecheck:
-      # Run static type checking on backend code
+      desc: Run static type checking on backend code
       root: "backend"
       run: uv run ty check
     backend-test:
-      # Execute backend unit and integration tests
+      desc: Execute backend unit and integration tests
       root: "backend"
       run: uv run pytest
     frontend-test:
-      # Execute frontend unit tests
+      desc: Execute frontend unit tests
       root: "frontend"
       run: npm run test:run
