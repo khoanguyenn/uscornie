@@ -8,7 +8,8 @@ DATABASE_URL = os.getenv(
 )
 
 # Use standard engine for now as FastAPI standard depends often use it,
-# although async is preferred for FastAPI. Let's stick to standard for simplicity as per common recipes.
+# although async is preferred for FastAPI.
+# Let's stick to standard for simplicity as per common recipes.
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

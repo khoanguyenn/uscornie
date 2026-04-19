@@ -1,4 +1,5 @@
 import secrets
+from typing import Annotated
 
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -40,7 +41,9 @@ async def root():
 
 # 1. AUTH: Google login
 @app.post("/auth/google")
-async def auth_google(request: AuthGoogleRequest, db: Session = Depends(get_db)):
+async def auth_google(
+    request: AuthGoogleRequest, db: Annotated[Session, Depends(get_db)]
+):
     id_info = auth_utils.verify_google_token(
         request.credential, clock_skew_in_seconds=10
     )
@@ -76,15 +79,15 @@ async def auth_google(request: AuthGoogleRequest, db: Session = Depends(get_db))
         db.add(member)
         db.commit()
 
-    access_token = auth_utils.create_token(user.id)
+    access_token = auth_utils.create_token(str(user.id))
     return {"access_token": access_token, "token_type": "bearer"}
 
 
 # 2. SPACE: Create space
 @app.post("/spaces")
 async def create_space(
-    current_user: User = Depends(auth_utils.get_current_user),
-    db: Session = Depends(get_db),
+    current_user: Annotated[User, Depends(auth_utils.get_current_user)],
+    db: Annotated[Session, Depends(get_db)],
 ):
     # Limit: User can only own ONE SHARED space
     existing_shared = (
@@ -117,8 +120,8 @@ async def create_space(
 
 @app.get("/spaces/me")
 async def get_my_spaces(
-    current_user: User = Depends(auth_utils.get_current_user),
-    db: Session = Depends(get_db),
+    current_user: Annotated[User, Depends(auth_utils.get_current_user)],
+    db: Annotated[Session, Depends(get_db)],
 ):
     memberships = (
         db.query(SpaceMember).filter(SpaceMember.user_id == current_user.id).all()
@@ -132,8 +135,8 @@ async def get_my_spaces(
 @app.post("/invites/{space_id}")
 async def create_invite(
     space_id: str,
-    current_user: User = Depends(auth_utils.get_current_user),
-    db: Session = Depends(get_db),
+    current_user: Annotated[User, Depends(auth_utils.get_current_user)],
+    db: Annotated[Session, Depends(get_db)],
 ):
     # Check if user is admin/member of this space
     member = (
@@ -166,12 +169,12 @@ async def create_invite(
 @app.post("/spaces/join")
 async def join_space(
     request: JoinSpaceRequest,
-    current_user: User = Depends(auth_utils.get_current_user),
-    db: Session = Depends(get_db),
+    current_user: Annotated[User, Depends(auth_utils.get_current_user)],
+    db: Annotated[Session, Depends(get_db)],
 ):
     inv = (
         db.query(Invitation)
-        .filter(Invitation.token == request.invite_token, Invitation.is_used == False)
+        .filter(Invitation.token == request.invite_token, Invitation.is_used.is_(False))
         .first()
     )
 

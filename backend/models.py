@@ -11,13 +11,17 @@ def generate_uuid():
     return str(uuid.uuid4())
 
 
+def utcnow():
+    return datetime.datetime.now(datetime.UTC)
+
+
 class User(Base):
     __tablename__ = "users"
     id = Column(String, primary_key=True, default=generate_uuid)
     email = Column(String, unique=True, index=True)
     full_name = Column(String)
     picture = Column(String)
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    created_at = Column(DateTime, default=utcnow)
 
 
 class Space(Base):
@@ -25,7 +29,7 @@ class Space(Base):
     id = Column(String, primary_key=True, default=generate_uuid)
     name = Column(String, default="Our Space")
     type = Column(String, default="personal")  # "personal" or "shared"
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    created_at = Column(DateTime, default=utcnow)
 
     members = relationship("SpaceMember", back_populates="space")
     invitations = relationship("Invitation", back_populates="space")
@@ -37,7 +41,7 @@ class SpaceMember(Base):
     space_id = Column(String, ForeignKey("spaces.id"))
     user_id = Column(String, ForeignKey("users.id"))
     role = Column(String, default="member")  # admin, member
-    joined_at = Column(DateTime, default=datetime.datetime.utcnow)
+    joined_at = Column(DateTime, default=utcnow)
 
     space = relationship("Space", back_populates="members")
 
@@ -49,6 +53,6 @@ class Invitation(Base):
     space_id = Column(String, ForeignKey("spaces.id"))
     inviter_id = Column(String, ForeignKey("users.id"))
     is_used = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    created_at = Column(DateTime, default=utcnow)
 
     space = relationship("Space", back_populates="invitations")
