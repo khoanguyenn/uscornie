@@ -47,20 +47,20 @@ This repository is open-sourced, so local checks should be reproducible and chea
 
 ### Development Tooling
 
-- [`aqua`](https://aquaproj.github.io/) pins the shared CLI tools used by this repo.
+- [Homebrew](https://brew.sh/) manages project dependencies via the `Brewfile`.
 - [`lefthook`](https://github.com/evilmartians/lefthook) manages local git hooks.
 - [`gitleaks`](https://github.com/gitleaks/gitleaks) scans for accidentally committed secrets.
 
 ### One-Time Setup
 
-1. Install `aqua`.
-2. From the repo root, install the pinned tools:
+1. Install [Homebrew](https://brew.sh/).
+2. From the repo root, install the required tools:
    ```bash
-   aqua i
+   brew bundle install
    ```
 3. Install git hooks:
    ```bash
-   aqua exec -- lefthook install
+   lefthook install
    ```
 4. Copy `.env.example` to `.env` and fill in the real values.
 

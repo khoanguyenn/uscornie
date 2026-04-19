@@ -1,12 +1,16 @@
 pre-commit:
   parallel: true
   commands:
+    gitleaks:
+      desc: Scan staged changes for secrets before they are committed
+      tags: security
+      run: gitleaks protect --staged --no-banner --verbose
     staged-diff-check:
       desc: Check for whitespace errors and conflict markers in staged changes
       run: git diff --cached --check
     large-added-files:
       desc: Prevent accidental commit of large binary files
-      run: scripts/check-added-files-size.sh
+      run: scripts/check-added-files-size.sh {staged_files}
     backend-lint:
       desc: Run Ruff linter on staged Python files
       root: "backend"
@@ -31,9 +35,10 @@ pre-commit:
 pre-push:
   parallel: true
   commands:
-    secret-scan:
-      desc: Scan for accidental secret leaks using gitleaks
-      run: gitleaks dir --no-banner --redact .
+    gitleaks:
+      desc: Final full-repository secret scan before pushing
+      tags: security
+      run: gitleaks detect --source . --no-banner --redact
     backend-typecheck:
       desc: Run static type checking on backend code
       root: "backend"
