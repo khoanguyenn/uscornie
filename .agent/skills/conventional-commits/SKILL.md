@@ -88,8 +88,8 @@ feat(spaces): add single-use invite link generation
 ```
 fix(auth): validate JWT expiry on every protected request
 
-Token expiry was only checked at login; middleware now validates
-`exp` on every protected request.
+- token expiry was only checked at login
+- middleware now validates `exp` on every protected request
 
 Closes #42
 ```
