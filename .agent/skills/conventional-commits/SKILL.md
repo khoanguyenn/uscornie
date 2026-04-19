@@ -16,7 +16,8 @@ allowed-tools: Bash(git:*)
 ```
 <type>[(<scope>)][!]: <description>
 
-[body — the why, not the what]
+- <why this change was made>
+- <additional context if needed>
 
 [footer(s)]
 ```
