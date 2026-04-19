@@ -1,6 +1,10 @@
 pre-commit:
   parallel: true
   commands:
+    staged-diff-check:
+      run: git diff --cached --check
+    large-added-files:
+      run: scripts/check-added-files-size.sh
     backend-lint:
       root: "backend"
       glob: "**/*.py"
@@ -21,6 +25,8 @@ pre-commit:
 pre-push:
   parallel: true
   commands:
+    secret-scan:
+      run: gitleaks dir --no-banner --redact .
     backend-typecheck:
       root: "backend"
       run: uv run ty check
