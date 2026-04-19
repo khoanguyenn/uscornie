@@ -1,0 +1,35 @@
+# Local environment
+.env
+.env.*
+!.env.example
+
+# OS / editor noise
+.DS_Store
+.idea/
+.vscode/
+*.log
+
+# CI / tooling caches
+.github/.cache/
+.ruff_cache/
+.cache/
+tmp/
+
+# Frontend artifacts
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/coverage/
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.pyd
+*.so
+backend/.venv/
+backend/.pytest_cache/
+backend/.ruff_cache/
+backend/.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
