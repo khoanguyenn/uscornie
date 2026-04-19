@@ -41,6 +41,49 @@ The easiest way to run the entire application stack (Frontend, Backend, and Data
    - **Frontend UI:** Open your browser and navigate to `http://localhost:5173`.
    - **Backend API Docs:** Explore the Swagger API documentation at `http://localhost:8000/docs`.
 
+## 🤝 Contributing
+
+This repository is open-sourced, so local checks should be reproducible and cheap to set up for outside contributors.
+
+### Development Tooling
+
+- [`aqua`](https://aquaproj.github.io/) pins the shared CLI tools used by this repo.
+- [`lefthook`](https://github.com/evilmartians/lefthook) manages local git hooks.
+- [`gitleaks`](https://github.com/gitleaks/gitleaks) scans for accidentally committed secrets.
+
+### One-Time Setup
+
+1. Install `aqua`.
+2. From the repo root, install the pinned tools:
+   ```bash
+   aqua i
+   ```
+3. Install git hooks:
+   ```bash
+   aqua exec -- lefthook install
+   ```
+4. Copy `.env.example` to `.env` and fill in the real values.
+
+### Local Quality Gates
+
+- `pre-commit`
+  - `git diff --cached --check`
+  - block newly added files larger than 2 MiB
+  - backend Ruff lint and format checks
+  - frontend lint and format checks
+- `pre-push`
+  - `gitleaks` working-tree secret scan
+  - backend type check and tests
+  - frontend tests
+
+If you need to bypass hooks for an emergency commit, use Git's `--no-verify` flag. CI still reruns the important checks on pushes and pull requests.
+
+### Secrets and Environment Files
+
+- Never commit a populated `.env` file.
+- Keep real OAuth credentials, JWT secrets, and database credentials out of the repository.
+- Use `.env.example` as the public contract for required environment variables.
+
 ## 📂 Project Structure
 
 - `/frontend` - Contains the Vue.js SPA application.
@@ -51,5 +94,4 @@ The easiest way to run the entire application stack (Frontend, Backend, and Data
   - `models.py` - Database schema models.
   - `auth_utils.py` - Handling of JWT generation and Google token validation.
 - `docker-compose.yml` - Orchestration configuration to run Postgres, the backend API, and the frontend server.
-
 
