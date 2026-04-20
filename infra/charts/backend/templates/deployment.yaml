@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uscornie-backend
+  labels:
+    app: uscornie-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: uscornie-backend
+  template:
+    metadata:
+      labels:
+        app: uscornie-backend
+    spec:
+      containers:
+        - name: backend
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DATABASE_URL
+              value: "postgresql://app:$(POSTGRES_PASSWORD)@uscornie-db-rw:5432/uscornie"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: uscornie-db-app
+                  key: password
+          envFrom:
+            - secretRef:
+                name: uscornie-secrets
+          readinessProbe:
+            httpGet:
+              path: /docs
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
