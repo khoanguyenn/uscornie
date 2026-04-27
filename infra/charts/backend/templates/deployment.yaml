@@ -22,12 +22,10 @@ spec:
             - containerPort: 8000
           env:
             - name: DATABASE_URL
-              value: "postgresql://app:$(POSTGRES_PASSWORD)@uscornie-db-rw:5432/uscornie"
-            - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: uscornie-db-app
-                  key: password
+                  key: uri
           envFrom:
             - secretRef:
                 name: uscornie-secrets
