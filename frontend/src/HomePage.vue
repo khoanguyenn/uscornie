@@ -80,7 +80,7 @@ onMounted(() => {
   fetchUserData();
   if (window.google) {
     window.google.accounts.id.initialize({
-      client_id: "421499231877-e9s8pm5ge00n8eqcudkkom9pp947m8jv.apps.googleusercontent.com",
+      client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
       callback: handleLoginSuccess,
       auto_select: true,
     });

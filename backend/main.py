@@ -27,7 +27,12 @@ app = FastAPI(title="Uscornie API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, restrict this
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "https://uscornie.com",
+        "https://www.uscornie.com",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

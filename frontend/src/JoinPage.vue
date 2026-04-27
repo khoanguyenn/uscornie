@@ -42,7 +42,7 @@ const handleGoogleResponse = async (response) => {
 onMounted(() => {
   if (window.google) {
     window.google.accounts.id.initialize({
-      client_id: "421499231877-e9s8pm5ge00n8eqcudkkom9pp947m8jv.apps.googleusercontent.com", // Should be from env in build, but GIS needs it here
+      client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID, // Should be from env in build, but GIS needs it here
       callback: handleGoogleResponse,
     });
     window.google.accounts.id.renderButton(document.getElementById("google-btn"), {
