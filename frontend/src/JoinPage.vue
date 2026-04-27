@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import axios from "axios";
+import api from "./api";
 
 const route = useRoute();
 const router = useRouter();
@@ -12,14 +12,14 @@ const handleGoogleResponse = async (response) => {
   status.value = "loading";
   try {
     // Step 1: Login to get JWT
-    const loginRes = await axios.post("/auth/google", { credential: response.credential });
+    const loginRes = await api.post("/auth/google", { credential: response.credential });
     const access_token = loginRes.data.access_token;
     localStorage.setItem("uscornie_token", access_token);
 
     // Step 2: Join Space
     const invite_token = route.query.invite_token;
     if (invite_token) {
-      const joinRes = await axios.post(
+      const joinRes = await api.post(
         "/spaces/join",
         { invite_token },
         { headers: { Authorization: `Bearer ${access_token}` } },

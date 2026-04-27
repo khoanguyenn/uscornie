@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import axios from "axios";
+import api from "./api";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -16,7 +16,7 @@ const fetchUserData = async () => {
   }
 
   try {
-    const res = await axios.get("/spaces/me", {
+    const res = await api.get("/spaces/me", {
       headers: { Authorization: `Bearer ${token.value}` },
     });
     spaces.value = res.data;
@@ -36,7 +36,7 @@ const logout = () => {
 
 const createSpace = async () => {
   try {
-    const res = await axios.post(
+    const res = await api.post(
       "/spaces",
       {},
       {
@@ -51,7 +51,7 @@ const createSpace = async () => {
 
 const generateInvite = async (spaceId) => {
   try {
-    const res = await axios.post(
+    const res = await api.post(
       `/invites/${spaceId}`,
       {},
       {
@@ -67,7 +67,7 @@ const generateInvite = async (spaceId) => {
 
 const handleLoginSuccess = async (response) => {
   try {
-    const res = await axios.post("/auth/google", { credential: response.credential });
+    const res = await api.post("/auth/google", { credential: response.credential });
     localStorage.setItem("uscornie_token", res.data.access_token);
     token.value = res.data.access_token;
     fetchUserData();
