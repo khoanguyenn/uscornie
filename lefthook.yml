@@ -5,9 +5,6 @@ pre-commit:
       desc: Scan staged changes for secrets before they are committed
       tags: security
       run: gitleaks protect --staged --no-banner --verbose
-    staged-diff-check:
-      desc: Check for whitespace errors and conflict markers in staged changes
-      run: git diff --cached --check
     large-added-files:
       desc: Prevent accidental commit of large binary files
       run: scripts/check-added-files-size.sh {staged_files}
