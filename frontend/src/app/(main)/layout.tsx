@@ -82,7 +82,24 @@ export default function MainLayout({
           auto_select: true,
         });
 
-        win.google.accounts.id.prompt();
+        win.google.accounts.id.prompt((notification: any) => {
+          if (notification.isNotDisplayed()) {
+            console.warn(
+              "Google One Tap not displayed reason:",
+              notification.getNotDisplayedReason(),
+            );
+          } else if (notification.isSkippedMoment()) {
+            console.warn(
+              "Google One Tap skipped reason:",
+              notification.getSkippedReason(),
+            );
+          } else if (notification.isDismissedMoment()) {
+            console.warn(
+              "Google One Tap dismissed reason:",
+              notification.getDismissedReason(),
+            );
+          }
+        });
 
         const btn = document.getElementById("google-btn-header");
         if (btn) {
