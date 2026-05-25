@@ -490,7 +490,7 @@ body {
 }
 .nav-btn .arrow {
   font-size: 0.55rem;
-  transition: transform 0.3s;
+  transition: transform 0.15s ease-out;
   margin-left: 2px;
 }
 .nav-item.open .nav-btn .arrow {
@@ -509,7 +509,7 @@ body {
   box-shadow: 0 10px 36px var(--shadow-md);
   opacity: 0;
   pointer-events: none;
-  transition: all 0.25s;
+  transition: all 0.12s ease-out;
   z-index: 200;
 }
 .nav-item.open .nav-dropdown {
