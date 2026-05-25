@@ -309,6 +309,7 @@ export default function SaveCategoryContent({
               <button
                 key={t}
                 type="button"
+                style={{ "--i": idx } as React.CSSProperties}
                 className={`tag-pick c${idx % 6} ${formTag === t ? "active" : ""}`}
                 onClick={() => selectPresetTag(t)}
               >
@@ -430,15 +431,17 @@ export default function SaveCategoryContent({
           <span className="tag-filter-label">Lọc theo thẻ:</span>
           <button
             type="button"
+            style={{ "--i": 0 } as React.CSSProperties}
             className={`tag-chip ${activeFilterTag === "__all__" ? "active" : ""}`}
             onClick={() => setActiveFilterTag("__all__")}
           >
             Tất cả <span className="tag-count">({allItems.length})</span>
           </button>
-          {presetTags.map((t) => (
+          {presetTags.map((t, idx) => (
             <button
               key={t}
               type="button"
+              style={{ "--i": idx + 1 } as React.CSSProperties}
               className={`tag-chip ${activeFilterTag === t ? "active" : ""}`}
               onClick={() => setActiveFilterTag(t)}
             >
