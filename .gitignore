@@ -18,10 +18,23 @@ tmp/
 # Frontend artifacts
 frontend/node_modules/
 frontend/dist/
-frontend/.vite/
+frontend/.next/
+frontend/out/
+frontend/build/
 frontend/coverage/
 frontend/.pnpm-store/
 frontend/demo_source.html
+frontend/.env*
+!frontend/.env.example
+
+# Frontend-vue (backup) artifacts
+frontend-vue/node_modules/
+frontend-vue/dist/
+frontend-vue/demo_source.html
+frontend-vue/wrangler.log
+frontend-vue/.pnpm-store/
+frontend-vue/.env*
+!frontend-vue/.env.example
 
 # Python artifacts
 __pycache__/
