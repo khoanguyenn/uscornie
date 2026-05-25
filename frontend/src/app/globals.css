@@ -1418,6 +1418,10 @@ body {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
+.toast.error {
+  background: #e0664b;
+  box-shadow: 0 6px 24px rgba(224, 102, 75, 0.4);
+}
 .toast svg {
   width: 20px;
   height: 20px;

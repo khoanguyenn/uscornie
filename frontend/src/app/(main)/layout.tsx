@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import AnimatedBackground from "@/components/AnimatedBackground";
 import GhibliIcon from "@/components/icons/GhibliIcon";
 import NavBar from "@/components/NavBar";
@@ -16,6 +16,23 @@ export default function MainLayout({
   const router = useRouter();
   const { isAuthenticated, setToken, clearToken } = useAuthStore();
 
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [showToast, setShowToast] = useState(false);
+
+  const triggerError = useCallback((msg: string) => {
+    setErrorMsg(msg);
+    setShowToast(true);
+  }, []);
+
+  useEffect(() => {
+    if (showToast) {
+      const timer = setTimeout(() => {
+        setShowToast(false);
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [showToast]);
+
   const handleLoginSuccess = useCallback(
     async (response: any) => {
       try {
@@ -23,10 +40,10 @@ export default function MainLayout({
         setToken(data.access_token);
         window.location.reload();
       } catch (_err) {
-        alert("Đăng nhập thất bại");
+        triggerError("Đăng nhập thất bại. Vui lòng thử lại!");
       }
     },
-    [setToken],
+    [setToken, triggerError],
   );
 
   const logout = () => {
@@ -107,6 +124,11 @@ export default function MainLayout({
       <NavBar />
 
       <main className="main-container">{children}</main>
+
+      <div className={`toast error ${showToast ? "show" : ""}`}>
+        <GhibliIcon type="calcifer" size={20} />
+        <span>{errorMsg || "Có lỗi xảy ra"}</span>
+      </div>
     </div>
   );
 }
