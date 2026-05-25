@@ -18,6 +18,11 @@ export default function MainLayout({
 
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const triggerError = useCallback((msg: string) => {
     setErrorMsg(msg);
@@ -111,8 +116,10 @@ export default function MainLayout({
         <p>Một góc nhỏ của riêng mình</p>
 
         <div className="auth-status">
-          {isAuthenticated ? (
-            <button onClick={logout} className="logout-link">
+          {!mounted ? (
+            <div id="google-btn-header"></div>
+          ) : isAuthenticated ? (
+            <button onClick={logout} className="logout-link" type="button">
               Đăng xuất
             </button>
           ) : (
