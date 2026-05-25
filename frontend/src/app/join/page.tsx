@@ -47,9 +47,19 @@ function JoinPageContent() {
   useEffect(() => {
     const initializeGoogle = () => {
       const win = window as any;
-      if (win.google) {
+      const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+
+      if (!clientId) {
+        console.warn(
+          "NEXT_PUBLIC_GOOGLE_CLIENT_ID is not configured. Google sign-in initialization skipped.",
+        );
+        return;
+      }
+
+      if (win.google && !win._googleInitializedJoin) {
+        win._googleInitializedJoin = true;
         win.google.accounts.id.initialize({
-          client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "",
+          client_id: clientId,
           callback: handleGoogleResponse,
         });
         const btn = document.getElementById("google-btn");

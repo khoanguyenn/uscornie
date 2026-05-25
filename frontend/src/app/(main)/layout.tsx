@@ -37,22 +37,34 @@ export default function MainLayout({
   useEffect(() => {
     // Check if google is available on window
     const checkGoogle = () => {
+      const win = window as any;
+      const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+
+      if (!clientId) {
+        console.warn(
+          "NEXT_PUBLIC_GOOGLE_CLIENT_ID is not configured. Google sign-in initialization skipped.",
+        );
+        return;
+      }
+
       if (
         typeof window !== "undefined" &&
-        (window as any).google &&
-        !isAuthenticated
+        win.google &&
+        !isAuthenticated &&
+        !win._googleInitializedMain
       ) {
-        (window as any).google.accounts.id.initialize({
-          client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "",
+        win._googleInitializedMain = true;
+        win.google.accounts.id.initialize({
+          client_id: clientId,
           callback: handleLoginSuccess,
           auto_select: true,
         });
 
-        (window as any).google.accounts.id.prompt();
+        win.google.accounts.id.prompt();
 
         const btn = document.getElementById("google-btn-header");
         if (btn) {
-          (window as any).google.accounts.id.renderButton(btn, {
+          win.google.accounts.id.renderButton(btn, {
             theme: "outline",
             size: "medium",
           });
