@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import AnimatedBackground from "@/components/AnimatedBackground";
+import GoogleSignInButton from "@/components/GoogleSignInButton";
 import GhibliIcon from "@/components/icons/GhibliIcon";
 import NavBar from "@/components/NavBar";
 import { authService } from "@/services/authService";
@@ -14,15 +15,12 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const { isAuthenticated, setToken, clearToken } = useAuthStore();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const setToken = useAuthStore((s) => s.setToken);
+  const clearToken = useAuthStore((s) => s.clearToken);
 
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const triggerError = useCallback((msg: string) => {
     setErrorMsg(msg);
@@ -56,69 +54,6 @@ export default function MainLayout({
     window.location.reload();
   };
 
-  useEffect(() => {
-    // Check if google is available on window
-    const checkGoogle = () => {
-      const win = window as any;
-      const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-
-      if (!clientId) {
-        console.warn(
-          "NEXT_PUBLIC_GOOGLE_CLIENT_ID is not configured. Google sign-in initialization skipped.",
-        );
-        return;
-      }
-
-      if (
-        typeof window !== "undefined" &&
-        win.google &&
-        !isAuthenticated &&
-        !win._googleInitializedMain
-      ) {
-        win._googleInitializedMain = true;
-        win.google.accounts.id.initialize({
-          client_id: clientId,
-          callback: handleLoginSuccess,
-          auto_select: true,
-        });
-
-        win.google.accounts.id.prompt((notification: any) => {
-          if (notification.isNotDisplayed()) {
-            console.warn(
-              "Google One Tap not displayed reason:",
-              notification.getNotDisplayedReason(),
-            );
-          } else if (notification.isSkippedMoment()) {
-            console.warn(
-              "Google One Tap skipped reason:",
-              notification.getSkippedReason(),
-            );
-          } else if (notification.isDismissedMoment()) {
-            console.warn(
-              "Google One Tap dismissed reason:",
-              notification.getDismissedReason(),
-            );
-          }
-        });
-
-        const btn = document.getElementById("google-btn-header");
-        if (btn) {
-          win.google.accounts.id.renderButton(btn, {
-            theme: "outline",
-            size: "medium",
-          });
-        }
-      }
-    };
-
-    // Run check
-    checkGoogle();
-
-    // Fallback timer in case script loads slowly
-    const timer = setTimeout(checkGoogle, 1000);
-    return () => clearTimeout(timer);
-  }, [isAuthenticated, handleLoginSuccess]);
-
   return (
     <div className="app-layout">
       <AnimatedBackground />
@@ -133,14 +68,12 @@ export default function MainLayout({
         <p>Một góc nhỏ của riêng mình</p>
 
         <div className="auth-status">
-          {!mounted ? (
-            <div id="google-btn-header"></div>
-          ) : isAuthenticated ? (
+          {isAuthenticated ? (
             <button onClick={logout} className="logout-link" type="button">
               Đăng xuất
             </button>
           ) : (
-            <div id="google-btn-header"></div>
+            <GoogleSignInButton onSuccess={handleLoginSuccess} />
           )}
         </div>
       </header>

@@ -14,11 +14,9 @@ const getInitialToken = () => {
   return null;
 };
 
-const initialToken = getInitialToken();
-
 export const useAuthStore = create<AuthState>((set) => ({
-  token: initialToken,
-  isAuthenticated: !!initialToken,
+  token: getInitialToken(),
+  isAuthenticated: !!getInitialToken(),
   setToken: (token) => {
     if (typeof window !== "undefined") {
       if (token) {

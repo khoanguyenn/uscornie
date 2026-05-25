@@ -6,13 +6,11 @@ import { OCCASIONS } from "@/data/mock";
 import { useDataStore } from "@/stores/useDataStore";
 
 export default function CalendarPageContent() {
-  const {
-    anniversaryDate,
-    birthdayDate,
-    loadData,
-    setAnniversaryDate,
-    setBirthdayDate,
-  } = useDataStore();
+  const anniversaryDate = useDataStore((s) => s.anniversaryDate);
+  const birthdayDate = useDataStore((s) => s.birthdayDate);
+  const loadData = useDataStore((s) => s.loadData);
+  const setAnniversaryDate = useDataStore((s) => s.setAnniversaryDate);
+  const setBirthdayDate = useDataStore((s) => s.setBirthdayDate);
 
   useEffect(() => {
     loadData();

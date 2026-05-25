@@ -65,20 +65,9 @@ export default function QuickAddCard({
     }
   };
 
-  const loadXLSX = (): Promise<any> => {
-    return new Promise((resolve, reject) => {
-      const win = window as any;
-      if (win.XLSX) {
-        resolve(win.XLSX);
-        return;
-      }
-      const script = document.createElement("script");
-      script.src =
-        "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";
-      script.onload = () => resolve(win.XLSX);
-      script.onerror = (e) => reject(e);
-      document.head.appendChild(script);
-    });
+  const loadXLSX = async () => {
+    const xlsx = await import("xlsx");
+    return xlsx;
   };
 
   const qaParseCSVLine = (line: string, delim: string): string[] => {

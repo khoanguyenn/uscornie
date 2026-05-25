@@ -31,7 +31,13 @@ type SaveItemFormValues = z.infer<typeof saveItemSchema>;
 export default function SaveCategoryContent({
   category,
 }: SaveCategoryContentProps) {
-  const dataStore = useDataStore();
+  // Fine-grained Zustand selectors — component only re-renders when these specific slices change
+  const loadData = useDataStore((s) => s.loadData);
+  const items = useDataStore((s) => s.items);
+  const addItem = useDataStore((s) => s.addItem);
+  const addItems = useDataStore((s) => s.addItems);
+  const updateItem = useDataStore((s) => s.updateItem);
+  const deleteItem = useDataStore((s) => s.deleteItem);
 
   // Form setup using React Hook Form + Zod
   const {
@@ -60,8 +66,6 @@ export default function SaveCategoryContent({
     n: string;
     d: string;
   } | null>(null);
-  const [isSuggestionAlreadyInList, setIsSuggestionAlreadyInList] =
-    useState(false);
 
   // Filter state
   const [activeFilterTag, setActiveFilterTag] = useState("__all__");
@@ -80,8 +84,8 @@ export default function SaveCategoryContent({
 
   // Load data on mount
   useEffect(() => {
-    dataStore.loadData();
-  }, [dataStore.loadData]);
+    loadData();
+  }, [loadData]);
 
   // Reset tag selection filter when category changes
   useEffect(() => {
@@ -110,8 +114,8 @@ export default function SaveCategoryContent({
   );
 
   const allItems = useMemo(
-    () => dataStore.getItemsByCategory(category),
-    [category, dataStore.getItemsByCategory],
+    () => items.filter((i) => i.category === category),
+    [items, category],
   );
 
   const filteredItems = useMemo(() => {
@@ -126,6 +130,17 @@ export default function SaveCategoryContent({
     }
     return counts;
   }, [allItems, presetTags]);
+
+  // Derived state — automatically true after addItem updates items slice
+  const isSuggestionAlreadyInList = useMemo(() => {
+    if (!currentSuggestion) return false;
+    return items.some(
+      (i) =>
+        i.category === category &&
+        i.title.trim().toLowerCase() ===
+          currentSuggestion.n.trim().toLowerCase(),
+    );
+  }, [currentSuggestion, items, category]);
 
   const selectPresetTag = (tag: string) => {
     setValue("tag", formTag === tag ? "" : tag);
@@ -143,7 +158,7 @@ export default function SaveCategoryContent({
 
   const onSubmit = (values: SaveItemFormValues) => {
     if (editingItemId) {
-      dataStore.updateItem({
+      updateItem({
         id: editingItemId,
         title: values.title.trim(),
         desc: values.desc?.trim() || "",
@@ -151,7 +166,7 @@ export default function SaveCategoryContent({
         image: imagePreview,
       });
     } else {
-      dataStore.addItem({
+      addItem({
         category,
         title: values.title.trim(),
         desc: values.desc?.trim() || "",
@@ -164,7 +179,7 @@ export default function SaveCategoryContent({
 
   const startEdit = (idVal: string) => {
     setEditingItemId(idVal);
-    const item = dataStore.items.find((x) => x.id === idVal);
+    const item = items.find((x) => x.id === idVal);
     if (item) {
       reset({
         title: item.title,
@@ -176,9 +191,9 @@ export default function SaveCategoryContent({
     }
   };
 
-  const deleteItem = (idVal: string) => {
+  const handleDeleteItem = (idVal: string) => {
     if (confirm("Bạn có chắc chắn muốn xoá mục này?")) {
-      dataStore.deleteItem(idVal);
+      deleteItem(idVal);
       if (editingItemId === idVal) {
         clearForm();
       }
@@ -191,7 +206,7 @@ export default function SaveCategoryContent({
     if (!pool || !pool.length) return;
 
     const existingNames = new Set(
-      dataStore.items
+      items
         .filter((i) => i.category === category)
         .map((i) => i.title.trim().toLowerCase()),
     );
@@ -215,22 +230,19 @@ export default function SaveCategoryContent({
 
     if (next) {
       setCurrentSuggestion(next);
-      setIsSuggestionAlreadyInList(
-        existingNames.has(next.n.trim().toLowerCase()),
-      );
     }
   };
 
   const addSuggestionToList = () => {
     if (!currentSuggestion) return;
-    dataStore.addItem({
+    addItem({
       category,
       title: currentSuggestion.n,
       desc: currentSuggestion.d,
       tag: "",
       image: null,
     });
-    setIsSuggestionAlreadyInList(true);
+    // isSuggestionAlreadyInList updates automatically via derived useMemo
     alert(`Đã thêm "${currentSuggestion.n}" vào list!`);
   };
 
@@ -239,7 +251,7 @@ export default function SaveCategoryContent({
       ...item,
       category,
     }));
-    dataStore.addItems(itemsWithCat);
+    addItems(itemsWithCat);
   };
 
   return (
@@ -452,7 +464,8 @@ export default function SaveCategoryContent({
             <GhibliIcon type={currentCategory.ico} size={60} />
           )}
           <p style={{ marginTop: "12px" }}>
-            Không có mục nào với thẻ "<strong>{activeFilterTag}</strong>".
+            Không có mục nào với thẻ &quot;<strong>{activeFilterTag}</strong>
+            &quot;.
           </p>
         </div>
       ) : (
@@ -463,7 +476,7 @@ export default function SaveCategoryContent({
               item={item}
               categoryIcon={currentCategory?.ico || ""}
               onEdit={startEdit}
-              onDelete={deleteItem}
+              onDelete={handleDeleteItem}
             />
           ))}
         </div>

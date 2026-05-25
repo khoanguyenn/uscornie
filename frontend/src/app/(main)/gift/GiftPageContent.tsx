@@ -17,7 +17,8 @@ function GiftPageContentInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const { loadData, getItemsByCategory } = useDataStore();
+  const loadData = useDataStore((s) => s.loadData);
+  const items = useDataStore((s) => s.items);
 
   useEffect(() => {
     loadData();
@@ -68,9 +69,10 @@ function GiftPageContentInner() {
     }
   };
 
-  const wishlistItems = useMemo(() => {
-    return getItemsByCategory("wishlist");
-  }, [getItemsByCategory]);
+  const wishlistItems = useMemo(
+    () => items.filter((i) => i.category === "wishlist"),
+    [items],
+  );
 
   const doWG = () => {
     if (!wishlistItems.length) return;

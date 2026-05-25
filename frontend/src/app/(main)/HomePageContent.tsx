@@ -10,22 +10,27 @@ import { useDataStore } from "@/stores/useDataStore";
 
 export default function HomePageContent() {
   const _router = useRouter();
-  const authStore = useAuthStore();
-  const dataStore = useDataStore();
   const queryClient = useQueryClient();
+
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const clearToken = useAuthStore((s) => s.clearToken);
+
+  const loadData = useDataStore((s) => s.loadData);
+  const items = useDataStore((s) => s.items);
+  const anniversaryDate = useDataStore((s) => s.anniversaryDate);
 
   const [inviteLink, setInviteLink] = useState("");
 
   // Load local data on mount
   useEffect(() => {
-    dataStore.loadData();
-  }, [dataStore.loadData]);
+    loadData();
+  }, [loadData]);
 
   // Fetch user spaces from API
   const { data: spaces = [], isLoading } = useQuery({
     queryKey: ["spaces"],
     queryFn: spaceService.fetchMySpaces,
-    enabled: authStore.isAuthenticated,
+    enabled: isAuthenticated,
     retry: 1,
   });
 
@@ -56,13 +61,12 @@ export default function HomePageContent() {
   });
 
   const _logout = () => {
-    authStore.clearToken();
+    clearToken();
     window.location.reload();
   };
 
   // Compute Ghibli stats
   const stats = useMemo(() => {
-    const anniversaryDate = dataStore.anniversaryDate;
     let days = "?";
     if (anniversaryDate) {
       const start = new Date(anniversaryDate);
@@ -73,10 +77,8 @@ export default function HomePageContent() {
       ).toString();
     }
 
-    const totalSaved = dataStore.items ? dataStore.items.length : 0;
-    const wishlistCount = dataStore.items
-      ? dataStore.items.filter((i) => i.category === "wishlist").length
-      : 0;
+    const totalSaved = items.length;
+    const wishlistCount = items.filter((i) => i.category === "wishlist").length;
 
     return [
       {
@@ -98,13 +100,13 @@ export default function HomePageContent() {
         color: "var(--water)",
       },
     ];
-  }, [dataStore.items, dataStore.anniversaryDate]);
+  }, [items, anniversaryDate]);
 
   if (isLoading) {
     return <div className="loading-state">⏳ Đang tải...</div>;
   }
 
-  if (!authStore.isAuthenticated) {
+  if (!isAuthenticated) {
     return (
       <div className="guest-hero">
         <h2 className="hero-text">

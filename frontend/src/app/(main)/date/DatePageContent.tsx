@@ -35,6 +35,7 @@ export default function DatePageContent() {
       document.body.appendChild(c);
     }
     const cols = ["#f2a0a0", "#f5c0c0", "#f9e27a", "#a8e6cf", "#f5a0b8"];
+    const fragment = document.createDocumentFragment();
     for (let i = 0; i < 14; i++) {
       const p = document.createElement("div");
       p.className = "hb-particle";
@@ -46,9 +47,10 @@ export default function DatePageContent() {
       p.innerHTML = `<svg width="${sz}" height="${sz}" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 17 Q0 10 3 5 Q5 2 8 4 Q9 5 10 7 Q11 5 12 4 Q15 2 17 5 Q20 10 10 17Z" fill="${
         cols[Math.floor(Math.random() * cols.length)]
       }"/></svg>`;
-      c.appendChild(p);
+      fragment.appendChild(p);
       setTimeout(() => p.remove(), 2500);
     }
+    c.appendChild(fragment);
   };
 
   const handleToggleSlot = (id: string) => {
