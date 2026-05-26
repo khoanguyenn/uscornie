@@ -141,26 +141,32 @@ export default function CalendarPageContent() {
   };
 
   return (
-    <div style={{ width: "100%", maxWidth: "600px", margin: "0 auto" }}>
-      <h2 className="page-title">
-        <span className="pt-ico">
+    <div className="w-full max-w-[600px] mx-auto">
+      <h2 className="font-pangolin text-[1.9rem] text-ink mb-5 pb-2.5 border-b-2 border-dashed border-earth inline-flex items-center gap-2.5">
+        <span className="w-8 h-8">
           <GhibliIcon type="heart" size={32} />
         </span>
         Ngày bên nhau
       </h2>
 
-      <div className="couple-counter">
-        <div className="deco-svg deco-l">
+      <div className="bg-gradient-to-br from-petal to-blush rounded-[20px] p-9 text-center mb-6 shadow-[0_4px_20px_rgba(242,196,196,0.3)] relative overflow-hidden">
+        <div className="absolute w-10 h-10 opacity-18 pointer-events-none top-3 left-4 animate-[charBob_4s_ease-in-out_infinite]">
           <GhibliIcon type="calcifer" size={40} />
         </div>
-        <div className="deco-svg deco-r">
+        <div className="absolute w-10 h-10 opacity-18 pointer-events-none bottom-3 right-4 animate-[charBob_3.5s_ease-in-out_infinite_1s]">
           <GhibliIcon type="soot" size={40} />
         </div>
-        <div className="big-number">
+        <div className="font-pangolin text-[3.2rem] md:text-[4.5rem] text-ink leading-none">
           {daysTogether !== null ? daysTogether : "?"}
         </div>
-        <div className="counter-label">ngày bên nhau</div>
-        {detailTime && <div className="counter-sub">{detailTime}</div>}
+        <div className="text-[1.1rem] font-semibold text-ink-light mt-1">
+          ngày bên nhau
+        </div>
+        {detailTime && (
+          <div className="text-[0.85rem] text-ink-light mt-2 opacity-80">
+            {detailTime}
+          </div>
+        )}
       </div>
 
       <div className="card">
@@ -169,8 +175,7 @@ export default function CalendarPageContent() {
           <input
             id="birthday-input"
             type="date"
-            className="form-input"
-            style={{ maxWidth: "220px" }}
+            className="form-input max-w-[220px]"
             value={birthdayDate}
             onChange={(e) => setBirthdayDate(e.target.value)}
           />
@@ -180,8 +185,7 @@ export default function CalendarPageContent() {
           <input
             id="anniversary-input"
             type="date"
-            className="form-input"
-            style={{ maxWidth: "220px" }}
+            className="form-input max-w-[220px]"
             value={anniversaryDate}
             onChange={(e) => setAnniversaryDate(e.target.value)}
           />
@@ -189,33 +193,64 @@ export default function CalendarPageContent() {
       </div>
 
       <div className="card">
-        <div className="cal-nav">
-          <button onClick={prevMonth} type="button" aria-label="Tháng trước">
+        <div className="flex items-center justify-center gap-5 mb-3">
+          <button
+            onClick={prevMonth}
+            type="button"
+            aria-label="Tháng trước"
+            className="bg-transparent border-2 border-earth rounded-full w-9 h-9 text-[1rem] cursor-pointer text-ink flex items-center justify-center transition-all duration-300 font-bold hover:bg-earth hover:text-white"
+          >
             &lt;
           </button>
-          <span>
+          <span className="font-pangolin text-[1.35rem] min-w-[180px] text-center">
             {mn[calDate.getMonth()]} {calDate.getFullYear()}
           </span>
-          <button onClick={nextMonth} type="button" aria-label="Tháng sau">
+          <button
+            onClick={nextMonth}
+            type="button"
+            aria-label="Tháng sau"
+            className="bg-transparent border-2 border-earth rounded-full w-9 h-9 text-[1rem] cursor-pointer text-ink flex items-center justify-center transition-all duration-300 font-bold hover:bg-earth hover:text-white"
+          >
             &gt;
           </button>
         </div>
-        <div className="calendar-grid">
+        <div className="grid grid-cols-7 gap-1 mt-5">
           {dn.map((d) => (
-            <div key={d} className="cal-header">
+            <div
+              key={d}
+              className="font-bold text-[0.75rem] text-ink-light py-2 text-center"
+            >
               {d}
             </div>
           ))}
           {calendarData.map((d) => (
-            <div key={d.id} className={`cal-day ${d.class}`}>
+            <div
+              key={d.id}
+              className={`text-center py-2 px-1 text-[0.85rem] rounded-[10px] cursor-default font-medium transition-all duration-200 relative ${
+                d.class === "today"
+                  ? "bg-grass text-white font-bold"
+                  : d.class === "special"
+                    ? "bg-blush text-ink font-bold group"
+                    : d.class === "empty"
+                      ? "invisible"
+                      : ""
+              }`}
+            >
               {d.day}
-              {d.tooltip && <span className="tooltip-text">{d.tooltip}</span>}
+              {d.tooltip && (
+                <span className="invisible group-hover:visible group-hover:opacity-100 absolute bottom-[110%] left-1/2 -translate-x-1/2 bg-ink text-cream text-[0.72rem] py-1 px-2.5 rounded-lg whitespace-nowrap z-50 opacity-0 transition-opacity duration-200">
+                  {d.tooltip}
+                </span>
+              )}
             </div>
           ))}
         </div>
-        <div className="special-dates">
+        <div className="mt-4">
           {specialDays.map((s) => (
-            <span key={s.label} className="special-item">
+            <span
+              key={s.label}
+              className="inline-flex items-center gap-1.5 text-[0.8rem] font-semibold py-1 px-3 bg-petal rounded-[20px] m-[3px] text-ink-light"
+            >
               {s.day}/{calDate.getMonth() + 1}: {s.label}
             </span>
           ))}
