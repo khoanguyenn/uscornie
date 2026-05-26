@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
+import SaveClientPage from "./SaveClientPage";
 
 export const metadata: Metadata = {
   title: "Save - Uscornie",
@@ -7,10 +7,6 @@ export const metadata: Metadata = {
     "Save and organize your favorite memories and items on Uscornie.",
 };
 
-const SavePageContent = dynamic(() => import("./SavePageContent"), {
-  ssr: false,
-});
-
 export default function Page() {
-  return <SavePageContent />;
+  return <SaveClientPage />;
 }

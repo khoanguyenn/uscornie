@@ -1,15 +1,11 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
+import HomeClientPage from "./HomeClientPage";
 
 export const metadata: Metadata = {
   title: "Home - Uscornie",
   description: "Welcome to Uscornie, your digital shared space.",
 };
 
-const HomePageContent = dynamic(() => import("./HomePageContent"), {
-  ssr: false,
-});
-
 export default function Page() {
-  return <HomePageContent />;
+  return <HomeClientPage />;
 }
