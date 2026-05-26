@@ -25,39 +25,21 @@ interface PlanResultCardProps {
   onReset: () => void;
 }
 
-const moodColors: Record<string, string> = {
-  nhonnhip: "#f4a460",
-  langman: "#f2a0a0",
-  khampha: "#7ec8c8",
-  thugian: "#a8c88e",
-  nghethuat: "#b39ddb",
-  haihuoc: "#ffcc80",
-  sangchanh: "#c9a96e",
-  khac: "#aaa",
+const moodClassNames: Record<string, { bg: string; text: string }> = {
+  nhonnhip: { bg: "bg-[#f4a460]/13", text: "text-[#f4a460]" },
+  langman: { bg: "bg-[#f2a0a0]/13", text: "text-[#f2a0a0]" },
+  khampha: { bg: "bg-[#7ec8c8]/13", text: "text-[#7ec8c8]" },
+  thugian: { bg: "bg-[#a8c88e]/13", text: "text-[#a8c88e]" },
+  nghethuat: { bg: "bg-[#b39ddb]/13", text: "text-[#b39ddb]" },
+  haihuoc: { bg: "bg-[#ffcc80]/13", text: "text-[#ffcc80]" },
+  sangchanh: { bg: "bg-[#c9a96e]/13", text: "text-[#c9a96e]" },
+  khac: { bg: "bg-[#aaaaaa]/13", text: "text-[#aaaaaa]" },
 };
 
-const activityItemBaseStyle = {
-  background: "var(--cream)",
-  border: "1.5px solid rgba(201,169,110,0.2)",
-  borderRadius: "14px",
-  padding: "14px 18px",
-  display: "flex",
-  gap: "14px",
-  alignItems: "flex-start" as const,
-  transition:
-    "background-color 0.25s, border-color 0.25s, transform 0.25s, box-shadow 0.25s",
-};
-
-const avatarBaseStyle = {
-  width: "34px",
-  height: "34px",
-  borderRadius: "50%",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  flexShrink: 0,
-  fontSize: "0.9rem",
-  fontWeight: "700",
+const getAnimationClass = (idx: number) => {
+  const delays = ["0s", "0.08s", "0.16s", "0.24s", "0.32s", "0.4s", "0.48s"];
+  const delay = delays[idx] || "0s";
+  return `animate-[fadeUp_0.35s_ease_${delay}_both]`;
 };
 
 export default function PlanResultCard({
@@ -72,106 +54,49 @@ export default function PlanResultCard({
 
   return (
     <div>
-      <div className="card" style={{ padding: "28px" }}>
-        <div
-          style={{
-            fontFamily: '"Pangolin", cursive',
-            fontSize: "1.35rem",
-            color: "var(--ink)",
-            marginBottom: "4px",
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-          }}
-        >
+      <div className="card !p-7">
+        <div className="font-pangolin text-[1.35rem] text-ink mb-1 flex items-center gap-2">
           <GhibliIcon type="date" size={24} />
           Kế hoạch hẹn hò của bạn
         </div>
-        <div
-          style={{
-            fontSize: "0.83rem",
-            color: "var(--ink-light)",
-            marginBottom: "22px",
-          }}
-        >
+        <div className="text-[0.83rem] text-ink-light mb-[22px]">
           Mood: {selectedMoods.map((id) => getMoodLabel(id)).join(" · ")}
         </div>
 
         {plan.map((block) => (
-          <div key={block.slot.id} style={{ marginBottom: "28px" }}>
-            <div
-              style={{
-                fontFamily: '"Pangolin", cursive',
-                fontSize: "1.2rem",
-                color: "var(--ink)",
-                marginBottom: "14px",
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-              }}
-            >
+          <div key={block.slot.id} className="mb-7">
+            <div className="font-pangolin text-[1.2rem] text-ink mb-3.5 flex items-center gap-2">
               <span>{block.slot.label}</span>
-              <span
-                style={{
-                  fontSize: "0.8rem",
-                  color: "var(--ink-light)",
-                  fontFamily: '"Quicksand", sans-serif',
-                }}
-              >
+              <span className="text-[0.8rem] text-ink-light font-quicksand">
                 {block.slot.sub}
               </span>
             </div>
-            <div
-              style={{
-                display: "flex",
-                gap: "10px",
-                flexDirection: "column",
-              }}
-            >
+            <div className="flex gap-2.5 flex-col">
               {block.items.map((item, idx) => {
                 const moodLabel = getMoodLabel(item.mood);
                 const firstChar = moodLabel.split(" ")[0] || "✨";
-                const bgLight = `${moodColors[item.mood] || "var(--earth)"}22`;
-                const fgColor = moodColors[item.mood] || "var(--ink)";
+                const moodStyle = moodClassNames[item.mood] || {
+                  bg: "bg-earth/13",
+                  text: "text-ink",
+                };
 
                 return (
                   <div
                     key={item.a}
-                    className="date-activity-item"
-                    style={{
-                      ...activityItemBaseStyle,
-                      animation: `fadeUp 0.35s ease ${idx * 0.08}s both`,
-                    }}
+                    className={`bg-cream border-[1.5px] border-earth/20 rounded-[14px] p-[14px_18px] flex gap-[14px] items-start transition-all duration-[250ms] hover:shadow-[0_4px_14px_rgba(74,64,51,0.1)] hover:translate-x-[3px] ${getAnimationClass(
+                      idx,
+                    )}`}
                   >
                     <div
-                      style={{
-                        ...avatarBaseStyle,
-                        background: bgLight,
-                        color: fgColor,
-                      }}
+                      className={`w-[34px] h-[34px] rounded-full flex items-center justify-center shrink-0 text-[0.9rem] font-bold ${moodStyle.bg} ${moodStyle.text}`}
                     >
                       {firstChar}
                     </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div
-                        style={{
-                          fontFamily: '"Pangolin", cursive',
-                          fontSize: "1rem",
-                          color: "var(--ink)",
-                          marginBottom: "3px",
-                        }}
-                      >
+                    <div className="flex-1 min-w-0">
+                      <div className="font-pangolin text-[1rem] text-ink mb-[3px]">
                         {item.a}
                       </div>
-                      <div
-                        style={{
-                          fontSize: "0.82rem",
-                          color: "var(--ink-light)",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "4px",
-                        }}
-                      >
+                      <div className="text-[0.82rem] text-ink-light flex items-center gap-1">
                         <GhibliIcon type="pin" size={13} />
                         {item.l || "—"}
                       </div>
@@ -184,19 +109,17 @@ export default function PlanResultCard({
         ))}
       </div>
 
-      <div style={{ textAlign: "center", marginTop: "12px" }}>
+      <div className="text-center mt-3">
         <button
-          className="btn btn-secondary"
+          className="btn btn-secondary mr-2 cursor-pointer"
           onClick={onRegenerate}
-          style={{ marginRight: "8px", cursor: "pointer" }}
           type="button"
         >
           🔄 Tạo lại
         </button>
         <button
-          className="btn btn-primary"
+          className="btn btn-primary cursor-pointer"
           onClick={onReset}
-          style={{ cursor: "pointer" }}
           type="button"
         >
           Đặt lại

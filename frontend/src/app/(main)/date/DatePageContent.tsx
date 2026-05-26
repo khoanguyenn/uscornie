@@ -168,9 +168,9 @@ export default function DatePageContent() {
   };
 
   return (
-    <div style={{ width: "100%", maxWidth: "600px", margin: "0 auto" }}>
-      <h2 className="page-title">
-        <span className="pt-ico">
+    <div className="w-full max-w-[600px] mx-auto">
+      <h2 className="font-pangolin text-[1.9rem] text-ink mb-5 pb-2.5 border-b-2 border-dashed border-earth inline-flex items-center gap-2.5">
+        <span className="w-8 h-8">
           <GhibliIcon type="soot" size={32} />
         </span>
         Gợi ý hẹn hò
@@ -199,13 +199,13 @@ export default function DatePageContent() {
 
       {/* Empty State */}
       {!datePlan && (
-        <div className="empty-state" style={{ padding: "32px 20px" }}>
+        <div className="text-center p-[32px_20px] text-ink-light">
           <GhibliIcon
             type="date"
             size={60}
-            style={{ opacity: 0.25, margin: "0 auto 12px" }}
+            className="!opacity-25 !mx-auto !mb-3"
           />
-          <p style={{ marginTop: "12px" }}>
+          <p className="text-[0.95rem] font-medium mt-3">
             Chọn khung giờ và mood rồi bấm tạo kế hoạch nhé!
           </p>
         </div>

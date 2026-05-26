@@ -43,8 +43,6 @@
 }
 
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
 }
 
@@ -1982,11 +1980,6 @@ body {
 .ghibli-char.char-calcifer {
   bottom: 5%;
   left: 5%;
-}
-
-.date-activity-item:hover {
-  box-shadow: 0 4px 14px rgba(74, 64, 51, 0.1);
-  transform: translateX(3px);
 }
 
 /* JoinPage Styles */

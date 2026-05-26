@@ -11,36 +11,6 @@ interface DateSelectorProps {
   onGenerate: () => void;
 }
 
-const getSlotStyle = (isSelected: boolean) => ({
-  cursor: "pointer",
-  padding: "10px 16px",
-  borderRadius: "16px",
-  border: `2px solid ${isSelected ? "var(--sunset)" : "var(--earth)"}`,
-  background: isSelected ? "var(--sunset)" : "var(--card)",
-  color: isSelected ? "white" : "var(--ink)",
-  transition:
-    "border-color 0.2s, background-color 0.2s, color 0.2s, box-shadow 0.2s",
-  textAlign: "center" as const,
-  boxShadow: isSelected ? "0 4px 14px rgba(244,164,96,0.35)" : "none",
-  minWidth: "120px",
-  flex: "1 1 calc(33.33% - 10px)",
-});
-
-const getMoodButtonStyle = (isSelected: boolean) => ({
-  fontFamily: "'Quicksand',sans-serif",
-  fontWeight: "700" as const,
-  fontSize: "0.88rem",
-  padding: "8px 18px",
-  borderRadius: "24px",
-  border: `2px solid ${isSelected ? "var(--grass)" : "var(--earth)"}`,
-  background: isSelected ? "var(--grass)" : "var(--card)",
-  color: isSelected ? "white" : "var(--ink)",
-  cursor: "pointer",
-  transition:
-    "border-color 0.2s, background-color 0.2s, color 0.2s, box-shadow 0.2s",
-  boxShadow: isSelected ? "0 3px 10px rgba(140,183,140,0.4)" : "none",
-});
-
 export default function DateSelector({
   selectedSlots,
   selectedMoods,
@@ -50,38 +20,15 @@ export default function DateSelector({
 }: DateSelectorProps) {
   return (
     <div className="card">
-      <div
-        style={{
-          fontFamily: '"Pangolin", cursive',
-          fontSize: "1.1rem",
-          color: "var(--earth)",
-          marginBottom: "18px",
-          display: "flex",
-          alignItems: "center",
-          gap: "6px",
-        }}
-      >
+      <div className="font-pangolin text-[1.1rem] text-earth mb-[18px] flex items-center gap-[6px]">
         <GhibliIcon type="date" size={20} />
         <span>Chọn khung giờ</span>
-        <span
-          style={{
-            fontSize: "0.8rem",
-            color: "var(--ink-light)",
-            fontFamily: '"Quicksand", sans-serif',
-          }}
-        >
+        <span className="text-[0.8rem] text-ink-light font-quicksand">
           (tối đa 2 khung)
         </span>
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "10px",
-          marginBottom: "24px",
-        }}
-      >
+      <div className="flex flex-wrap gap-[10px] mb-6">
         {DATE_SLOTS.map((s) => {
           const isSelected = selectedSlots.includes(s.id);
           return (
@@ -89,16 +36,17 @@ export default function DateSelector({
               key={s.id}
               onClick={() => onToggleSlot(s.id)}
               type="button"
-              style={getSlotStyle(isSelected)}
+              className={`cursor-pointer py-[10px] px-4 rounded-2xl border-2 text-center min-w-[120px] flex-[1_1_calc(33.33%-10px)] transition-all duration-200 ${
+                isSelected
+                  ? "border-sunset bg-sunset text-white shadow-[0_4px_14px_rgba(244,164,96,0.35)]"
+                  : "border-earth bg-card text-ink shadow-none"
+              }`}
             >
-              <div style={{ fontSize: "1rem" }}>{s.sub}</div>
+              <div className="text-[1rem]">{s.sub}</div>
               <div
-                style={{
-                  fontSize: "0.8rem",
-                  fontWeight: 700,
-                  marginTop: "2px",
-                  opacity: isSelected ? 1 : 0.7,
-                }}
+                className={`text-[0.8rem] font-bold mt-[2px] ${
+                  isSelected ? "opacity-100" : "opacity-70"
+                }`}
               >
                 {s.label}
               </div>
@@ -107,38 +55,15 @@ export default function DateSelector({
         })}
       </div>
 
-      <div
-        style={{
-          fontFamily: '"Pangolin", cursive',
-          fontSize: "1.1rem",
-          color: "var(--earth)",
-          marginBottom: "12px",
-          display: "flex",
-          alignItems: "center",
-          gap: "6px",
-        }}
-      >
+      <div className="font-pangolin text-[1.1rem] text-earth mb-3 flex items-center gap-[6px]">
         <GhibliIcon type="heart" size={18} />
         <span>Mood hẹn hò</span>
-        <span
-          style={{
-            fontSize: "0.8rem",
-            color: "var(--ink-light)",
-            fontFamily: '"Quicksand", sans-serif',
-          }}
-        >
+        <span className="text-[0.8rem] text-ink-light font-quicksand">
           (tối đa 3 thẻ)
         </span>
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "8px",
-          marginBottom: "24px",
-        }}
-      >
+      <div className="flex flex-wrap gap-2 mb-6">
         {DATE_MOODS.map((m) => {
           const isSelected = selectedMoods.includes(m.id);
           return (
@@ -146,7 +71,11 @@ export default function DateSelector({
               key={m.id}
               onClick={() => onToggleMood(m.id)}
               type="button"
-              style={getMoodButtonStyle(isSelected)}
+              className={`font-quicksand font-bold text-[0.88rem] py-2 px-[18px] rounded-[24px] border-2 cursor-pointer transition-all duration-200 ${
+                isSelected
+                  ? "border-grass bg-grass text-white shadow-[0_3px_10px_rgba(140,183,140,0.4)]"
+                  : "border-earth bg-card text-ink shadow-none"
+              }`}
             >
               {m.label}
             </button>
@@ -155,33 +84,18 @@ export default function DateSelector({
       </div>
 
       {selectedSlots.length > 0 && selectedMoods.length > 0 ? (
-        <div style={{ textAlign: "center" }}>
+        <div className="text-center">
           <button
-            className="btn btn-primary"
+            className="btn btn-primary !py-[13px] !px-10 text-[1rem] inline-flex items-center gap-2 cursor-pointer"
             onClick={onGenerate}
             type="button"
-            style={{
-              padding: "13px 40px",
-              fontSize: "1rem",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "8px",
-              cursor: "pointer",
-            }}
           >
             <GhibliIcon type="heart" size={16} color="#fff" />
             Tạo kế hoạch hẹn hò
           </button>
         </div>
       ) : (
-        <div
-          style={{
-            textAlign: "center",
-            color: "var(--ink-light)",
-            fontSize: "0.9rem",
-            padding: "8px 0",
-          }}
-        >
+        <div className="text-center text-ink-light text-[0.9rem] py-2">
           Chọn ít nhất 1 khung giờ và 1 mood để bắt đầu nhé 💫
         </div>
       )}
