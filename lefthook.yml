@@ -22,12 +22,12 @@ pre-commit:
       desc: Run Biome linter on staged Next.js/React files
       root: "frontend"
       glob: "src/**/*.{js,ts,jsx,tsx,json}"
-      run: npx biome check --write {staged_files}
+      run: bunx biome check --write {staged_files}
     frontend-format:
       desc: Verify frontend code formatting with Biome
       root: "frontend"
       glob: "src/**/*.{js,ts,jsx,tsx,json}"
-      run: npx biome format --write {staged_files}
+      run: bunx biome format --write {staged_files}
 
 pre-push:
   parallel: true
@@ -47,4 +47,4 @@ pre-push:
     frontend-build:
       desc: Verify frontend build compiles cleanly before pushing
       root: "frontend"
-      run: npm run build
+      run: bun run build
