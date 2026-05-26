@@ -584,42 +584,6 @@ body {
   height: 32px;
 }
 
-/* Sub-tabs */
-.sub-tabs {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-.sub-tab {
-  font-family: var(--font-quicksand), sans-serif;
-  font-weight: 600;
-  font-size: 0.8rem;
-  padding: 7px 14px;
-  border: 2px solid rgba(201, 169, 110, 0.25);
-  border-radius: 20px;
-  background: var(--card);
-  color: var(--ink-light);
-  cursor: pointer;
-  transition: all 0.25s;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-.sub-tab .st-ico {
-  width: 16px;
-  height: 16px;
-}
-.sub-tab:hover {
-  border-color: var(--grass);
-  color: var(--ink);
-  transform: translateY(-1px);
-}
-.sub-tab.active {
-  background: var(--earth);
-  color: white;
-  border-color: var(--earth);
-}
 .tag-filter {
   display: flex;
   gap: 6px;
