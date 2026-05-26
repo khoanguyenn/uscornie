@@ -24,7 +24,7 @@ const flowerVariants = [
     p1: "#f7b8c8",
     p2: "#f5a8bc",
     center: "#fce88a",
-    className: "fl-1 fl-sway",
+    className: "bottom-[15%] left-[8%] animate-sway",
   },
   {
     id: 3,
@@ -32,7 +32,7 @@ const flowerVariants = [
     p1: "#fdd96a",
     p2: "#fcc84a",
     center: "#ffeaa0",
-    className: "fl-3 fl-sway-slow",
+    className: "bottom-[8%] right-[12%] animate-sway-slow",
   },
   {
     id: 4,
@@ -40,7 +40,7 @@ const flowerVariants = [
     p1: "#c0e8f9",
     p2: "#a0d8f5",
     center: "#fff8e0",
-    className: "fl-4 fl-sway",
+    className: "bottom-[12%] left-[30%] animate-sway",
   },
   {
     id: 5,
@@ -48,7 +48,7 @@ const flowerVariants = [
     p1: "#ffffff",
     p2: "#f0f0f0",
     center: "#fce88a",
-    className: "fl-5 fl-sway-slow",
+    className: "bottom-[18%] right-[35%] animate-sway-slow",
   },
 ];
 
@@ -71,33 +71,37 @@ export default function AnimatedBackground() {
   }, []);
 
   return (
-    <div className="fixed-bg">
+    <div className="fixed inset-0 -z-1 pointer-events-none">
       {/* Sky & Scene */}
-      <div className="bg-scene">
-        <div className="bg-sky" />
+      <div className="fixed inset-0 -z-2 pointer-events-none overflow-hidden bg-[#fdf8f0]">
+        <div className="absolute inset-0 h-full bg-[linear-gradient(180deg,#c8e6f0_0%,#e8f4f8_40%,#fdf8f0_70%)]" />
 
         {/* Clouds */}
-        <div className="cloud cloud-1" />
-        <div className="cloud cloud-2" />
+        <div className="absolute bg-white/85 rounded-full blur-[2px] before:content-[''] before:absolute before:bg-inherit before:rounded-full after:content-[''] after:absolute after:bg-inherit after:rounded-full w-[180px] h-[60px] top-[12%] left-[-200px] animate-drift before:w-[100px] before:h-[100px] before:-top-[50px] before:left-[30px] after:w-[80px] after:h-[80px] after:-top-[30px] after:left-[90px]" />
+        <div className="absolute bg-white/85 rounded-full blur-[2px] before:content-[''] before:absolute before:bg-inherit before:rounded-full after:content-[''] after:absolute after:bg-inherit after:rounded-full w-[140px] h-[50px] top-[25%] right-[-200px] animate-drift-reverse opacity-70 before:w-[80px] before:h-[80px] before:-top-[40px] before:left-[20px] after:w-[60px] after:h-[60px] after:-top-[25px] after:left-[70px]" />
 
         {/* Hills */}
-        <div className="bg-hills">
-          <div className="hill hill-1" />
-          <div className="hill hill-2" />
-          <div className="hill hill-3" />
+        <div className="absolute bottom-0 inset-x-0 h-[50vh] w-full">
+          <div className="absolute bottom-0 w-[150%] left-[-25%] rounded-t-[50%] h-full bg-[#a8cc8f] z-1 -bottom-[10vh]" />
+          <div className="absolute bottom-0 w-[150%] left-[-25%] rounded-t-[50%] h-[85%] bg-[#b5d4a0] z-2 -bottom-[15vh] -translate-x-[10%]" />
+          <div className="absolute bottom-0 w-[150%] left-[-25%] rounded-t-[50%] h-[70%] bg-[#c2d9a8] z-3 -bottom-[20vh] translate-x-[15%]" />
         </div>
       </div>
 
       {/* GARDEN: Unified Flowers, Bees, Butterflies */}
-      <div className="garden-layer">
+      <div>
         {/* Unified Shape Flowers */}
         {flowerVariants.map((f) => (
-          <div key={f.id} className={`garden-elem ${f.className}`}>
+          <div
+            key={f.id}
+            className={`fixed z-1 w-min h-min flex flex-col justify-end ${f.className}`}
+          >
             <svg
               width="40"
               height="56"
               viewBox="0 0 40 56"
               xmlns="http://www.w3.org/2000/svg"
+              className="block"
             >
               <title>Flower</title>
               {/* Stem and leaves */}
@@ -200,12 +204,13 @@ export default function AnimatedBackground() {
         ))}
 
         {/* Butterfly */}
-        <div className="garden-elem butterfly bf-1">
+        <div className="fixed z-1 w-min h-min flex flex-col justify-end top-[15%] left-[15%] animate-butterfly-float">
           <svg
             width="50"
             height="36"
             viewBox="0 0 50 36"
             xmlns="http://www.w3.org/2000/svg"
+            className="block"
           >
             <title>Butterfly</title>
             <ellipse
@@ -215,7 +220,7 @@ export default function AnimatedBackground() {
               ry="11"
               fill="#f9c0d8"
               opacity="0.88"
-              className="wing-l"
+              className="wing-l origin-[25px_18px] animate-wing-flap"
             />
             <ellipse
               cx="14"
@@ -224,7 +229,7 @@ export default function AnimatedBackground() {
               ry="8"
               fill="#f5a8c8"
               opacity="0.8"
-              className="wing-l-sub"
+              className="wing-l-sub origin-[25px_18px] animate-wing-flap"
             />
             <ellipse
               cx="34"
@@ -233,7 +238,7 @@ export default function AnimatedBackground() {
               ry="11"
               fill="#f9c0d8"
               opacity="0.88"
-              className="wing-r"
+              className="wing-r origin-[25px_18px] animate-wing-flap -scale-x-100"
             />
             <ellipse
               cx="36"
@@ -242,7 +247,7 @@ export default function AnimatedBackground() {
               ry="8"
               fill="#f5a8c8"
               opacity="0.8"
-              className="wing-r-sub"
+              className="wing-r-sub origin-[25px_18px] animate-wing-flap -scale-x-100"
             />
             <circle cx="16" cy="12" r="3" fill="#f07098" opacity="0.5" />
             <circle cx="34" cy="12" r="3" fill="#f07098" opacity="0.5" />
@@ -271,12 +276,13 @@ export default function AnimatedBackground() {
         </div>
 
         {/* Bee */}
-        <div className="garden-elem bee-top">
+        <div className="fixed z-1 w-min h-min flex flex-col justify-end top-[10%] right-[10%] animate-bug-float">
           <svg
             width="40"
             height="30"
             viewBox="0 0 40 30"
             xmlns="http://www.w3.org/2000/svg"
+            className="block"
           >
             <title>Bee</title>
             <ellipse cx="18" cy="18" rx="10" ry="8" fill="#fdd96a" />
@@ -335,28 +341,28 @@ export default function AnimatedBackground() {
       </div>
 
       {/* Characters (Soot sprites under the grass/hills) */}
-      <div className="character-layer">
-        <div className="ghibli-char char-totoro">
+      <div>
+        <div className="fixed z-3 pointer-events-none bottom-0 right-[5%] animate-char-bob">
           <TotoroCharacter />
         </div>
-        <div className="ghibli-char char-calcifer">
+        <div className="fixed z-3 pointer-events-none bottom-[5%] left-[5%] animate-calcifer-bob">
           <CalciferCharacter />
         </div>
 
-        <div className="ghibli-char char-soot soot-a">
+        <div className="fixed z-3 pointer-events-none left-[15%] bottom-[12%] animate-soot-bounce-a">
           <SootCharacter size={28} />
         </div>
-        <div className="ghibli-char char-soot soot-b">
+        <div className="fixed z-3 pointer-events-none left-[22%] bottom-[18%] animate-soot-bounce-b">
           <SootCharacter size={22} />
         </div>
-        <div className="ghibli-char char-soot soot-c">
+        <div className="fixed z-3 pointer-events-none right-[18%] bottom-[14%] animate-soot-bounce-c">
           <SootCharacter
             size={26}
             stars={true}
             starColors={["#f5a0b8", "#a8e6cf", "#fce68a"]}
           />
         </div>
-        <div className="ghibli-char char-soot soot-d">
+        <div className="fixed z-3 pointer-events-none right-[28%] bottom-[20%] animate-soot-bounce-d">
           <SootCharacter size={18} />
         </div>
       </div>
@@ -366,7 +372,7 @@ export default function AnimatedBackground() {
         {hearts.map((heart) => (
           <div
             key={heart.id}
-            className="fh"
+            className="absolute animate-heart-float"
             style={{
               left: heart.left,
               animationDuration: heart.duration,

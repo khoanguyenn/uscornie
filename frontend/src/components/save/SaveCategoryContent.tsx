@@ -343,8 +343,13 @@ export default function SaveCategoryContent({
           <span className="form-label">Gắn thẻ</span>
           <div className="flex gap-2 flex-wrap mt-1">
             {presetTags.map((t, idx) => {
-              const tagStyle =
-                tagPickStyles[idx % tagPickStyles.length] || tagPickStyles[0];
+              const tagStyle = tagPickStyles[idx % tagPickStyles.length] ||
+                tagPickStyles[0] || {
+                  bg: "",
+                  text: "",
+                  border: "",
+                  active: "",
+                };
               const isActive = formTag === t;
               return (
                 <button

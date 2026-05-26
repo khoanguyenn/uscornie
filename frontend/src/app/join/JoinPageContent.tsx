@@ -107,10 +107,13 @@ export default function JoinPageContent() {
   }, [handleGoogleResponse]);
 
   return (
-    <div className="join-page-wrapper min-h-screen w-full flex items-center justify-center p-4 md:p-8">
-      <div className="main-card flex flex-col md:flex-row w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl border border-[#eae3d9]">
+    <div className="bg-[url('/assets/login-bg.png')] bg-cover bg-center bg-no-repeat relative overflow-hidden min-h-screen w-full flex items-center justify-center p-4 md:p-8">
+      {/* Background overlay */}
+      <div className="absolute inset-0 bg-white/15 backdrop-blur-[2px] z-0 pointer-events-none" />
+
+      <div className="relative z-10 flex flex-col md:flex-row w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl border border-[#eae3d9]">
         {/* CỘT TRÁI: Dữ liệu demo / Screen Captures kiểu scrapbook */}
-        <div className="showcase-column hidden md:flex md:w-1/2 flex-col justify-between p-10 relative overflow-hidden">
+        <div className="bg-[#4a6b52]/25 backdrop-blur-[4px] border-r border-[#eae3d9]/30 rounded-l-[24px] hidden md:flex md:w-1/2 flex-col justify-between p-10 relative overflow-hidden">
           <div className="absolute inset-0 bg-[#4a6b52]/10 backdrop-blur-[1px] z-0" />
 
           {/* Header cột trái */}
@@ -129,8 +132,8 @@ export default function JoinPageContent() {
           {/* Các thẻ Mockup mô phỏng ứng dụng */}
           <div className="mockup-cards-container relative z-10 flex flex-col items-center justify-center my-6 gap-y-6">
             {/* Thẻ 1: Kỷ niệm Polaroid */}
-            <div className="mock-card polaroid-card transform -rotate-2 hover:rotate-0 hover:-translate-y-2 transition-all duration-300">
-              <div className="polaroid-photo relative overflow-hidden rounded">
+            <div className="bg-[#fdfbf7] border border-[#eae3d9] p-3.5 w-[280px] shadow-[0_10px_20px_rgba(74,64,51,0.12),0_2px_4px_rgba(74,64,51,0.05)] rounded-[4px] pb-2 transform -rotate-2 hover:rotate-0 hover:-translate-y-2 transition-all duration-300">
+              <div className="h-[140px] w-full border border-[rgba(74,64,51,0.08)] relative overflow-hidden rounded">
                 <div className="absolute inset-0 bg-gradient-to-b from-[#b5d6e0] to-[#f4d1c1]" />
                 <div className="absolute -bottom-8 -left-4 w-40 h-24 rounded-full bg-[#a3c9a8] opacity-90" />
                 <div className="absolute -bottom-10 -right-6 w-44 h-24 rounded-full bg-[#8cb78c] opacity-90" />
@@ -143,7 +146,7 @@ export default function JoinPageContent() {
             </div>
 
             {/* Thẻ 2: Đếm ngày */}
-            <div className="mock-card counter-card transform rotate-3 hover:rotate-0 hover:-translate-y-2 transition-all duration-300">
+            <div className="bg-[#fdfbf7] border border-[#eae3d9] p-3.5 w-[280px] shadow-[0_10px_20px_rgba(74,64,51,0.12),0_2px_4px_rgba(74,64,51,0.05)] rounded-2xl border-l-[5px] border-l-[#e0664b] transform rotate-3 hover:rotate-0 hover:-translate-y-2 transition-all duration-300">
               <div className="flex items-center gap-4">
                 <div className="size-12 rounded-2xl bg-[#fdf8f0] border border-[#e8dcc4] flex items-center justify-center shadow-inner">
                   <GhibliIcon type="heart" size={28} />
@@ -160,7 +163,7 @@ export default function JoinPageContent() {
             </div>
 
             {/* Thẻ 3: Gợi ý hẹn hò */}
-            <div className="mock-card ticket-card transform -rotate-1 hover:rotate-0 hover:-translate-y-2 transition-all duration-300">
+            <div className="bg-[#fdfbf7] border border-[#eae3d9] p-3.5 w-[280px] shadow-[0_10px_20px_rgba(74,64,51,0.12),0_2px_4px_rgba(74,64,51,0.05)] rounded-xl relative bg-[radial-gradient(circle_at_0px_50%,transparent_8px,#fdfbf7_8px),radial-gradient(circle_at_100%_50%,transparent_8px,#fdfbf7_8px)] bg-[position:left,right] bg-[size:100%_100%] transform -rotate-1 hover:rotate-0 hover:-translate-y-2 transition-all duration-300">
               <div className="border-b-2 border-dashed border-[#e6dfd3] pb-2 mb-2 flex justify-between items-center">
                 <span className="text-[10px] font-bold text-[#a39485] tracking-widest uppercase">
                   Gợi ý hẹn hò
@@ -185,8 +188,8 @@ export default function JoinPageContent() {
         </div>
 
         {/* CỘT PHẢI: Form Đăng nhập */}
-        <div className="login-column w-full md:w-1/2 bg-[#fdfbf7] p-10 md:p-14 flex flex-col justify-center items-center relative">
-          <div className="absolute inset-0 pointer-events-none opacity-[0.03] mix-blend-overlay paper-texture" />
+        <div className="w-full md:w-1/2 bg-[#fdfbf7] p-10 md:p-14 flex flex-col justify-center items-center relative">
+          <div className="absolute inset-0 pointer-events-none opacity-[0.03] mix-blend-overlay bg-paper-texture" />
 
           <AnimatePresence mode="wait">
             {status === "welcome" && (
@@ -271,7 +274,7 @@ export default function JoinPageContent() {
                 </div>
                 <button
                   onClick={() => push("/")}
-                  className="entry-button mt-4 w-full max-w-xs shadow-md"
+                  className="bg-[#e0664b] text-white font-pangolin text-[1.1rem] font-bold py-3 px-6 rounded-full border-2 border-[#c4543b] cursor-pointer transition-all duration-200 hover:bg-[#cc543a] hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(224,102,75,0.3)] mt-4 w-full max-w-xs shadow-md"
                   type="button"
                 >
                   Vào nhà ngay
@@ -301,7 +304,7 @@ export default function JoinPageContent() {
                 </div>
                 <button
                   onClick={() => push("/")}
-                  className="back-button mt-4 w-full max-w-xs shadow-sm"
+                  className="bg-[#fdf8f0] text-[#5c4a3d] font-pangolin text-[1rem] py-2.5 px-5 rounded-full border border-[#eae3d9] cursor-pointer transition-all duration-200 hover:bg-[#f7efe2] hover:-translate-y-px mt-4 w-full max-w-xs shadow-sm"
                   type="button"
                 >
                   Quay lại trang chủ

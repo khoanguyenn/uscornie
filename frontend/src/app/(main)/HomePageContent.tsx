@@ -7,6 +7,7 @@ import { spaceService } from "@/services/spaceService";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useDataStore } from "@/stores/useDataStore";
 import type { Space } from "@/types";
+import { cn } from "@/utils/cn";
 
 export default function HomePageContent() {
   const queryClient = useQueryClient();
