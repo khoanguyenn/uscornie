@@ -153,12 +153,6 @@ function GiftPageContentInner() {
                 type="button"
                 className={`occasion-card ${selOcc === o.id ? "selected" : ""}`}
                 onClick={() => selO(o.id)}
-                style={{
-                  background: "none",
-                  border: "none",
-                  textAlign: "left",
-                  width: "100%",
-                }}
               >
                 <div className="occasion-name">{o.name}</div>
               </button>
@@ -293,12 +287,6 @@ function GiftPageContentInner() {
                 type="button"
                 className={`occasion-card ${selOcc === o.id ? "selected" : ""}`}
                 onClick={() => selO(o.id)}
-                style={{
-                  background: "none",
-                  border: "none",
-                  textAlign: "left",
-                  width: "100%",
-                }}
               >
                 <div className="occasion-name">{o.name}</div>
               </button>
