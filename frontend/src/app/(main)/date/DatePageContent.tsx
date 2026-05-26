@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import DateSelector from "@/components/date/DateSelector";
 import PlanResultCard from "@/components/date/PlanResultCard";
@@ -21,33 +22,40 @@ interface DatePlanBlock {
   items: DateActivity[];
 }
 
+interface Particle {
+  id: number;
+  x: number;
+  size: number;
+  color: string;
+  delay: number;
+  duration: number;
+}
+
 export default function DatePageContent() {
   const [selDateSlots, setSelDateSlots] = useState<string[]>([]);
   const [selDateMoods, setSelDateMoods] = useState<string[]>([]);
   const [datePlan, setDatePlan] = useState<DatePlanBlock[] | null>(null);
+  const [particles, setParticles] = useState<Particle[]>([]);
 
   const burst = () => {
-    let c = document.getElementById("heart-burst");
-    if (!c) {
-      c = document.createElement("div");
-      c.id = "heart-burst";
-      c.className = "heart-burst";
-      document.body.appendChild(c);
-    }
     const cols = ["#f2a0a0", "#f5c0c0", "#f9e27a", "#a8e6cf", "#f5a0b8"];
-    const fragment = document.createDocumentFragment();
-    for (let i = 0; i < 14; i++) {
-      const p = document.createElement("div");
-      p.className = "hb-particle";
-      p.style.cssText = `left: ${30 + Math.random() * 40}%; bottom: 35%; animation-delay: ${Math.random() * 0.4}s; animation-duration: ${1.4 + Math.random() * 0.8}s;`;
-      const sz = 16 + Math.random() * 18;
-      p.innerHTML = `<svg width="${sz}" height="${sz}" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 17 Q0 10 3 5 Q5 2 8 4 Q9 5 10 7 Q11 5 12 4 Q15 2 17 5 Q20 10 10 17Z" fill="${
-        cols[Math.floor(Math.random() * cols.length)]
-      }"/></svg>`;
-      fragment.appendChild(p);
-      setTimeout(() => p.remove(), 2500);
+    const newParticles: Particle[] = [];
+    const now = Date.now();
+    for (let i = 0; i < 15; i++) {
+      newParticles.push({
+        id: now + i,
+        x: 30 + Math.random() * 40, // 30 to 70
+        size: 16 + Math.random() * 18,
+        color: cols[Math.floor(Math.random() * cols.length)] || "#f2a0a0",
+        delay: Math.random() * 0.4,
+        duration: 1.4 + Math.random() * 0.8,
+      });
     }
-    c.appendChild(fragment);
+    setParticles(newParticles);
+    // Clear particles after animation completes
+    setTimeout(() => {
+      setParticles([]);
+    }, 2500);
   };
 
   const handleToggleSlot = (id: string) => {
@@ -210,6 +218,50 @@ export default function DatePageContent() {
           </p>
         </div>
       )}
+
+      {/* Heart Burst Particles using Framer Motion */}
+      <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden">
+        <AnimatePresence>
+          {particles.map((p) => (
+            <motion.div
+              key={p.id}
+              initial={{
+                opacity: 1,
+                left: `${p.x}%`,
+                bottom: "35%",
+                scale: 0.4,
+                rotate: 0,
+              }}
+              animate={{
+                opacity: [1, 0.9, 0],
+                bottom: ["35%", "55%", "85%"],
+                scale: [0.4, 1.1, 0.5],
+                rotate: [0, 15, -10],
+              }}
+              transition={{
+                duration: p.duration,
+                delay: p.delay,
+                ease: "easeOut",
+              }}
+              exit={{ opacity: 0 }}
+              className="absolute"
+            >
+              <svg
+                width={p.size}
+                height={p.size}
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <title>Heart</title>
+                <path
+                  d="M10 17 Q0 10 3 5 Q5 2 8 4 Q9 5 10 7 Q11 5 12 4 Q15 2 17 5 Q20 10 10 17Z"
+                  fill={p.color}
+                />
+              </svg>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }
