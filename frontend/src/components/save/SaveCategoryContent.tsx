@@ -16,6 +16,8 @@ import {
   TAGS_BY_CATEGORY,
 } from "@/data/mock";
 import { useDataStore } from "@/stores/useDataStore";
+import type { SaveItem } from "@/types";
+import { cn } from "@/utils/cn";
 
 interface SaveCategoryContentProps {
   category: string;
@@ -248,7 +250,9 @@ export default function SaveCategoryContent({
     alert(`Đã thêm "${currentSuggestion.n}" vào list!`);
   };
 
-  const handleBulkImport = (newItems: any[]) => {
+  const handleBulkImport = (
+    newItems: Omit<SaveItem, "id" | "createdAt" | "category">[],
+  ) => {
     const itemsWithCat = newItems.map((item) => ({
       ...item,
       category,
@@ -311,7 +315,11 @@ export default function SaveCategoryContent({
               <button
                 key={t}
                 type="button"
-                className={`tag-pick c${idx % 6} ${formTag === t ? "active" : ""}`}
+                className={cn(
+                  "tag-pick",
+                  `c${idx % 6}`,
+                  formTag === t && "active",
+                )}
                 onClick={() => selectPresetTag(t)}
               >
                 {t}
@@ -440,7 +448,10 @@ export default function SaveCategoryContent({
           <span className="tag-filter-label">Lọc theo thẻ:</span>
           <button
             type="button"
-            className={`tag-chip ${activeFilterTag === "__all__" ? "active" : ""}`}
+            className={cn(
+              "tag-chip",
+              activeFilterTag === "__all__" && "active",
+            )}
             onClick={() => setActiveFilterTag("__all__")}
           >
             Tất cả <span className="tag-count">({allItems.length})</span>
@@ -449,7 +460,7 @@ export default function SaveCategoryContent({
             <button
               key={t}
               type="button"
-              className={`tag-chip ${activeFilterTag === t ? "active" : ""}`}
+              className={cn("tag-chip", activeFilterTag === t && "active")}
               onClick={() => setActiveFilterTag(t)}
             >
               {t} <span className="tag-count">({tagCounts[t] || 0})</span>

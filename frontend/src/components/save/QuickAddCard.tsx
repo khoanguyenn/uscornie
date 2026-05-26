@@ -2,11 +2,14 @@
 
 import type React from "react";
 import { useRef, useState } from "react";
+import type { SaveItem } from "@/types";
+
+type QuickAddImportItem = Omit<SaveItem, "id" | "createdAt" | "category">;
 
 interface QuickAddCardProps {
   presetTags: string[];
   hasFile: boolean;
-  onImported: (items: any[]) => void;
+  onImported: (items: QuickAddImportItem[]) => void;
 }
 
 interface ParsedFileRow {
@@ -36,7 +39,7 @@ export default function QuickAddCard({
   const qaParseText = () => {
     if (!qaText.trim()) return;
     const lines = qaText.split("\n").filter((l) => l.trim());
-    const parsedItems: any[] = [];
+    const parsedItems: QuickAddImportItem[] = [];
 
     const tagsSet = new Set(presetTags);
     for (const line of lines) {
@@ -243,9 +246,10 @@ export default function QuickAddCard({
             const ws = wb.Sheets[wb.SheetNames[0]];
             const csv = xlsxLib.utils.sheet_to_csv(ws);
             qaProcessCSV(csv, ",");
-          } catch (err: any) {
+          } catch (err) {
+            const errMsg = err instanceof Error ? err.message : String(err);
             setQaResult({
-              msg: `Lỗi đọc file Excel: ${err.message}`,
+              msg: `Lỗi đọc file Excel: ${errMsg}`,
               isErr: true,
             });
           }

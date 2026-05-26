@@ -7,6 +7,7 @@ import GhibliIcon from "@/components/icons/GhibliIcon";
 import { spaceService } from "@/services/spaceService";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useDataStore } from "@/stores/useDataStore";
+import type { Space } from "@/types";
 
 export default function HomePageContent() {
   const _router = useRouter();
@@ -38,7 +39,7 @@ export default function HomePageContent() {
   const createSpaceMutation = useMutation({
     mutationFn: spaceService.createSpace,
     onSuccess: (newSpace) => {
-      queryClient.setQueryData(["spaces"], (oldSpaces: any = []) => [
+      queryClient.setQueryData(["spaces"], (oldSpaces: Space[] = []) => [
         ...oldSpaces,
         newSpace,
       ]);
@@ -189,7 +190,7 @@ export default function HomePageContent() {
       <section className="spaces-section">
         <div className="section-divider" />
         <div className="spaces-container">
-          {spaces.map((space: any) => (
+          {spaces.map((space: Space) => (
             <div
               key={space.id}
               className="space-item card"
@@ -219,7 +220,7 @@ export default function HomePageContent() {
             </div>
           ))}
 
-          {!spaces.some((s: any) => s.type === "shared") && (
+          {!spaces.some((s: Space) => s.type === "shared") && (
             <div className="no-spaces">
               <p style={{ marginBottom: "12px", color: "var(--ink-light)" }}>
                 Bạn chưa có không gian chung nào.

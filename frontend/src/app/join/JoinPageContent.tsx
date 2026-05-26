@@ -8,6 +8,32 @@ import { authService } from "@/services/authService";
 import { spaceService } from "@/services/spaceService";
 import { useAuthStore } from "@/stores/useAuthStore";
 
+interface GoogleCredentialResponse {
+  credential: string;
+}
+
+interface GoogleAccountsId {
+  initialize: (config: {
+    client_id: string;
+    callback: (res: GoogleCredentialResponse) => void;
+  }) => void;
+  renderButton: (
+    element: HTMLElement,
+    config: { theme: string; size: string; shape?: string },
+  ) => void;
+}
+
+interface GoogleAccounts {
+  id: GoogleAccountsId;
+}
+
+interface GoogleWindow {
+  google?: {
+    accounts: GoogleAccounts;
+  };
+  _googleInitializedJoin?: boolean;
+}
+
 export default function JoinPageContent() {
   const { push } = useRouter();
   const searchParams = useSearchParams();
@@ -18,7 +44,7 @@ export default function JoinPageContent() {
   const [_spaceId, setSpaceId] = useState<string | null>(null);
 
   const handleGoogleResponse = useCallback(
-    async (response: any) => {
+    async (response: GoogleCredentialResponse) => {
       setStatus("loading");
       try {
         const data = await authService.loginWithGoogle(response.credential);
@@ -45,7 +71,7 @@ export default function JoinPageContent() {
 
   useEffect(() => {
     const initializeGoogle = () => {
-      const win = window as any;
+      const win = window as unknown as typeof window & GoogleWindow;
       const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
       if (!clientId) {

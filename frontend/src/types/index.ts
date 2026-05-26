@@ -32,3 +32,9 @@ export interface OLCData {
   anniversaryDate: string;
   birthdayDate: string;
 }
+
+export interface Space {
+  id: string;
+  name: string;
+  type: "personal" | "shared";
+}

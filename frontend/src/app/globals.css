@@ -2047,13 +2047,14 @@ body {
 .main-card {
   position: relative;
   z-index: 10;
-  background-color: #fdfbf7;
 }
 
 .showcase-column {
   background-color: rgba(74, 107, 82, 0.25);
   backdrop-filter: blur(4px);
   border-right: 1px solid rgba(234, 227, 217, 0.3);
+  border-top-left-radius: 24px;
+  border-bottom-left-radius: 24px;
 }
 
 .paper-texture {
