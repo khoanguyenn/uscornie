@@ -20,14 +20,30 @@
       "recommended": true,
       "suspicious": {
         "noUnknownAtRules": "off",
-        "noArrayIndexKey": "warn",
-        "noExplicitAny": "error"
+        "noArrayIndexKey": "error",
+        "noExplicitAny": "error",
+        "noConsole": {
+          "level": "warn",
+          "options": {
+            "allow": ["error", "warn", "info"]
+          }
+        }
       },
       "performance": {
         "noImgElement": "warn"
       },
       "correctness": {
-        "useExhaustiveDependencies": "error"
+        "useExhaustiveDependencies": "error",
+        "noUnusedVariables": "error",
+        "noUnusedImports": "error"
+      },
+      "style": {
+        "useConst": "error",
+        "useTemplate": "error"
+      },
+      "complexity": {
+        "noExtraBooleanCast": "error",
+        "useFlatMap": "error"
       },
       "a11y": {
         "recommended": true,
