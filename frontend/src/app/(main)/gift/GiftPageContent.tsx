@@ -92,25 +92,33 @@ function GiftPageContentInner() {
   };
 
   return (
-    <div style={{ width: "100%", maxWidth: "600px", margin: "0 auto" }}>
-      <h2 className="page-title">
-        <span className="pt-ico">
+    <div className="w-full max-w-[600px] mx-auto">
+      <h2 className="font-pangolin text-[1.9rem] text-ink mb-5 pb-2.5 border-b-2 border-dashed border-earth inline-flex items-center gap-2.5">
+        <span className="w-8 h-8">
           <GhibliIcon type="calcifer" size={32} />
         </span>
         Gợi ý quà tặng
       </h2>
 
       {/* Mode Tabs */}
-      <div className="gift-mode-tabs">
+      <div className="flex flex-col sm:flex-row gap-2 justify-center items-center sm:items-stretch mb-6">
         <button
-          className={`gift-mode-tab ${giftMode === "random" ? "active" : ""}`}
+          className={`font-quicksand font-bold text-[0.88rem] py-2.5 px-6 rounded-[24px] border-2 cursor-pointer transition-all duration-250 hover:border-grass hover:text-ink hover:-translate-y-0.5 ${
+            giftMode === "random"
+              ? "bg-sunset text-white border-sunset shadow-[0_4px_16px_rgba(244,164,96,0.3)]"
+              : "bg-card text-ink-light border-earth"
+          }`}
           onClick={() => swGM("random")}
           type="button"
         >
           Gợi ý ngẫu nhiên
         </button>
         <button
-          className={`gift-mode-tab ${giftMode === "wishlist" ? "active" : ""}`}
+          className={`font-quicksand font-bold text-[0.88rem] py-2.5 px-6 rounded-[24px] border-2 cursor-pointer transition-all duration-250 hover:border-grass hover:text-ink hover:-translate-y-0.5 ${
+            giftMode === "wishlist"
+              ? "bg-sunset text-white border-sunset shadow-[0_4px_16px_rgba(244,164,96,0.3)]"
+              : "bg-card text-ink-light border-earth"
+          }`}
           onClick={() => swGM("wishlist")}
           type="button"
         >
@@ -121,92 +129,48 @@ function GiftPageContentInner() {
       {/* Random Mode View */}
       {giftMode === "random" && (
         <div>
-          <p
-            style={{
-              textAlign: "center",
-              color: "var(--ink-light)",
-              fontWeight: 500,
-              marginBottom: "16px",
-            }}
-          >
+          <p className="text-center text-ink-light font-medium mb-4">
             Chọn dịp và đối tượng để nhận gợi ý nha 🎁
           </p>
 
-          <p
-            style={{
-              textAlign: "center",
-              color: "var(--ink)",
-              fontWeight: 700,
-              fontSize: "0.85rem",
-              letterSpacing: "0.05em",
-              textTransform: "uppercase",
-              marginBottom: "10px",
-            }}
-          >
+          <p className="text-center text-ink font-bold text-[0.85rem] tracking-wider uppercase mb-2.5">
             🎉 Dịp đặc biệt
           </p>
 
-          <div className="occasion-grid" style={{ marginBottom: "20px" }}>
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-3 mb-5">
             {OCCASIONS.map((o) => (
               <button
                 key={o.id}
                 type="button"
-                className={`occasion-card ${selOcc === o.id ? "selected" : ""}`}
+                className={`rounded-[14px] p-[20px_12px] text-center cursor-pointer transition-all duration-300 border-2 hover:border-grass hover:-translate-y-1 hover:shadow-md ${
+                  selOcc === o.id
+                    ? "border-sunset bg-petal"
+                    : "border-earth/20 bg-card"
+                }`}
                 onClick={() => selO(o.id)}
               >
-                <div className="occasion-name">{o.name}</div>
+                <div className="font-pangolin text-[1.15rem] text-ink mt-1">
+                  {o.name}
+                </div>
               </button>
             ))}
           </div>
 
-          <p
-            style={{
-              textAlign: "center",
-              color: "var(--ink)",
-              fontWeight: 700,
-              fontSize: "0.85rem",
-              letterSpacing: "0.05em",
-              textTransform: "uppercase",
-              margin: "20px 0 10px",
-            }}
-          >
+          <p className="text-center text-ink font-bold text-[0.85rem] tracking-wider uppercase my-5 mb-2.5">
             🎁 Tặng cho ai?
           </p>
 
-          <div
-            style={{
-              display: "flex",
-              gap: "10px",
-              justifyContent: "center",
-              flexWrap: "wrap",
-              marginBottom: "24px",
-            }}
-          >
+          <div className="flex gap-2.5 justify-center flex-wrap mb-6">
             {genders.map((g) => (
               <button
                 key={g.id}
                 onClick={() => selGnd(g.id)}
                 type="button"
-                style={{
-                  fontFamily: "'Quicksand',sans-serif",
-                  fontWeight: "700",
-                  fontSize: "0.95rem",
-                  padding: "10px 22px",
-                  borderRadius: "24px",
-                  border: `2px solid ${
-                    selGender === g.id ? "var(--sunset)" : "var(--earth)"
-                  }`,
-                  background:
-                    selGender === g.id ? "var(--sunset)" : "var(--card)",
-                  color: selGender === g.id ? "white" : "var(--ink)",
-                  cursor: "pointer",
-                  transition:
-                    "border-color 0.2s, background-color 0.2s, color 0.2s, box-shadow 0.2s",
-                  boxShadow:
-                    selGender === g.id
-                      ? "0 4px 14px rgba(244,164,96,0.35)"
-                      : "none",
-                }}
+                className={`font-quicksand font-bold text-[0.95rem] py-2.5 px-[22px] rounded-[24px] border-2 cursor-pointer transition-all duration-200 ${
+                  selGender === g.id
+                    ? "border-sunset bg-sunset text-white shadow-[0_4px_14px_rgba(244,164,96,0.35)]"
+                    : "border-earth bg-card text-ink"
+                }`}
               >
                 {g.label}
               </button>
@@ -214,16 +178,11 @@ function GiftPageContentInner() {
           </div>
 
           {selOcc && selGender && (
-            <div style={{ textAlign: "center", margin: "4px 0 24px" }}>
+            <div className="text-center my-1 mb-6">
               <button
-                className="btn btn-primary"
+                className="btn btn-primary !py-3.5 !px-10 text-[1rem] cursor-pointer"
                 onClick={doRG}
                 type="button"
-                style={{
-                  padding: "14px 40px",
-                  fontSize: "1rem",
-                  cursor: "pointer",
-                }}
               >
                 ✨ Gợi ý giúp mình
               </button>
@@ -232,31 +191,24 @@ function GiftPageContentInner() {
 
           {/* Suggestion Result */}
           {giftRes && (
-            <div className="gift-result">
-              <div className="gift-label">
+            <div className="mt-6 p-8 bg-gradient-to-br from-cream to-petal rounded-[20px] border-2 border-earth animate-[popIn_0.5s_ease] text-center">
+              <div className="text-[0.85rem] text-ink-light font-semibold mb-2">
                 Gợi ý cho {OCCASIONS.find((o) => o.id === selOcc)?.name || ""} ·{" "}
                 {genders.find((g) => g.id === selGender)?.label || ""}:
               </div>
-              <div
-                className="gift-name"
-                style={{ fontSize: "1.5rem", margin: "12px 0" }}
-              >
+              <div className="font-pangolin text-2xl text-ink my-3">
                 {giftRes.title}
               </div>
               {giftRes.reason && (
-                <div
-                  className="gift-desc"
-                  style={{ marginTop: "6px", fontStyle: "italic" }}
-                >
+                <div className="text-[0.9rem] text-ink-light mt-2 italic">
                   💬 {giftRes.reason}
                 </div>
               )}
-              <div style={{ marginTop: "20px" }}>
+              <div className="mt-5">
                 <button
-                  className="btn btn-secondary"
+                  className="btn btn-secondary cursor-pointer"
                   onClick={doRG}
                   type="button"
-                  style={{ cursor: "pointer" }}
                 >
                   🔄 Gợi ý khác
                 </button>
@@ -269,41 +221,35 @@ function GiftPageContentInner() {
       {/* Wishlist Mode View */}
       {giftMode === "wishlist" && (
         <div>
-          <p
-            style={{
-              textAlign: "center",
-              color: "var(--ink-light)",
-              fontWeight: 500,
-              marginBottom: "16px",
-            }}
-          >
+          <p className="text-center text-ink-light font-medium mb-4">
             Chọn dịp đặc biệt để bốc quà từ Wishlist
           </p>
 
-          <div className="occasion-grid" style={{ marginBottom: "20px" }}>
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-3 mb-5">
             {OCCASIONS.map((o) => (
               <button
                 key={o.id}
                 type="button"
-                className={`occasion-card ${selOcc === o.id ? "selected" : ""}`}
+                className={`rounded-[14px] p-[20px_12px] text-center cursor-pointer transition-all duration-300 border-2 hover:border-grass hover:-translate-y-1 hover:shadow-md ${
+                  selOcc === o.id
+                    ? "border-sunset bg-petal"
+                    : "border-earth/20 bg-card"
+                }`}
                 onClick={() => selO(o.id)}
               >
-                <div className="occasion-name">{o.name}</div>
+                <div className="font-pangolin text-[1.15rem] text-ink mt-1">
+                  {o.name}
+                </div>
               </button>
             ))}
           </div>
 
           {selOcc && wishlistItems.length > 0 && (
-            <div style={{ textAlign: "center", margin: "20px 0" }}>
+            <div className="text-center my-5">
               <button
-                className="btn btn-primary"
+                className="btn btn-primary !py-3.5 !px-9 text-[1rem] cursor-pointer"
                 onClick={doWG}
                 type="button"
-                style={{
-                  padding: "14px 36px",
-                  fontSize: "1rem",
-                  cursor: "pointer",
-                }}
               >
                 Bốc quà từ Wishlist
               </button>
@@ -312,32 +258,32 @@ function GiftPageContentInner() {
 
           {/* Wishlist Result */}
           {giftRes && wishlistItems.length > 0 && (
-            <div className="gift-result">
-              <div className="gift-label">
+            <div className="mt-6 p-8 bg-gradient-to-br from-cream to-petal rounded-[20px] border-2 border-earth animate-[popIn_0.5s_ease] text-center">
+              <div className="text-[0.85rem] text-ink-light font-semibold mb-2">
                 Gợi ý cho {OCCASIONS.find((o) => o.id === selOcc)?.name || ""}:
               </div>
-              <div className="gift-name">{giftRes.title}</div>
-              {giftRes.desc && <div className="gift-desc">{giftRes.desc}</div>}
+              <div className="font-pangolin text-3xl text-ink">
+                {giftRes.title}
+              </div>
+              {giftRes.desc && (
+                <div className="text-[0.9rem] text-ink-light mt-2">
+                  {giftRes.desc}
+                </div>
+              )}
               {giftRes.image && (
                 <Image
                   src={giftRes.image}
                   alt={giftRes.title}
                   width={260}
                   height={180}
-                  style={{
-                    borderRadius: "14px",
-                    marginTop: "16px",
-                    boxShadow: "0 4px 16px var(--shadow)",
-                    objectFit: "cover",
-                  }}
+                  className="rounded-[14px] mt-4 shadow-md object-cover mx-auto"
                 />
               )}
-              <div style={{ marginTop: "16px" }}>
+              <div className="mt-4">
                 <button
-                  className="btn btn-secondary"
+                  className="btn btn-secondary cursor-pointer"
                   onClick={doWG}
                   type="button"
-                  style={{ cursor: "pointer" }}
                 >
                   Bốc lại
                 </button>
@@ -347,13 +293,13 @@ function GiftPageContentInner() {
 
           {/* Empty State */}
           {wishlistItems.length === 0 && (
-            <div className="empty-state">
+            <div className="text-center p-12 text-ink-light">
               <GhibliIcon
                 type="soot"
                 size={60}
-                style={{ opacity: 0.25, margin: "0 auto 12px" }}
+                className="!opacity-25 !mx-auto !mb-3"
               />
-              <p style={{ marginTop: "12px" }}>
+              <p className="text-[0.95rem] font-medium mt-3">
                 Wishlist đang trống. Hãy thêm vào mục &quot;Wishlist quà
                 tặng&quot; trước nhé!
               </p>
