@@ -32,8 +32,12 @@ export default function SaveItemCard({
         </div>
       )}
       <div className="flex flex-col flex-1 p-5">
-        <div className="font-pangolin text-lg font-bold text-ink mb-1">{item.title}</div>
-        <div className="text-sm text-ink-light leading-relaxed mb-4 flex-1">{item.desc}</div>
+        <div className="font-pangolin text-lg font-bold text-ink mb-1">
+          {item.title}
+        </div>
+        <div className="text-sm text-ink-light leading-relaxed mb-4 flex-1">
+          {item.desc}
+        </div>
         {item.tag && (
           <span className="self-start inline-block bg-petal text-sunset text-xs font-bold px-3 py-1 rounded-full mb-4">
             {item.tag}

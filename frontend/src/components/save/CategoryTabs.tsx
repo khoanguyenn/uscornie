@@ -1,5 +1,6 @@
 import GhibliIcon from "@/components/icons/GhibliIcon";
 import type { Category } from "@/types";
+import { cn } from "@/utils/cn";
 
 interface CategoryTabsProps {
   value: string;
@@ -13,22 +14,23 @@ export default function CategoryTabs({
   onChange,
 }: CategoryTabsProps) {
   return (
-    <div className="flex flex-wrap gap-3 justify-center mb-8">
+    <div className="flex flex-wrap gap-1.5 mb-5">
       {categories.map((x) => (
         <button
           key={x.id}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-full border-2 font-bold transition-all duration-200 cursor-pointer ${
+          className={cn(
+            "flex items-center justify-center gap-1.5 py-2 px-3.5 rounded-[20px] border-2 font-semibold text-[0.8rem] leading-none transition-all duration-200 cursor-pointer shrink-0",
             value === x.id
-              ? "bg-sunset border-sunset text-white shadow-[0_4px_16px_rgba(244,164,96,0.3)]"
-              : "bg-card border-earth/20 text-ink-light hover:border-grass hover:text-ink hover:-translate-y-0.5"
-          }`}
+              ? "bg-[#c9a96e] border-[#c9a96e] text-white"
+              : "bg-[#fffdf7] border-[rgba(201,169,110,0.25)] text-[#7a7060] hover:border-[#8cb78c] hover:text-[#4a4033] hover:-translate-y-px",
+          )}
           onClick={() => onChange(x.id)}
           type="button"
         >
-          <span className="flex items-center justify-center">
+          <span className="w-4 h-4 flex items-center justify-center shrink-0">
             <GhibliIcon type={x.ico} size={16} />
           </span>
-          {x.label}
+          <span className="leading-none">{x.label}</span>
         </button>
       ))}
     </div>
