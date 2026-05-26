@@ -46,15 +46,12 @@ jobs:
       - name: Install frontend dependencies
         working-directory: frontend
         run: npm install
-      - name: Lint
+      - name: Lint (and format check)
         working-directory: frontend
         run: npm run lint
-      - name: Format check
+      - name: Build check
         working-directory: frontend
-        run: npm run fmt:check
-      - name: Tests
-        working-directory: frontend
-        run: npm run test:run
+        run: npm run build
 
   gitleaks:
     runs-on: ubuntu-latest

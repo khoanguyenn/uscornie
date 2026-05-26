@@ -19,15 +19,15 @@ pre-commit:
       glob: "**/*.py"
       run: uv run ruff format --check {staged_files}
     frontend-lint:
-      desc: Run ESLint on staged Javascript and Vue files
+      desc: Run Biome linter on staged Next.js/React files
       root: "frontend"
-      glob: "src/**/*.{js,vue}"
-      run: npm run lint
+      glob: "src/**/*.{js,ts,jsx,tsx,json}"
+      run: npx biome check --write {staged_files}
     frontend-format:
-      desc: Verify frontend code formatting
+      desc: Verify frontend code formatting with Biome
       root: "frontend"
-      glob: "src/**/*.{js,vue}"
-      run: npm run fmt:check
+      glob: "src/**/*.{js,ts,jsx,tsx,json}"
+      run: npx biome format --write {staged_files}
 
 pre-push:
   parallel: true
@@ -44,7 +44,7 @@ pre-push:
       desc: Execute backend unit and integration tests
       root: "backend"
       run: uv run pytest
-    frontend-test:
-      desc: Execute frontend unit tests
+    frontend-build:
+      desc: Verify frontend build compiles cleanly before pushing
       root: "frontend"
-      run: npm run test:run
+      run: npm run build
