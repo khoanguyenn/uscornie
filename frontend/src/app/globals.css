@@ -60,6 +60,7 @@
   --animate-butterfly-float: butterflyFloat 10s ease-in-out infinite;
   --animate-bug-float: bugFloat 6s ease-in-out infinite;
   --animate-wing-flap: wingFlap 0.5s ease-in-out infinite alternate;
+  --animate-wing-flap-r: wingFlapR 0.5s ease-in-out infinite alternate;
 }
 
 body {
@@ -68,6 +69,20 @@ body {
   color: var(--ink);
   min-height: 100vh;
   overflow-x: hidden;
+}
+
+@utility card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 12px var(--shadow);
+  border: 1px solid rgba(201, 169, 110, 0.15);
+  transition: all 0.3s;
+  &:hover {
+    box-shadow: 0 6px 24px var(--shadow-md);
+    transform: translateY(-2px);
+  }
 }
 
 ::-webkit-scrollbar {
@@ -225,5 +240,13 @@ body {
   }
   to {
     transform: scaleX(0.2);
+  }
+}
+@keyframes wingFlapR {
+  from {
+    transform: scaleX(-1);
+  }
+  to {
+    transform: scaleX(-0.2);
   }
 }

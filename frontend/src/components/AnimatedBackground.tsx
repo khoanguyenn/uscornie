@@ -238,7 +238,7 @@ export default function AnimatedBackground() {
               ry="11"
               fill="#f9c0d8"
               opacity="0.88"
-              className="wing-r origin-[25px_18px] animate-wing-flap -scale-x-100"
+              className="wing-r origin-[25px_18px] animate-wing-flap-r"
             />
             <ellipse
               cx="36"
@@ -247,7 +247,7 @@ export default function AnimatedBackground() {
               ry="8"
               fill="#f5a8c8"
               opacity="0.8"
-              className="wing-r-sub origin-[25px_18px] animate-wing-flap -scale-x-100"
+              className="wing-r-sub origin-[25px_18px] animate-wing-flap-r"
             />
             <circle cx="16" cy="12" r="3" fill="#f07098" opacity="0.5" />
             <circle cx="34" cy="12" r="3" fill="#f07098" opacity="0.5" />
