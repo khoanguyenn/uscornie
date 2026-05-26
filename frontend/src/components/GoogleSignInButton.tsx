@@ -61,11 +61,13 @@ export default function GoogleSignInButton({
       return true;
     }
 
-    // Try immediately, fall back with a timer if GSI script hasn't loaded yet
+    let timer: NodeJS.Timeout | undefined;
     if (!init()) {
-      const timer = setTimeout(init, 1000);
-      return () => clearTimeout(timer);
+      timer = setTimeout(init, 1000);
     }
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
   }, [onSuccess]);
 
   return <div ref={containerRef} />;

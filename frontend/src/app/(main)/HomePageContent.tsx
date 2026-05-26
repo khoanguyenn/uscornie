@@ -1,7 +1,6 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import GhibliIcon from "@/components/icons/GhibliIcon";
 import { spaceService } from "@/services/spaceService";
@@ -10,11 +9,9 @@ import { useDataStore } from "@/stores/useDataStore";
 import type { Space } from "@/types";
 
 export default function HomePageContent() {
-  const _router = useRouter();
   const queryClient = useQueryClient();
 
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const clearToken = useAuthStore((s) => s.clearToken);
 
   const loadData = useDataStore((s) => s.loadData);
   const items = useDataStore((s) => s.items);
@@ -61,11 +58,6 @@ export default function HomePageContent() {
       alert("Lỗi khi tạo link mời");
     },
   });
-
-  const _logout = () => {
-    clearToken();
-    window.location.reload();
-  };
 
   // Compute Ghibli stats
   const stats = useMemo(() => {

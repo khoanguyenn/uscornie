@@ -28,12 +28,15 @@ export default function MainLayout({
   }, []);
 
   useEffect(() => {
+    let timer: NodeJS.Timeout | undefined;
     if (showToast) {
-      const timer = setTimeout(() => {
+      timer = setTimeout(() => {
         setShowToast(false);
       }, 4000);
-      return () => clearTimeout(timer);
     }
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
   }, [showToast]);
 
   const handleLoginSuccess = useCallback(
