@@ -104,7 +104,7 @@ export default function SootCharacter({
 
       {sootLegs.map((leg, i) => (
         <line
-          key={i}
+          key={`leg-${leg.x1}-${leg.y1}-${i}`}
           x1={leg.x1}
           y1={leg.y1}
           x2={leg.x2}
@@ -123,7 +123,11 @@ export default function SootCharacter({
       ))}
 
       {processedStars.map((star, i) => (
-        <polygon key={i} points={star.points} fill={star.fill}>
+        <polygon
+          key={`star-${star.points}-${i}`}
+          points={star.points}
+          fill={star.fill}
+        >
           <animateTransform
             attributeName="transform"
             type="rotate"

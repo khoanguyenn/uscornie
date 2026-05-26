@@ -9,15 +9,16 @@ import SaveCategoryContent from "@/components/save/SaveCategoryContent";
 import { SAVE_CATEGORIES } from "@/data/mock";
 
 function SavePageContentInner() {
-  const router = useRouter();
+  const { push } = useRouter();
   const searchParams = useSearchParams();
+  const { get } = searchParams;
 
   const selectedCategory = useMemo(() => {
-    return (searchParams ? searchParams.get("cat") : null) || "wishlist";
-  }, [searchParams]);
+    return (get ? get.call(searchParams, "cat") : null) || "wishlist";
+  }, [searchParams, get]);
 
   const switchCategory = (idVal: string) => {
-    router.push(`/save?cat=${idVal}`);
+    push(`/save?cat=${idVal}`);
   };
 
   return (
@@ -57,7 +58,7 @@ function SavePageContentInner() {
 
 export default function SavePageContent() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>Loading…</div>}>
       <SavePageContentInner />
     </Suspense>
   );

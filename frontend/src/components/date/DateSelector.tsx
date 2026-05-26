@@ -11,6 +11,36 @@ interface DateSelectorProps {
   onGenerate: () => void;
 }
 
+const getSlotStyle = (isSelected: boolean) => ({
+  cursor: "pointer",
+  padding: "10px 16px",
+  borderRadius: "16px",
+  border: `2px solid ${isSelected ? "var(--sunset)" : "var(--earth)"}`,
+  background: isSelected ? "var(--sunset)" : "var(--card)",
+  color: isSelected ? "white" : "var(--ink)",
+  transition:
+    "border-color 0.2s, background-color 0.2s, color 0.2s, box-shadow 0.2s",
+  textAlign: "center" as const,
+  boxShadow: isSelected ? "0 4px 14px rgba(244,164,96,0.35)" : "none",
+  minWidth: "120px",
+  flex: "1 1 calc(33.33% - 10px)",
+});
+
+const getMoodButtonStyle = (isSelected: boolean) => ({
+  fontFamily: "'Quicksand',sans-serif",
+  fontWeight: "700" as const,
+  fontSize: "0.88rem",
+  padding: "8px 18px",
+  borderRadius: "24px",
+  border: `2px solid ${isSelected ? "var(--grass)" : "var(--earth)"}`,
+  background: isSelected ? "var(--grass)" : "var(--card)",
+  color: isSelected ? "white" : "var(--ink)",
+  cursor: "pointer",
+  transition:
+    "border-color 0.2s, background-color 0.2s, color 0.2s, box-shadow 0.2s",
+  boxShadow: isSelected ? "0 3px 10px rgba(140,183,140,0.4)" : "none",
+});
+
 export default function DateSelector({
   selectedSlots,
   selectedMoods,
@@ -55,29 +85,11 @@ export default function DateSelector({
         {DATE_SLOTS.map((s) => {
           const isSelected = selectedSlots.includes(s.id);
           return (
-            <div
+            <button
               key={s.id}
               onClick={() => onToggleSlot(s.id)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") onToggleSlot(s.id);
-              }}
-              tabIndex={0}
-              role="button"
-              style={{
-                cursor: "pointer",
-                padding: "10px 16px",
-                borderRadius: "16px",
-                border: `2px solid ${isSelected ? "var(--sunset)" : "var(--earth)"}`,
-                background: isSelected ? "var(--sunset)" : "var(--card)",
-                color: isSelected ? "white" : "var(--ink)",
-                transition: "all 0.2s",
-                textAlign: "center",
-                boxShadow: isSelected
-                  ? "0 4px 14px rgba(244,164,96,0.35)"
-                  : "none",
-                minWidth: "120px",
-                flex: "1 1 calc(33.33% - 10px)",
-              }}
+              type="button"
+              style={getSlotStyle(isSelected)}
             >
               <div style={{ fontSize: "1rem" }}>{s.sub}</div>
               <div
@@ -90,7 +102,7 @@ export default function DateSelector({
               >
                 {s.label}
               </div>
-            </div>
+            </button>
           );
         })}
       </div>
@@ -134,21 +146,7 @@ export default function DateSelector({
               key={m.id}
               onClick={() => onToggleMood(m.id)}
               type="button"
-              style={{
-                fontFamily: "'Quicksand',sans-serif",
-                fontWeight: "700",
-                fontSize: "0.88rem",
-                padding: "8px 18px",
-                borderRadius: "24px",
-                border: `2px solid ${isSelected ? "var(--grass)" : "var(--earth)"}`,
-                background: isSelected ? "var(--grass)" : "var(--card)",
-                color: isSelected ? "white" : "var(--ink)",
-                cursor: "pointer",
-                transition: "all 0.2s",
-                boxShadow: isSelected
-                  ? "0 3px 10px rgba(140,183,140,0.4)"
-                  : "none",
-              }}
+              style={getMoodButtonStyle(isSelected)}
             >
               {m.label}
             </button>

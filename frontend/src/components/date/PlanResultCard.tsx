@@ -36,6 +36,30 @@ const moodColors: Record<string, string> = {
   khac: "#aaa",
 };
 
+const activityItemBaseStyle = {
+  background: "var(--cream)",
+  border: "1.5px solid rgba(201,169,110,0.2)",
+  borderRadius: "14px",
+  padding: "14px 18px",
+  display: "flex",
+  gap: "14px",
+  alignItems: "flex-start" as const,
+  transition:
+    "background-color 0.25s, border-color 0.25s, transform 0.25s, box-shadow 0.25s",
+};
+
+const avatarBaseStyle = {
+  width: "34px",
+  height: "34px",
+  borderRadius: "50%",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  flexShrink: 0,
+  fontSize: "0.9rem",
+  fontWeight: "700",
+};
+
 export default function PlanResultCard({
   plan,
   selectedMoods,
@@ -112,32 +136,17 @@ export default function PlanResultCard({
 
                 return (
                   <div
-                    key={idx}
+                    key={item.a}
                     className="date-activity-item"
                     style={{
-                      background: "var(--cream)",
-                      border: "1.5px solid rgba(201,169,110,0.2)",
-                      borderRadius: "14px",
-                      padding: "14px 18px",
-                      display: "flex",
-                      gap: "14px",
-                      alignItems: "flex-start",
+                      ...activityItemBaseStyle,
                       animation: `fadeUp 0.35s ease ${idx * 0.08}s both`,
-                      transition: "all 0.25s",
                     }}
                   >
                     <div
                       style={{
-                        width: "34px",
-                        height: "34px",
-                        borderRadius: "50%",
+                        ...avatarBaseStyle,
                         background: bgLight,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexShrink: 0,
-                        fontSize: "0.9rem",
-                        fontWeight: "700",
                         color: fgColor,
                       }}
                     >

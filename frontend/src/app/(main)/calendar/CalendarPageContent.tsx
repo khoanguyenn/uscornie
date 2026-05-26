@@ -104,24 +104,27 @@ export default function CalendarPageContent() {
     const daysInMonth = new Date(y, m + 1, 0).getDate();
 
     const days: {
+      id: string;
       day: number | null;
       class: string;
       tooltip: string | null;
     }[] = [];
     for (let i = 0; i < firstDay; i++) {
-      days.push({ day: null, class: "empty", tooltip: null });
+      days.push({ id: `empty-${i}`, day: null, class: "empty", tooltip: null });
     }
+    const specialDaysMap = new Map(specialDays.map((s) => [s.day, s]));
     for (let d = 1; d <= daysInMonth; d++) {
       const isToday =
         d === new Date().getDate() &&
         m === new Date().getMonth() &&
         y === new Date().getFullYear();
-      const special = specialDays.find((s) => s.day === d);
+      const special = specialDaysMap.get(d);
       let cls = "";
       if (isToday) cls = "today";
       else if (special) cls = "special";
 
       days.push({
+        id: `day-${d}`,
         day: d,
         class: cls,
         tooltip: special ? special.label : null,
@@ -187,13 +190,13 @@ export default function CalendarPageContent() {
 
       <div className="card">
         <div className="cal-nav">
-          <button onClick={prevMonth} type="button">
+          <button onClick={prevMonth} type="button" aria-label="Tháng trước">
             &lt;
           </button>
           <span>
             {mn[calDate.getMonth()]} {calDate.getFullYear()}
           </span>
-          <button onClick={nextMonth} type="button">
+          <button onClick={nextMonth} type="button" aria-label="Tháng sau">
             &gt;
           </button>
         </div>
@@ -203,8 +206,8 @@ export default function CalendarPageContent() {
               {d}
             </div>
           ))}
-          {calendarData.map((d, i) => (
-            <div key={i} className={`cal-day ${d.class}`}>
+          {calendarData.map((d) => (
+            <div key={d.id} className={`cal-day ${d.class}`}>
               {d.day}
               {d.tooltip && <span className="tooltip-text">{d.tooltip}</span>}
             </div>
@@ -213,7 +216,7 @@ export default function CalendarPageContent() {
         <div className="special-dates">
           {specialDays.map((s) => (
             <span key={s.label} className="special-item">
-              {s.day}/{calDate.getMonth() + 1} — {s.label}
+              {s.day}/{calDate.getMonth() + 1}: {s.label}
             </span>
           ))}
         </div>

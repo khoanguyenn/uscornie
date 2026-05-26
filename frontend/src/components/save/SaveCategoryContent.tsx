@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
 import type React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -205,11 +206,12 @@ export default function SaveCategoryContent({
     const pool = SUGGESTIONS[category as keyof typeof SUGGESTIONS];
     if (!pool || !pool.length) return;
 
-    const existingNames = new Set(
-      items
-        .filter((i) => i.category === category)
-        .map((i) => i.title.trim().toLowerCase()),
-    );
+    const existingNames = items.reduce((acc, i) => {
+      if (i.category === category) {
+        acc.add(i.title.trim().toLowerCase());
+      }
+      return acc;
+    }, new Set<string>());
 
     const fresh = pool.filter(
       (p) => !existingNames.has(p.n.trim().toLowerCase()),
@@ -328,9 +330,17 @@ export default function SaveCategoryContent({
             accept="image/*"
             style={{ display: "none" }}
             onChange={handleImgUpload}
+            aria-label="Chọn hình ảnh"
           />
           {imagePreview && (
-            <img src={imagePreview} className="img-preview" alt="Preview" />
+            <Image
+              src={imagePreview}
+              className="img-preview"
+              alt="Preview"
+              width={100}
+              height={100}
+              style={{ objectFit: "cover" }}
+            />
           )}
         </div>
 

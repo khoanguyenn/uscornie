@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import GhibliIcon from "@/components/icons/GhibliIcon";
@@ -15,7 +16,8 @@ interface GiftSuggestion {
 
 function GiftPageContentInner() {
   const searchParams = useSearchParams();
-  const router = useRouter();
+  const { get } = searchParams;
+  const { push } = useRouter();
   const pathname = usePathname();
   const loadData = useDataStore((s) => s.loadData);
   const items = useDataStore((s) => s.items);
@@ -24,7 +26,7 @@ function GiftPageContentInner() {
     loadData();
   }, [loadData]);
 
-  const giftMode = searchParams.get("mode") || "random";
+  const giftMode = (get ? get.call(searchParams, "mode") : null) || "random";
   const [selOcc, setSelOcc] = useState<string | null>(null);
   const [selGender, setSelGender] = useState<string | null>(null);
   const [giftRes, setGiftRes] = useState<GiftSuggestion | null>(null);
@@ -38,7 +40,7 @@ function GiftPageContentInner() {
   const swGM = (m: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("mode", m);
-    router.push(`${pathname}?${params.toString()}`);
+    push(`${pathname}?${params.toString()}`);
     setGiftRes(null);
     setSelOcc(null);
     setSelGender(null);
@@ -84,13 +86,6 @@ function GiftPageContentInner() {
       image: item.image,
     });
   };
-
-  // Reset when mode changes
-  useEffect(() => {
-    setGiftRes(null);
-    setSelOcc(null);
-    setSelGender(null);
-  }, []);
 
   return (
     <div style={{ width: "100%", maxWidth: "600px", margin: "0 auto" }}>
@@ -149,18 +144,20 @@ function GiftPageContentInner() {
 
           <div className="occasion-grid" style={{ marginBottom: "20px" }}>
             {OCCASIONS.map((o) => (
-              <div
+              <button
                 key={o.id}
+                type="button"
                 className={`occasion-card ${selOcc === o.id ? "selected" : ""}`}
                 onClick={() => selO(o.id)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") selO(o.id);
+                style={{
+                  background: "none",
+                  border: "none",
+                  textAlign: "left",
+                  width: "100%",
                 }}
-                tabIndex={0}
-                role="button"
               >
                 <div className="occasion-name">{o.name}</div>
-              </div>
+              </button>
             ))}
           </div>
 
@@ -205,7 +202,8 @@ function GiftPageContentInner() {
                     selGender === g.id ? "var(--sunset)" : "var(--card)",
                   color: selGender === g.id ? "white" : "var(--ink)",
                   cursor: "pointer",
-                  transition: "all 0.2s",
+                  transition:
+                    "border-color 0.2s, background-color 0.2s, color 0.2s, box-shadow 0.2s",
                   boxShadow:
                     selGender === g.id
                       ? "0 4px 14px rgba(244,164,96,0.35)"
@@ -286,18 +284,20 @@ function GiftPageContentInner() {
 
           <div className="occasion-grid" style={{ marginBottom: "20px" }}>
             {OCCASIONS.map((o) => (
-              <div
+              <button
                 key={o.id}
+                type="button"
                 className={`occasion-card ${selOcc === o.id ? "selected" : ""}`}
                 onClick={() => selO(o.id)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") selO(o.id);
+                style={{
+                  background: "none",
+                  border: "none",
+                  textAlign: "left",
+                  width: "100%",
                 }}
-                tabIndex={0}
-                role="button"
               >
                 <div className="occasion-name">{o.name}</div>
-              </div>
+              </button>
             ))}
           </div>
 
@@ -327,15 +327,16 @@ function GiftPageContentInner() {
               <div className="gift-name">{giftRes.title}</div>
               {giftRes.desc && <div className="gift-desc">{giftRes.desc}</div>}
               {giftRes.image && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <Image
                   src={giftRes.image}
                   alt={giftRes.title}
+                  width={260}
+                  height={180}
                   style={{
-                    maxWidth: "260px",
                     borderRadius: "14px",
                     marginTop: "16px",
                     boxShadow: "0 4px 16px var(--shadow)",
+                    objectFit: "cover",
                   }}
                 />
               )}
@@ -374,7 +375,7 @@ function GiftPageContentInner() {
 
 export default function GiftPageContent() {
   return (
-    <Suspense fallback={<div className="loading">Đang tải...</div>}>
+    <Suspense fallback={<div className="loading">Đang tải…</div>}>
       <GiftPageContentInner />
     </Suspense>
   );

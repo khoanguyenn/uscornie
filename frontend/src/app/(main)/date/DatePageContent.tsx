@@ -39,10 +39,7 @@ export default function DatePageContent() {
     for (let i = 0; i < 14; i++) {
       const p = document.createElement("div");
       p.className = "hb-particle";
-      p.style.left = `${30 + Math.random() * 40}%`;
-      p.style.bottom = "35%";
-      p.style.animationDelay = `${Math.random() * 0.4}s`;
-      p.style.animationDuration = `${1.4 + Math.random() * 0.8}s`;
+      p.style.cssText = `left: ${30 + Math.random() * 40}%; bottom: 35%; animation-delay: ${Math.random() * 0.4}s; animation-duration: ${1.4 + Math.random() * 0.8}s;`;
       const sz = 16 + Math.random() * 18;
       p.innerHTML = `<svg width="${sz}" height="${sz}" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 17 Q0 10 3 5 Q5 2 8 4 Q9 5 10 7 Q11 5 12 4 Q15 2 17 5 Q20 10 10 17Z" fill="${
         cols[Math.floor(Math.random() * cols.length)]
@@ -82,15 +79,15 @@ export default function DatePageContent() {
     const plan: DatePlanBlock[] = [];
     const used = new Set<string>();
 
+    const slotsMap = new Map(DATE_SLOTS.map((s) => [s.id, s]));
+    const primaryMoods = selDateMoods.filter((m) => m !== "khac");
+    const hasKhac = selDateMoods.includes("khac");
+
     for (const slotId of selDateSlots) {
       const slotData = (DATE_DB[slotId as keyof typeof DATE_DB] ||
         {}) as Record<string, { a: string; l?: string }[]>;
-      const slotInfo = DATE_SLOTS.find((s) => s.id === slotId);
+      const slotInfo = slotsMap.get(slotId);
       const activities: DateActivity[] = [];
-
-      // Collect from selected moods (excluding 'khac' first)
-      const primaryMoods = selDateMoods.filter((m) => m !== "khac");
-      const hasKhac = selDateMoods.includes("khac");
 
       for (const moodId of primaryMoods) {
         const items = slotData[moodId] || [];

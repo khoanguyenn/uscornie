@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 
 interface GoogleSignInButtonProps {
+  // biome-ignore lint/suspicious/noExplicitAny: Google Identity response type is dynamic
   onSuccess: (response: any) => void;
 }
 
@@ -12,6 +13,7 @@ export default function GoogleSignInButton({
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // biome-ignore lint/suspicious/noExplicitAny: window has no typing for google identity services
     const win = window as any;
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
@@ -36,6 +38,7 @@ export default function GoogleSignInButton({
         size: "medium",
       });
 
+      // biome-ignore lint/suspicious/noExplicitAny: notification callback parameters are untyped
       win.google.accounts.id.prompt((notification: any) => {
         if (notification.isNotDisplayed()) {
           console.warn(

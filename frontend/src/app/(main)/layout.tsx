@@ -14,7 +14,7 @@ export default function MainLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const router = useRouter();
+  const { push } = useRouter();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const setToken = useAuthStore((s) => s.setToken);
   const clearToken = useAuthStore((s) => s.clearToken);
@@ -37,6 +37,7 @@ export default function MainLayout({
   }, [showToast]);
 
   const handleLoginSuccess = useCallback(
+    // biome-ignore lint/suspicious/noExplicitAny: Google Identity response is untyped
     async (response: any) => {
       try {
         const data = await authService.loginWithGoogle(response.credential);
@@ -59,11 +60,17 @@ export default function MainLayout({
       <AnimatedBackground />
 
       <header className="header">
-        <div className="logo-container" onClick={() => router.push("/")}>
+        <button
+          className="logo-container"
+          onClick={() => push("/")}
+          type="button"
+          aria-label="Trang chủ"
+          style={{ background: "none", border: "none", cursor: "pointer" }}
+        >
           <div className="logo-frame">
             <GhibliIcon type="leaf" size={40} />
           </div>
-        </div>
+        </button>
         <h1>Our Little Corner</h1>
         <p>Một góc nhỏ của riêng mình</p>
 

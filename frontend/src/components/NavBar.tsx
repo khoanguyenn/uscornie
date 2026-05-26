@@ -3,19 +3,20 @@
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type React from "react";
-import { Suspense, useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { GIFT_MODES, SAVE_CATEGORIES } from "@/data/mock";
 import GhibliIcon from "./icons/GhibliIcon";
 
 function NavBarContent() {
   const pathname = usePathname();
-  const router = useRouter();
+  const { push } = useRouter();
   const searchParams = useSearchParams();
+  const { get } = searchParams;
 
   const [openDD, setOpenDD] = useState<string | null>(null);
 
-  const currentCat = searchParams ? searchParams.get("cat") : null;
-  const currentMode = searchParams ? searchParams.get("mode") : null;
+  const currentCat = get ? get.call(searchParams, "cat") : null;
+  const currentMode = get ? get.call(searchParams, "mode") : null;
 
   const toggleDD = (name: string, event: React.MouseEvent) => {
     event.stopPropagation();
@@ -26,21 +27,29 @@ function NavBarContent() {
     setOpenDD(null);
   }, []);
 
+  const closeRef = useRef(closeDD);
   useEffect(() => {
-    window.addEventListener("click", closeDD);
-    return () => {
-      window.removeEventListener("click", closeDD);
-    };
+    closeRef.current = closeDD;
   }, [closeDD]);
+
+  useEffect(() => {
+    const handleWindowClick = () => {
+      closeRef.current();
+    };
+    window.addEventListener("click", handleWindowClick);
+    return () => {
+      window.removeEventListener("click", handleWindowClick);
+    };
+  }, []);
 
   const goSave = (catId: string) => {
     setOpenDD(null);
-    router.push(`/save?cat=${catId}`);
+    push(`/save?cat=${catId}`);
   };
 
   const goGift = (modeId: string) => {
     setOpenDD(null);
-    router.push(`/gift?mode=${modeId}`);
+    push(`/gift?mode=${modeId}`);
   };
 
   return (
@@ -57,6 +66,8 @@ function NavBarContent() {
       </div>
 
       {/* Lưu mọi thứ (Dropdown) */}
+      {/* biome-ignore lint/a11y/useKeyWithClickEvents: stopPropagation doesn't need keyboard access */}
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: container only */}
       <div
         className={`nav-item ${openDD === "save" ? "open" : ""}`}
         onClick={(e) => e.stopPropagation()}
@@ -99,6 +110,8 @@ function NavBarContent() {
       </div>
 
       {/* Gợi ý quà (Dropdown) */}
+      {/* biome-ignore lint/a11y/useKeyWithClickEvents: stopPropagation doesn't need keyboard access */}
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: container only */}
       <div
         className={`nav-item ${openDD === "gift" ? "open" : ""}`}
         onClick={(e) => e.stopPropagation()}
@@ -144,7 +157,7 @@ function NavBarContent() {
 
 export default function NavBar() {
   return (
-    <Suspense fallback={<div className="nav-bar-loading">Loading...</div>}>
+    <Suspense fallback={<div className="nav-bar-loading">Loading…</div>}>
       <NavBarContent />
     </Suspense>
   );

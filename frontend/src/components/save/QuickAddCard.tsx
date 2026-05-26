@@ -10,6 +10,7 @@ interface QuickAddCardProps {
 }
 
 interface ParsedFileRow {
+  id?: string;
   name: string;
   desc: string;
   tag: string;
@@ -37,13 +38,14 @@ export default function QuickAddCard({
     const lines = qaText.split("\n").filter((l) => l.trim());
     const parsedItems: any[] = [];
 
+    const tagsSet = new Set(presetTags);
     for (const line of lines) {
       const parts = line.split("-").map((p) => p.trim());
       const title = parts[0];
       if (!title) continue;
       const desc = parts[1] || "";
       const tagVal = parts[2] || "";
-      const validTag = presetTags.includes(tagVal) ? tagVal : "";
+      const validTag = tagsSet.has(tagVal) ? tagVal : "";
 
       parsedItems.push({
         title,
@@ -197,7 +199,7 @@ export default function QuickAddCard({
         colMap.img !== undefined ? (cols[colMap.img] || "").trim() : "";
 
       const fullDesc = [addr, desc].filter(Boolean).join(" · ");
-      rows.push({ name, desc: fullDesc, tag, img });
+      rows.push({ id: `row-${i}-${name}`, name, desc: fullDesc, tag, img });
     }
 
     if (!rows.length) {
@@ -293,17 +295,20 @@ export default function QuickAddCard({
 
   return (
     <div className="card qa-card">
-      <div
+      <button
+        type="button"
         className={`qa-toggle ${qaOpen ? "open" : ""}`}
         onClick={() => setQaOpen(!qaOpen)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") setQaOpen(!qaOpen);
+        style={{
+          width: "100%",
+          border: "none",
+          background: "none",
+          textAlign: "left",
+          cursor: "pointer",
         }}
-        tabIndex={0}
-        role="button"
       >
         <span className="qa-arrow">{qaOpen ? "▼" : "▶"}</span> Thêm nhanh
-      </div>
+      </button>
 
       {qaOpen && (
         <div className="qa-body">
@@ -340,6 +345,7 @@ export default function QuickAddCard({
                 value={qaText}
                 onChange={(e) => setQaText(e.target.value)}
                 className="qa-textarea"
+                aria-label="Nội dung thêm nhanh"
                 placeholder={`VD:\nPhở Thìn Bờ Hồ - Phở bò tái chín, nước dùng đậm - Must try\nBún chả Hương Liên - Obama đã ăn ở đây\nCơm tấm Bụi Sài Gòn`}
               />
               <div
@@ -378,23 +384,21 @@ export default function QuickAddCard({
                 <br />
                 Thẻ hợp lệ: <strong>{presetTags.join(" · ")}</strong>
               </div>
-              <div
+              <button
+                type="button"
                 className="qa-file-zone"
                 onClick={triggerFileInput}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") triggerFileInput();
-                }}
-                tabIndex={0}
-                role="button"
+                style={{ width: "100%", background: "none", cursor: "pointer" }}
               >
                 Kéo thả hoặc bấm để chọn file Excel / CSV
-              </div>
+              </button>
               <input
                 type="file"
                 ref={fileInputRef}
                 accept=".xlsx,.xls,.csv,.tsv"
                 style={{ display: "none" }}
                 onChange={handleFileChange}
+                aria-label="Chọn file dữ liệu"
               />
 
               {/* File Preview */}
@@ -419,9 +423,9 @@ export default function QuickAddCard({
                       padding: "8px",
                     }}
                   >
-                    {fileRows.slice(0, 20).map((r, idx) => (
+                    {fileRows.slice(0, 20).map((r) => (
                       <div
-                        key={idx}
+                        key={r.id || r.name}
                         style={{
                           padding: "4px 0",
                           borderBottom: "1px solid rgba(201, 169, 110, 0.1)",

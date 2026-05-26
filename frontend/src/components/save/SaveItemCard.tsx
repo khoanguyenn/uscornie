@@ -1,3 +1,4 @@
+import Image from "next/image";
 import GhibliIcon from "@/components/icons/GhibliIcon";
 import type { SaveItem } from "@/types";
 
@@ -17,7 +18,14 @@ export default function SaveItemCard({
   return (
     <div className="item-card">
       {item.image ? (
-        <img className="item-img" src={item.image} alt={item.title} />
+        <Image
+          className="item-img"
+          src={item.image}
+          alt={item.title}
+          width={300}
+          height={200}
+          style={{ objectFit: "cover" }}
+        />
       ) : (
         <div className="no-img">
           <GhibliIcon type={categoryIcon} size={50} />

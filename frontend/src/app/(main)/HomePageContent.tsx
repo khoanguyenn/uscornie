@@ -54,6 +54,7 @@ export default function HomePageContent() {
     onSuccess: (data) => {
       const fullUrl = `${window.location.origin}${data.url}`;
       setInviteLink(fullUrl);
+      queryClient.invalidateQueries({ queryKey: ["spaces"] });
     },
     onError: () => {
       alert("Lỗi khi tạo link mời");
@@ -103,7 +104,7 @@ export default function HomePageContent() {
   }, [items, anniversaryDate]);
 
   if (isLoading) {
-    return <div className="loading-state">⏳ Đang tải...</div>;
+    return <div className="loading-state">⏳ Đang tải…</div>;
   }
 
   if (!isAuthenticated) {
@@ -237,7 +238,12 @@ export default function HomePageContent() {
             <div className="invite-display">
               <p className="invite-title">Magic Link đã sẵn sàng!</p>
               <div className="invite-copy-row">
-                <input readOnly value={inviteLink} className="invite-input" />
+                <input
+                  readOnly
+                  value={inviteLink}
+                  className="invite-input"
+                  aria-label="Đường dẫn mời tham gia"
+                />
                 <button
                   onClick={() => {
                     navigator.clipboard.writeText(inviteLink);

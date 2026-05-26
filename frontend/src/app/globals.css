@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-delay: -1ms;
+    animation-duration: 1ms;
+    animation-iteration-count: 1;
+    background-attachment: initial;
+    scroll-behavior: auto;
+    transition-duration: 0s;
+    transition-delay: 0s;
+  }
+}
+
 :root {
   --grass: #8cb78c;
   --grass-dark: #6a9b6a;

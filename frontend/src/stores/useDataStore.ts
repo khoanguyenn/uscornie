@@ -23,7 +23,16 @@ export const useDataStore = create<DataState>((set, get) => ({
 
   loadData: () => {
     if (typeof window !== "undefined") {
-      const dataStr = localStorage.getItem("olc_data");
+      let dataStr = localStorage.getItem("olc_data:v1");
+      if (!dataStr) {
+        // Fallback and migration
+        const oldData = localStorage.getItem("olc_data");
+        if (oldData) {
+          localStorage.setItem("olc_data:v1", oldData);
+          localStorage.removeItem("olc_data");
+          dataStr = oldData;
+        }
+      }
       if (dataStr) {
         try {
           const parsed = JSON.parse(dataStr);
@@ -47,7 +56,7 @@ export const useDataStore = create<DataState>((set, get) => ({
         anniversaryDate: state.anniversaryDate,
         birthdayDate: state.birthdayDate,
       };
-      localStorage.setItem("olc_data", JSON.stringify(data));
+      localStorage.setItem("olc_data:v1", JSON.stringify(data));
     }
   },
 
