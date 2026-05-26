@@ -22,9 +22,9 @@ function SavePageContentInner() {
   };
 
   return (
-    <div style={{ width: "100%" }}>
-      <h2 className="page-title">
-        <span className="pt-ico">
+    <div className="w-full">
+      <h2 className="font-pangolin text-[1.9rem] text-ink mb-5 pb-2.5 border-b-2 border-dashed border-earth inline-flex items-center gap-2.5">
+        <span className="w-8 h-8">
           <GhibliIcon type="soot" size={32} />
         </span>
         Lưu mọi thứ

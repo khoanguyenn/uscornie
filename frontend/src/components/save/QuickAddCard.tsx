@@ -309,35 +309,41 @@ export default function QuickAddCard({
   };
 
   return (
-    <div className="card qa-card">
+    <div className="card border-2 border-dashed border-earth/30 bg-[#fffdf7]/70 hover:border-grass transition-all duration-300">
       <button
         type="button"
-        className={`qa-toggle ${qaOpen ? "open" : ""}`}
+        className="w-full border-none bg-transparent text-left cursor-pointer flex items-center gap-2 font-pangolin text-[1.05rem] text-earth select-none"
         onClick={() => setQaOpen(!qaOpen)}
-        style={{
-          width: "100%",
-          border: "none",
-          background: "none",
-          textAlign: "left",
-          cursor: "pointer",
-        }}
       >
-        <span className="qa-arrow">{qaOpen ? "▼" : "▶"}</span> Thêm nhanh
+        <span
+          className={`text-[0.7rem] transition-transform duration-300 ${qaOpen ? "rotate-90" : ""}`}
+        >
+          ▶
+        </span>{" "}
+        Thêm nhanh
       </button>
 
       {qaOpen && (
-        <div className="qa-body">
+        <div className="mt-4">
           {hasFile && (
-            <div className="qa-tabs">
+            <div className="flex gap-1.5 mb-3.5">
               <button
-                className={`qa-tab ${qaMode === "text" ? "active" : ""}`}
+                className={`font-quicksand font-semibold text-[0.78rem] py-1.5 px-3.5 border-[1.5px] rounded-[16px] cursor-pointer transition-all duration-200 hover:border-grass ${
+                  qaMode === "text"
+                    ? "bg-grass border-grass text-white"
+                    : "bg-card border-earth/30 text-ink-light"
+                }`}
                 onClick={() => setQaMode("text")}
                 type="button"
               >
                 Nhập text
               </button>
               <button
-                className={`qa-tab ${qaMode === "file" ? "active" : ""}`}
+                className={`font-quicksand font-semibold text-[0.78rem] py-1.5 px-3.5 border-[1.5px] rounded-[16px] cursor-pointer transition-all duration-200 hover:border-grass ${
+                  qaMode === "file"
+                    ? "bg-grass border-grass text-white"
+                    : "bg-card border-earth/30 text-ink-light"
+                }`}
                 onClick={() => setQaMode("file")}
                 type="button"
               >
@@ -348,8 +354,11 @@ export default function QuickAddCard({
 
           {(!hasFile || qaMode === "text") && (
             <div>
-              <div className="qa-syntax">
-                Cú pháp: <code>Tiêu đề - Mô tả - Gắn thẻ</code>
+              <div className="text-[0.78rem] text-ink-light bg-earth/[0.08] p-[8px_12px] rounded-lg mb-2.5 font-quicksand">
+                Cú pháp:{" "}
+                <code className="font-bold text-ink">
+                  Tiêu đề - Mô tả - Gắn thẻ
+                </code>
                 <br />
                 Mỗi dòng = 1 mục. Mô tả và thẻ có thể bỏ trống.
                 <br />
@@ -359,18 +368,11 @@ export default function QuickAddCard({
               <textarea
                 value={qaText}
                 onChange={(e) => setQaText(e.target.value)}
-                className="qa-textarea"
+                className="w-full font-quicksand text-[0.85rem] p-[10px_14px] border-2 border-earth/25 rounded-xl bg-cream text-ink outline-none min-h-[90px] resize-y transition-colors duration-300 focus:border-grass"
                 aria-label="Nội dung thêm nhanh"
                 placeholder={`VD:\nPhở Thìn Bờ Hồ - Phở bò tái chín, nước dùng đậm - Must try\nBún chả Hương Liên - Obama đã ăn ở đây\nCơm tấm Bụi Sài Gòn`}
               />
-              <div
-                style={{
-                  display: "flex",
-                  gap: "8px",
-                  marginTop: "10px",
-                  alignItems: "center",
-                }}
-              >
+              <div className="flex gap-2 mt-2.5 items-center">
                 <button
                   className="btn btn-primary btn-small"
                   onClick={qaParseText}
@@ -379,7 +381,13 @@ export default function QuickAddCard({
                   Thêm tất cả
                 </button>
                 {qaResult.msg && (
-                  <span className={`qa-result ${qaResult.isErr ? "err" : ""}`}>
+                  <span
+                    className={`inline-block text-[0.82rem] font-semibold p-[8px_12px] rounded-lg ${
+                      qaResult.isErr
+                        ? "text-[#c97070] bg-[#c97070]/[0.08]"
+                        : "text-grass-dark bg-grass/[0.08]"
+                    }`}
+                  >
                     {qaResult.msg}
                   </span>
                 )}
@@ -389,21 +397,24 @@ export default function QuickAddCard({
 
           {hasFile && qaMode === "file" && (
             <div>
-              <div className="qa-syntax">
-                Hỗ trợ file <code>.xlsx</code>, <code>.xls</code>,{" "}
-                <code>.csv</code> từ Excel hoặc Google Sheets.
+              <div className="text-[0.78rem] text-ink-light bg-earth/[0.08] p-[8px_12px] rounded-lg mb-2.5 font-quicksand">
+                Hỗ trợ file <code className="font-bold text-ink">.xlsx</code>,{" "}
+                <code className="font-bold text-ink">.xls</code>,{" "}
+                <code className="font-bold text-ink">.csv</code> từ Excel hoặc
+                Google Sheets.
                 <br />
-                Cột: <code>Tên</code> (bắt buộc), <code>Địa chỉ</code>,{" "}
-                <code>Mô tả</code>, <code>Thẻ</code>, <code>Hình ảnh</code>{" "}
-                (URL)
+                Cột: <code className="font-bold text-ink">Tên</code> (bắt buộc),{" "}
+                <code className="font-bold text-ink">Địa chỉ</code>,{" "}
+                <code className="font-bold text-ink">Mô tả</code>,{" "}
+                <code className="font-bold text-ink">Thẻ</code>,{" "}
+                <code className="font-bold text-ink">Hình ảnh</code> (URL)
                 <br />
                 Thẻ hợp lệ: <strong>{presetTags.join(" · ")}</strong>
               </div>
               <button
                 type="button"
-                className="qa-file-zone"
+                className="w-full border-2 border-dashed border-earth/30 rounded-xl p-5 text-center cursor-pointer transition-all duration-300 text-ink-light text-[0.85rem] font-semibold bg-transparent hover:border-grass hover:text-grass-dark hover:bg-grass/[0.03]"
                 onClick={triggerFileInput}
-                style={{ width: "100%", background: "none", cursor: "pointer" }}
               >
                 Kéo thả hoặc bấm để chọn file Excel / CSV
               </button>
@@ -418,77 +429,34 @@ export default function QuickAddCard({
 
               {/* File Preview */}
               {fileRows.length > 0 && (
-                <div style={{ marginTop: "10px" }}>
-                  <div
-                    style={{
-                      fontSize: "0.82rem",
-                      color: "var(--ink-light)",
-                      marginBottom: "8px",
-                      fontWeight: 600,
-                    }}
-                  >
+                <div className="mt-2.5">
+                  <div className="text-[0.82rem] text-ink-light mb-2 font-semibold">
                     Tìm thấy {fileRows.length} mục:
                   </div>
-                  <div
-                    style={{
-                      maxHeight: "200px",
-                      overflowY: "auto",
-                      border: "1px solid rgba(201, 169, 110, 0.2)",
-                      borderRadius: "10px",
-                      padding: "8px",
-                    }}
-                  >
+                  <div className="max-h-[200px] overflow-y-auto border border-earth/20 rounded-[10px] p-2">
                     {fileRows.slice(0, 20).map((r) => (
                       <div
                         key={r.id || r.name}
-                        style={{
-                          padding: "4px 0",
-                          borderBottom: "1px solid rgba(201, 169, 110, 0.1)",
-                          fontSize: "0.8rem",
-                        }}
+                        className="py-1 border-b border-earth/10 text-[0.8rem]"
                       >
                         <strong>{r.name}</strong>
                         {r.desc && (
-                          <span style={{ color: "var(--ink-light)" }}>
-                            {" "}
-                            — {r.desc}
-                          </span>
+                          <span className="text-ink-light"> — {r.desc}</span>
                         )}
                         {r.tag && (
-                          <span
-                            style={{
-                              background: "var(--petal)",
-                              padding: "1px 6px",
-                              borderRadius: "6px",
-                              fontSize: "0.7rem",
-                              marginLeft: "5px",
-                            }}
-                          >
+                          <span className="bg-petal py-0.5 px-1.5 rounded-md text-[0.7rem] ml-1">
                             {r.tag}
                           </span>
                         )}
                       </div>
                     ))}
                     {fileRows.length > 20 && (
-                      <div
-                        style={{
-                          padding: "4px 0",
-                          fontSize: "0.78rem",
-                          color: "var(--ink-light)",
-                        }}
-                      >
+                      <div className="py-1 text-[0.78rem] text-ink-light">
                         ...và {fileRows.length - 20} mục khác
                       </div>
                     )}
                   </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "8px",
-                      marginTop: "10px",
-                      alignItems: "center",
-                    }}
-                  >
+                  <div className="flex gap-2 mt-2.5 items-center">
                     <button
                       className="btn btn-primary btn-small"
                       onClick={qaImportRows}
@@ -507,7 +475,13 @@ export default function QuickAddCard({
                 </div>
               )}
               {qaResult.msg && (
-                <span className={`qa-result ${qaResult.isErr ? "err" : ""}`}>
+                <span
+                  className={`inline-block text-[0.82rem] font-semibold p-[8px_12px] rounded-lg mt-2.5 ${
+                    qaResult.isErr
+                      ? "text-[#c97070] bg-[#c97070]/[0.08]"
+                      : "text-grass-dark bg-grass/[0.08]"
+                  }`}
+                >
                   {qaResult.msg}
                 </span>
               )}

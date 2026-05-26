@@ -31,6 +31,45 @@ const saveItemSchema = z.object({
 
 type SaveItemFormValues = z.infer<typeof saveItemSchema>;
 
+const tagPickStyles = [
+  {
+    bg: "bg-[#fde2e2]",
+    text: "text-[#b85c5c]",
+    border: "border-[#f5c6c6]",
+    active: "border-[#b85c5c]",
+  },
+  {
+    bg: "bg-[#ead7f0]",
+    text: "text-[#7a4a8c]",
+    border: "border-[#d9bce0]",
+    active: "border-[#7a4a8c]",
+  },
+  {
+    bg: "bg-[#e8e8e8]",
+    text: "text-[#5a5a5a]",
+    border: "border-[#cfcfcf]",
+    active: "border-[#5a5a5a]",
+  },
+  {
+    bg: "bg-[#d8ecd8]",
+    text: "text-[#4a7a4a]",
+    border: "border-[#b8d8b8]",
+    active: "border-[#4a7a4a]",
+  },
+  {
+    bg: "bg-[#fde6c8]",
+    text: "text-[#a06a2a]",
+    border: "border-[#f5d09a]",
+    active: "border-[#a06a2a]",
+  },
+  {
+    bg: "bg-[#cfe5ec]",
+    text: "text-[#3a6a7a]",
+    border: "border-[#a8d0db]",
+    active: "border-[#3a6a7a]",
+  },
+];
+
 export default function SaveCategoryContent({
   category,
 }: SaveCategoryContentProps) {
@@ -268,17 +307,7 @@ export default function SaveCategoryContent({
     <div>
       {/* Form Card */}
       <form onSubmit={handleSubmit(onSubmit)} className="card">
-        <div
-          style={{
-            fontFamily: '"Pangolin", cursive',
-            fontSize: "1.2rem",
-            color: "var(--earth)",
-            marginBottom: "14px",
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-          }}
-        >
+        <div className="font-pangolin text-[1.2rem] text-earth mb-3.5 flex items-center gap-2">
           {currentCategory && (
             <GhibliIcon type={currentCategory.ico} size={24} />
           )}
@@ -294,9 +323,7 @@ export default function SaveCategoryContent({
             placeholder={hints.t}
           />
           {errors.title && (
-            <p
-              style={{ color: "#c97070", fontSize: "0.8rem", marginTop: "4px" }}
-            >
+            <p className="text-[#c97070] text-[0.8rem] mt-1">
               {errors.title.message}
             </p>
           )}
@@ -314,21 +341,32 @@ export default function SaveCategoryContent({
 
         <div className="form-group">
           <span className="form-label">Gắn thẻ</span>
-          <div className="tag-pick-row">
-            {presetTags.map((t, idx) => (
-              <button
-                key={t}
-                type="button"
-                className={cn(
-                  "tag-pick",
-                  `c${idx % 6}`,
-                  formTag === t && "active",
-                )}
-                onClick={() => selectPresetTag(t)}
-              >
-                {t}
-              </button>
-            ))}
+          <div className="flex gap-2 flex-wrap mt-1">
+            {presetTags.map((t, idx) => {
+              const tagStyle =
+                tagPickStyles[idx % tagPickStyles.length] || tagPickStyles[0];
+              const isActive = formTag === t;
+              return (
+                <button
+                  key={t}
+                  type="button"
+                  className={cn(
+                    "font-quicksand font-semibold text-[0.82rem] py-1.5 px-4 border-2 rounded-[18px] cursor-pointer transition-all duration-200 opacity-70 hover:opacity-100 hover:-translate-y-0.5",
+                    isActive
+                      ? cn(
+                          "opacity-100 -translate-y-0.5 shadow-md",
+                          tagStyle.active,
+                        )
+                      : "border-transparent",
+                    tagStyle.bg,
+                    tagStyle.text,
+                  )}
+                  onClick={() => selectPresetTag(t)}
+                >
+                  {t}
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -340,7 +378,7 @@ export default function SaveCategoryContent({
             type="file"
             id="if"
             accept="image/*"
-            style={{ display: "none" }}
+            className="hidden"
             onChange={handleImgUpload}
             aria-label="Chọn hình ảnh"
           />
@@ -351,12 +389,11 @@ export default function SaveCategoryContent({
               alt="Preview"
               width={100}
               height={100}
-              style={{ objectFit: "cover" }}
             />
           )}
         </div>
 
-        <div style={{ display: "flex", gap: "10px", marginTop: "8px" }}>
+        <div className="flex gap-2.5 mt-2">
           <button type="submit" className="btn btn-primary">
             Lưu lại
           </button>
@@ -374,9 +411,9 @@ export default function SaveCategoryContent({
 
       {/* Suggestions (if available) */}
       {SUGGESTIONS[category as keyof typeof SUGGESTIONS] && (
-        <div className="card sugg-card">
-          <div className="sugg-header">
-            <div className="sugg-title">
+        <div className="card bg-gradient-to-br from-[#fef7ec] to-[#fdf0e0] border-2 border-dashed border-[#f4a460]/35">
+          <div className="flex justify-between items-center gap-3 flex-wrap mb-3">
+            <div className="font-pangolin text-[1.2rem] text-earth flex items-center gap-2">
               <GhibliIcon type="calcifer" size={22} />
               Gợi ý {currentCategory?.label.toLowerCase()}
             </div>
@@ -390,27 +427,23 @@ export default function SaveCategoryContent({
           </div>
 
           {currentSuggestion ? (
-            <div className="sugg-body">
-              <div className="sugg-name">
+            <div className="bg-card rounded-[14px] p-4 shadow-sm">
+              <div className="font-pangolin text-[1.25rem] text-ink flex items-center gap-2 mb-2">
                 {currentCategory && (
                   <GhibliIcon type={currentCategory.ico} size={20} />
                 )}
                 {currentSuggestion.n}
               </div>
-              <div className="sugg-desc">{currentSuggestion.d}</div>
-              <div className="sugg-actions">
+              <div className="font-quicksand text-[0.9rem] text-ink-light leading-[1.55] mb-3.5">
+                {currentSuggestion.d}
+              </div>
+              <div className="flex gap-2 flex-wrap">
                 <button
                   type="button"
                   className="btn btn-primary btn-small"
                   onClick={addSuggestionToList}
                 >
-                  <span
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "4px",
-                    }}
-                  >
+                  <span className="inline-flex items-center gap-1">
                     <GhibliIcon type="heart" size={16} />
                     Thêm vào list
                   </span>
@@ -424,13 +457,13 @@ export default function SaveCategoryContent({
                 </button>
               </div>
               {isSuggestionAlreadyInList && (
-                <div className="sugg-warn">
+                <div className="mt-2.5 text-[0.8rem] text-sunset italic text-center">
                   Quán này đã có trong list của bạn rồi nhé ✿
                 </div>
               )}
             </div>
           ) : (
-            <div className="sugg-empty">
+            <div className="font-quicksand text-[0.88rem] text-ink-light text-center py-[14px] px-2 italic">
               Bấm nút để nhận gợi ý ngẫu nhiên từ{" "}
               {SUGGESTIONS[category as keyof typeof SUGGESTIONS]?.length || 0}{" "}
               {currentCategory?.label.toLowerCase()} ở Sài Gòn ✿
@@ -448,26 +481,41 @@ export default function SaveCategoryContent({
 
       {/* Tag Filter */}
       {allItems.length > 0 && presetTags.length > 0 && (
-        <div className="tag-filter">
-          <span className="tag-filter-label">Lọc theo thẻ:</span>
+        <div className="flex gap-1.5 flex-wrap my-1.5 mb-4.5 items-center">
+          <span className="font-quicksand text-[0.78rem] font-semibold text-ink-light mr-1">
+            Lọc theo thẻ:
+          </span>
           <button
             type="button"
             className={cn(
-              "tag-chip",
-              activeFilterTag === "__all__" && "active",
+              "font-quicksand font-semibold text-xs py-1 px-3 border-2 rounded-full cursor-pointer transition-all duration-200 hover:border-grass hover:text-ink",
+              activeFilterTag === "__all__"
+                ? "bg-grass text-white border-grass"
+                : "border-earth/25 bg-card text-ink-light",
             )}
             onClick={() => setActiveFilterTag("__all__")}
           >
-            Tất cả <span className="tag-count">({allItems.length})</span>
+            Tất cả{" "}
+            <span className="opacity-75 font-medium ml-0.5">
+              ({allItems.length})
+            </span>
           </button>
           {presetTags.map((t) => (
             <button
               key={t}
               type="button"
-              className={cn("tag-chip", activeFilterTag === t && "active")}
+              className={cn(
+                "font-quicksand font-semibold text-xs py-1 px-3 border-2 rounded-full cursor-pointer transition-all duration-200 hover:border-grass hover:text-ink",
+                activeFilterTag === t
+                  ? "bg-grass text-white border-grass"
+                  : "border-earth/25 bg-card text-ink-light",
+              )}
               onClick={() => setActiveFilterTag(t)}
             >
-              {t} <span className="tag-count">({tagCounts[t] || 0})</span>
+              {t}{" "}
+              <span className="opacity-75 font-medium ml-0.5">
+                ({tagCounts[t] || 0})
+              </span>
             </button>
           ))}
         </div>
@@ -475,26 +523,34 @@ export default function SaveCategoryContent({
 
       {/* Items List */}
       {allItems.length === 0 ? (
-        <div className="empty-state">
+        <div className="text-center p-12 text-ink-light">
           {currentCategory && (
-            <GhibliIcon type={currentCategory.ico} size={60} />
+            <GhibliIcon
+              type={currentCategory.ico}
+              size={60}
+              className="!mx-auto !mb-3 !opacity-25"
+            />
           )}
-          <p style={{ marginTop: "12px" }}>
+          <p className="mt-3 text-[0.95rem] font-medium">
             Chưa có gì ở đây cả... Hãy thêm kỷ niệm đầu tiên nhé!
           </p>
         </div>
       ) : filteredItems.length === 0 ? (
-        <div className="empty-state">
+        <div className="text-center p-12 text-ink-light">
           {currentCategory && (
-            <GhibliIcon type={currentCategory.ico} size={60} />
+            <GhibliIcon
+              type={currentCategory.ico}
+              size={60}
+              className="!mx-auto !mb-3 !opacity-25"
+            />
           )}
-          <p style={{ marginTop: "12px" }}>
+          <p className="mt-3 text-[0.95rem] font-medium">
             Không có mục nào với thẻ &quot;<strong>{activeFilterTag}</strong>
             &quot;.
           </p>
         </div>
       ) : (
-        <div className="items-grid">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
           {filteredItems.map((item) => (
             <SaveItemCard
               key={item.id}
