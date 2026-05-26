@@ -97,19 +97,21 @@ export default function HomePageContent() {
   }, [items, anniversaryDate]);
 
   if (isLoading) {
-    return <div className="loading-state">⏳ Đang tải…</div>;
+    return (
+      <div className="py-[100px] text-2xl font-pangolin text-center">
+        ⏳ Đang tải…
+      </div>
+    );
   }
 
   if (!isAuthenticated) {
     return (
-      <div className="guest-hero">
-        <h2 className="hero-text">
+      <div className="py-15 px-5 text-center">
+        <h2 className="text-[2.5rem] font-extrabold text-ink leading-tight">
           Gặp gỡ trong <br />
-          <span className="text-accent" style={{ color: "var(--sunset)" }}>
-            không gian riêng
-          </span>
+          <span className="text-sunset">không gian riêng</span>
         </h2>
-        <p className="hero-sub">
+        <p className="mt-5 text-ink-light text-[1.1rem]">
           Nơi lưu giữ những kỷ niệm quý giá nhất chỉ dành cho hai người.
         </p>
       </div>
@@ -117,27 +119,23 @@ export default function HomePageContent() {
   }
 
   return (
-    <div className="home-view">
-      <div style={{ textAlign: "center", padding: "16px 0" }}>
-        <h2 className="page-title">
-          <span className="pt-ico">
+    <div className="w-full">
+      <div className="text-center py-4">
+        <h2 className="font-pangolin text-[1.9rem] text-ink mb-5 pb-2.5 border-b-2 border-dashed border-earth inline-flex items-center gap-2.5">
+          <span className="w-8 h-8">
             <GhibliIcon type="totoro" size={32} />
           </span>
           Chào mừng trở lại~
         </h2>
 
         {/* Stats Grid */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-            gap: "16px",
-            marginTop: "20px",
-          }}
-        >
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 mt-5">
           {stats.map((s) => (
-            <div key={s.label} className="card stat-card">
-              <div className="stat-deco">
+            <div
+              key={s.label}
+              className="card relative overflow-hidden text-center p-5"
+            >
+              <div className="absolute w-[35px] h-[35px] opacity-12 bottom-2 right-2 pointer-events-none">
                 <GhibliIcon type={s.ico} size={35} />
               </div>
               <div
@@ -150,14 +148,7 @@ export default function HomePageContent() {
               >
                 {s.value}
               </div>
-              <div
-                style={{
-                  fontWeight: 600,
-                  color: "var(--ink-light)",
-                  fontSize: "0.88rem",
-                  marginTop: "8px",
-                }}
-              >
+              <div className="font-semibold text-ink-light text-[0.88rem] mt-2">
                 {s.label}
               </div>
             </div>
@@ -165,45 +156,39 @@ export default function HomePageContent() {
         </div>
 
         {/* Quote Card */}
-        <div className="card" style={{ marginTop: "20px" }}>
-          <p
-            style={{
-              fontFamily: '"Pangolin", cursive',
-              fontSize: "1.4rem",
-              color: "var(--ink-light)",
-            }}
-          >
+        <div className="card mt-5">
+          <p className="font-pangolin text-[1.4rem] text-ink-light">
             &quot;Mỗi khoảnh khắc nhỏ đều đáng được ghi nhớ...&quot;
           </p>
         </div>
       </div>
 
       {/* Spaces Management */}
-      <section className="spaces-section">
-        <div className="section-divider" />
-        <div className="spaces-container">
+      <section className="mt-10">
+        <div className="h-[2px] bg-[radial-gradient(circle,var(--earth)_0%,transparent_70%)] opacity-20 mb-[30px]" />
+        <div className="max-w-[600px] mx-auto">
           {spaces.map((space: Space) => (
             <div
               key={space.id}
-              className="space-item card"
-              style={{
-                marginBottom: "15px",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: "15px 25px",
-              }}
+              className="card mb-3.5 flex justify-between items-center p-[15px_25px]"
             >
-              <div className="space-info">
-                <span className="space-name">{space.name}</span>
-                <span className={`space-badge ${space.type}`}>
+              <div className="flex items-center gap-3">
+                <span className="font-bold text-[1.1rem]">{space.name}</span>
+                <span
+                  className={cn(
+                    "text-[0.7rem] py-0.5 px-2.5 rounded-[10px] font-bold",
+                    space.type === "personal"
+                      ? "bg-[#f1f5f9] text-[#64748b]"
+                      : "bg-[#fdf2f8] text-[#db2777]",
+                  )}
+                >
                   {space.type === "personal" ? "Cá nhân" : "Chung"}
                 </span>
               </div>
               {space.type === "shared" && (
                 <button
                   onClick={() => generateInviteMutation.mutate(space.id)}
-                  className="invite-btn"
+                  className="bg-transparent border-2 border-[#fecdd3] text-[#e11d48] text-[0.8rem] font-bold py-1.5 px-3.5 rounded-xl cursor-pointer transition-all duration-200 hover:bg-[#fff1f2] hover:scale-105"
                   type="button"
                 >
                   Tạo Link Mời ❤️
@@ -213,13 +198,13 @@ export default function HomePageContent() {
           ))}
 
           {!spaces.some((s: Space) => s.type === "shared") && (
-            <div className="no-spaces">
-              <p style={{ marginBottom: "12px", color: "var(--ink-light)" }}>
+            <div className="text-center p-[30px] bg-white/50 border-2 border-dashed border-earth rounded-[20px]">
+              <p className="mb-3 text-ink-light">
                 Bạn chưa có không gian chung nào.
               </p>
               <button
                 onClick={() => createSpaceMutation.mutate()}
-                className="create-btn"
+                className="bg-grass text-white border-none py-2.5 px-6 rounded-[15px] font-bold cursor-pointer hover:bg-grass-dark transition-colors duration-250"
                 type="button"
               >
                 Tạo nhà chung
@@ -228,13 +213,15 @@ export default function HomePageContent() {
           )}
 
           {inviteLink && (
-            <div className="invite-display">
-              <p className="invite-title">Magic Link đã sẵn sàng!</p>
-              <div className="invite-copy-row">
+            <div className="mt-5 p-[15px] bg-[#fffdf5] border border-[#eae0c0] rounded-xl animate-[fadeUp_0.3s_ease]">
+              <p className="font-pangolin font-bold text-sunset mb-2">
+                Magic Link đã sẵn sàng!
+              </p>
+              <div className="flex gap-2">
                 <input
                   readOnly
                   value={inviteLink}
-                  className="invite-input"
+                  className="flex-1 text-[0.85rem] p-[8px_12px] border border-[#eae0c0] rounded-lg outline-none bg-white"
                   aria-label="Đường dẫn mời tham gia"
                 />
                 <button
@@ -242,7 +229,7 @@ export default function HomePageContent() {
                     navigator.clipboard.writeText(inviteLink);
                     alert("Đã copy!");
                   }}
-                  className="copy-btn"
+                  className="bg-earth text-white border-none py-2 px-4 rounded-lg font-semibold cursor-pointer hover:bg-[#bfa065] transition-colors duration-200"
                   type="button"
                 >
                   Copy
