@@ -21,7 +21,7 @@
       "suspicious": {
         "noUnknownAtRules": "off",
         "noArrayIndexKey": "warn",
-        "noExplicitAny": "warn"
+        "noExplicitAny": "error"
       },
       "performance": {
         "noImgElement": "warn"
