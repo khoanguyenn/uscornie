@@ -222,13 +222,17 @@ export default function SaveCategoryContent({
 
     let next = null;
     for (let k = 0; k < 8; k++) {
-      next = candidates[Math.floor(Math.random() * candidates.length)];
-      if (
-        !currentSuggestion ||
-        next.n !== currentSuggestion.n ||
-        candidates.length === 1
-      ) {
-        break;
+      const candidate =
+        candidates[Math.floor(Math.random() * candidates.length)];
+      if (candidate !== undefined) {
+        next = candidate;
+        if (
+          !currentSuggestion ||
+          next.n !== currentSuggestion.n ||
+          candidates.length === 1
+        ) {
+          break;
+        }
       }
     }
 

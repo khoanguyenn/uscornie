@@ -9,9 +9,9 @@ import { useDataStore } from "@/stores/useDataStore";
 
 interface GiftSuggestion {
   title: string;
-  reason?: string;
-  desc?: string;
-  image?: string | null;
+  reason?: string | undefined;
+  desc?: string | undefined;
+  image?: string | null | undefined;
 }
 
 function GiftPageContentInner() {
@@ -67,7 +67,9 @@ function GiftPageContentInner() {
       setGiftRes({ title: "Chưa có gợi ý cho lựa chọn này 🙈", reason: "" });
     } else {
       const item = pool[Math.floor(Math.random() * pool.length)];
-      setGiftRes({ title: item, reason: "" });
+      if (item !== undefined) {
+        setGiftRes({ title: item, reason: "" });
+      }
     }
   };
 
@@ -80,11 +82,13 @@ function GiftPageContentInner() {
     if (!wishlistItems.length) return;
     const item =
       wishlistItems[Math.floor(Math.random() * wishlistItems.length)];
-    setGiftRes({
-      title: item.title,
-      desc: item.desc,
-      image: item.image,
-    });
+    if (item !== undefined) {
+      setGiftRes({
+        title: item.title,
+        desc: item.desc,
+        image: item.image,
+      });
+    }
   };
 
   return (

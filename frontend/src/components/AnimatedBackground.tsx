@@ -64,7 +64,7 @@ export default function AnimatedBackground() {
         duration: `${10 + Math.random() * 8}s`,
         delay: `${Math.random() * 10}s`,
         size: 14 + Math.random() * 10,
-        color: colors[i % colors.length],
+        color: colors[i % colors.length] || "#f2a0a0",
       });
     }
     setHearts(initialHearts);

@@ -85,7 +85,9 @@ export default function DatePageContent() {
 
     for (const slotId of selDateSlots) {
       const slotData = (DATE_DB[slotId as keyof typeof DATE_DB] ||
-        {}) as Record<string, { a: string; l?: string }[]>;
+        {}) as Record<string, { a: string; l?: string }[]> & {
+        khac?: { a: string; l?: string }[];
+      };
       const slotInfo = slotsMap.get(slotId);
       const activities: DateActivity[] = [];
 

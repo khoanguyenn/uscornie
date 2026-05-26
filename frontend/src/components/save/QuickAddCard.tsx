@@ -107,21 +107,23 @@ export default function QuickAddCard({
 
   const qaProcessCSV = (text: string, delim: string) => {
     const lines = text.split("\n").filter((l) => l.trim());
-    if (lines.length < 2) {
+    const firstLine = lines[0];
+    if (firstLine === undefined || lines.length < 2) {
       setQaResult({ msg: "File trống hoặc chỉ có header", isErr: true });
       return;
     }
 
-    const header = qaParseCSVLine(lines[0], delim).map((h) =>
+    const header = qaParseCSVLine(firstLine, delim).map((h) =>
       h.toLowerCase().trim(),
     );
-    const colMap: { [key: string]: number | undefined } = {
-      name: undefined,
-      addr: undefined,
-      desc: undefined,
-      tag: undefined,
-      img: undefined,
-    };
+    interface ColMap {
+      name?: number;
+      addr?: number;
+      desc?: number;
+      tag?: number;
+      img?: number;
+    }
+    const colMap: ColMap = {};
 
     const nameKeys = [
       "tên",
@@ -188,7 +190,9 @@ export default function QuickAddCard({
 
     const rows: ParsedFileRow[] = [];
     for (let i = 1; i < lines.length; i++) {
-      const cols = qaParseCSVLine(lines[i], delim);
+      const line = lines[i];
+      if (line === undefined) continue;
+      const cols = qaParseCSVLine(line, delim);
       const name = (cols[colMap.name ?? 0] || "").trim();
       if (!name) continue;
 
@@ -243,7 +247,14 @@ export default function QuickAddCard({
           try {
             const data = new Uint8Array(e.target?.result as ArrayBuffer);
             const wb = xlsxLib.read(data, { type: "array" });
-            const ws = wb.Sheets[wb.SheetNames[0]];
+            const firstSheetName = wb.SheetNames[0];
+            if (!firstSheetName) {
+              throw new Error("File Excel không có sheet nào");
+            }
+            const ws = wb.Sheets[firstSheetName];
+            if (!ws) {
+              throw new Error("Không thể đọc dữ liệu từ sheet đầu tiên");
+            }
             const csv = xlsxLib.utils.sheet_to_csv(ws);
             qaProcessCSV(csv, ",");
           } catch (err) {
