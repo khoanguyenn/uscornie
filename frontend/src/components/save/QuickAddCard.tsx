@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { useRef, useState } from "react";
-import type { SaveItem } from "@/types";
+import type { SaveItem } from "@/lib/types";
 
 type QuickAddImportItem = Omit<SaveItem, "id" | "createdAt" | "category">;
 
@@ -441,7 +441,7 @@ export default function QuickAddCard({
                       >
                         <strong>{r.name}</strong>
                         {r.desc && (
-                          <span className="text-ink-light"> — {r.desc}</span>
+                          <span className="text-ink-light">: {r.desc}</span>
                         )}
                         {r.tag && (
                           <span className="bg-petal py-0.5 px-1.5 rounded-md text-[0.7rem] ml-1">

@@ -1,6 +1,6 @@
-import GhibliIcon from "@/components/icons/GhibliIcon";
-import type { Category } from "@/types";
-import { cn } from "@/utils/cn";
+import GhibliIcon from "@/components/ui/GhibliIcon";
+import type { Category } from "@/lib/types";
+import { cn } from "@/lib/utils/cn";
 
 interface CategoryTabsProps {
   value: string;
@@ -27,7 +27,7 @@ export default function CategoryTabs({
           onClick={() => onChange(x.id)}
           type="button"
         >
-          <span className="w-4 h-4 flex items-center justify-center shrink-0">
+          <span className="size-4 flex items-center justify-center shrink-0">
             <GhibliIcon type={x.ico} size={16} />
           </span>
           <span className="leading-none">{x.label}</span>

@@ -6,18 +6,14 @@ import type React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import GhibliIcon from "@/components/icons/GhibliIcon";
 import QuickAddCard from "@/components/save/QuickAddCard";
 import SaveItemCard from "@/components/save/SaveItemCard";
-import {
-  HINTS,
-  SAVE_CATEGORIES,
-  SUGGESTIONS,
-  TAGS_BY_CATEGORY,
-} from "@/data/mock";
-import { useDataStore } from "@/stores/useDataStore";
-import type { SaveItem } from "@/types";
-import { cn } from "@/utils/cn";
+import SuggestionsCard from "@/components/save/SuggestionsCard";
+import GhibliIcon from "@/components/ui/GhibliIcon";
+import { HINTS, SAVE_CATEGORIES, TAGS_BY_CATEGORY } from "@/lib/data/mock";
+import { useDataStore } from "@/lib/providers/data-store-provider";
+import type { SaveItem } from "@/lib/types";
+import { cn } from "@/lib/utils/cn";
 
 interface SaveCategoryContentProps {
   category: string;
@@ -103,12 +99,6 @@ export default function SaveCategoryContent({
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-  // Suggestion state
-  const [currentSuggestion, setCurrentSuggestion] = useState<{
-    n: string;
-    d: string;
-  } | null>(null);
-
   // Filter state
   const [activeFilterTag, setActiveFilterTag] = useState("__all__");
 
@@ -134,7 +124,6 @@ export default function SaveCategoryContent({
     if (category) {
       setActiveFilterTag("__all__");
       clearForm();
-      setCurrentSuggestion(null);
     }
   }, [category, clearForm]);
 
@@ -172,17 +161,6 @@ export default function SaveCategoryContent({
     }
     return counts;
   }, [allItems, presetTags]);
-
-  // Derived state — automatically true after addItem updates items slice
-  const isSuggestionAlreadyInList = useMemo(() => {
-    if (!currentSuggestion) return false;
-    return items.some(
-      (i) =>
-        i.category === category &&
-        i.title.trim().toLowerCase() ===
-          currentSuggestion.n.trim().toLowerCase(),
-    );
-  }, [currentSuggestion, items, category]);
 
   const selectPresetTag = (tag: string) => {
     setValue("tag", formTag === tag ? "" : tag);
@@ -240,57 +218,6 @@ export default function SaveCategoryContent({
         clearForm();
       }
     }
-  };
-
-  // Suggestions
-  const pickRandomSuggestion = () => {
-    const pool = SUGGESTIONS[category as keyof typeof SUGGESTIONS];
-    if (!pool || !pool.length) return;
-
-    const existingNames = items.reduce((acc, i) => {
-      if (i.category === category) {
-        acc.add(i.title.trim().toLowerCase());
-      }
-      return acc;
-    }, new Set<string>());
-
-    const fresh = pool.filter(
-      (p) => !existingNames.has(p.n.trim().toLowerCase()),
-    );
-    const candidates = fresh.length > 0 ? fresh : pool;
-
-    let next = null;
-    for (let k = 0; k < 8; k++) {
-      const candidate =
-        candidates[Math.floor(Math.random() * candidates.length)];
-      if (candidate !== undefined) {
-        next = candidate;
-        if (
-          !currentSuggestion ||
-          next.n !== currentSuggestion.n ||
-          candidates.length === 1
-        ) {
-          break;
-        }
-      }
-    }
-
-    if (next) {
-      setCurrentSuggestion(next);
-    }
-  };
-
-  const addSuggestionToList = () => {
-    if (!currentSuggestion) return;
-    addItem({
-      category,
-      title: currentSuggestion.n,
-      desc: currentSuggestion.d,
-      tag: "",
-      image: null,
-    });
-    // isSuggestionAlreadyInList updates automatically via derived useMemo
-    alert(`Đã thêm "${currentSuggestion.n}" vào list!`);
   };
 
   const handleBulkImport = (
@@ -376,7 +303,10 @@ export default function SaveCategoryContent({
         </div>
 
         <div className="form-group">
-          <label className="file-upload-label" htmlFor="if">
+          <label
+            className="inline-flex items-center gap-2 font-quicksand font-semibold text-[0.85rem] py-2.5 px-5 border-2 border-dashed border-earth rounded-xl bg-cream text-ink-light cursor-pointer transition-all duration-300 hover:border-grass hover:text-grass-dark"
+            htmlFor="if"
+          >
             Chọn hình ảnh
           </label>
           <input
@@ -415,67 +345,21 @@ export default function SaveCategoryContent({
       </form>
 
       {/* Suggestions (if available) */}
-      {SUGGESTIONS[category as keyof typeof SUGGESTIONS] && (
-        <div className="card bg-gradient-to-br from-[#fef7ec] to-[#fdf0e0] border-2 border-dashed border-[#f4a460]/35">
-          <div className="flex justify-between items-center gap-3 flex-wrap mb-3">
-            <div className="font-pangolin text-[1.2rem] text-earth flex items-center gap-2">
-              <GhibliIcon type="calcifer" size={22} />
-              Gợi ý {currentCategory?.label.toLowerCase()}
-            </div>
-            <button
-              type="button"
-              className="btn btn-primary btn-small"
-              onClick={pickRandomSuggestion}
-            >
-              {currentSuggestion ? "Gợi ý khác" : "Bốc thử một quán"}
-            </button>
-          </div>
-
-          {currentSuggestion ? (
-            <div className="bg-card rounded-[14px] p-4 shadow-sm">
-              <div className="font-pangolin text-[1.25rem] text-ink flex items-center gap-2 mb-2">
-                {currentCategory && (
-                  <GhibliIcon type={currentCategory.ico} size={20} />
-                )}
-                {currentSuggestion.n}
-              </div>
-              <div className="font-quicksand text-[0.9rem] text-ink-light leading-[1.55] mb-3.5">
-                {currentSuggestion.d}
-              </div>
-              <div className="flex gap-2 flex-wrap">
-                <button
-                  type="button"
-                  className="btn btn-primary btn-small"
-                  onClick={addSuggestionToList}
-                >
-                  <span className="inline-flex items-center gap-1">
-                    <GhibliIcon type="heart" size={16} />
-                    Thêm vào list
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-secondary btn-small"
-                  onClick={pickRandomSuggestion}
-                >
-                  🔄 Gợi ý khác
-                </button>
-              </div>
-              {isSuggestionAlreadyInList && (
-                <div className="mt-2.5 text-[0.8rem] text-sunset italic text-center">
-                  Quán này đã có trong list của bạn rồi nhé ✿
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="font-quicksand text-[0.88rem] text-ink-light text-center py-[14px] px-2 italic">
-              Bấm nút để nhận gợi ý ngẫu nhiên từ{" "}
-              {SUGGESTIONS[category as keyof typeof SUGGESTIONS]?.length || 0}{" "}
-              {currentCategory?.label.toLowerCase()} ở Sài Gòn ✿
-            </div>
-          )}
-        </div>
-      )}
+      <SuggestionsCard
+        category={category}
+        categoryLabel={currentCategory?.label || ""}
+        categoryIcon={currentCategory?.ico || ""}
+        items={items}
+        onAddSuggestion={(title, desc) => {
+          addItem({
+            category,
+            title,
+            desc,
+            tag: "",
+            image: null,
+          });
+        }}
+      />
 
       {/* Quick Add */}
       <QuickAddCard

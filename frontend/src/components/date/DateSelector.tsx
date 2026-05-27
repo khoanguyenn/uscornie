@@ -1,7 +1,7 @@
 "use client";
 
-import GhibliIcon from "@/components/icons/GhibliIcon";
-import { DATE_MOODS, DATE_SLOTS } from "@/data/mock";
+import GhibliIcon from "@/components/ui/GhibliIcon";
+import { DATE_MOODS, DATE_SLOTS } from "@/lib/data/mock";
 
 interface DateSelectorProps {
   selectedSlots: string[];

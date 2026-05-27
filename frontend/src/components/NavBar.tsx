@@ -4,9 +4,9 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type React from "react";
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
-import { GIFT_MODES, SAVE_CATEGORIES } from "@/data/mock";
-import { cn } from "@/utils/cn";
-import GhibliIcon from "./icons/GhibliIcon";
+import GhibliIcon from "@/components/ui/GhibliIcon";
+import { GIFT_MODES, SAVE_CATEGORIES } from "@/lib/data/mock";
+import { cn } from "@/lib/utils/cn";
 
 function NavBarContent() {
   const pathname = usePathname();

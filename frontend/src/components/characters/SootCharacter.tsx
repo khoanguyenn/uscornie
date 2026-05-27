@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { legs, spikeRing, starPts } from "@/utils/svgHelpers";
+import { legs, spikeRing, starPts } from "@/lib/utils/svgHelpers";
 
 interface SootCharacterProps {
   size?: number;
@@ -102,25 +102,30 @@ export default function SootCharacter({
         />
       </ellipse>
 
-      {sootLegs.map((leg, i) => (
-        <line
-          key={`leg-${leg.x1}-${leg.y1}-${i}`}
-          x1={leg.x1}
-          y1={leg.y1}
-          x2={leg.x2}
-          y2={leg.y2}
-          stroke="#1a1714"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        >
-          <animate
-            attributeName="y2"
-            values={`${leg.y2};${leg.y2 * 0.6};${leg.y2}`}
-            dur={`${leg.dur}s`}
-            repeatCount="indefinite"
-          />
-        </line>
-      ))}
+      {sootLegs.map(
+        (
+          leg: { x1: number; y1: number; x2: number; y2: number; dur: number },
+          i: number,
+        ) => (
+          <line
+            key={`leg-${leg.x1}-${leg.y1}-${i}`}
+            x1={leg.x1}
+            y1={leg.y1}
+            x2={leg.x2}
+            y2={leg.y2}
+            stroke="#1a1714"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          >
+            <animate
+              attributeName="y2"
+              values={`${leg.y2};${leg.y2 * 0.6};${leg.y2}`}
+              dur={`${leg.dur}s`}
+              repeatCount="indefinite"
+            />
+          </line>
+        ),
+      )}
 
       {processedStars.map((star, i) => (
         <polygon

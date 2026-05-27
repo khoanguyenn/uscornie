@@ -1,7 +1,7 @@
 "use client";
 
-import GhibliIcon from "@/components/icons/GhibliIcon";
-import { DATE_MOODS } from "@/data/mock";
+import GhibliIcon from "@/components/ui/GhibliIcon";
+import { DATE_MOODS } from "@/lib/data/mock";
 
 interface DateActivity {
   a: string;

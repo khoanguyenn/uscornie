@@ -1,6 +1,6 @@
 import Image from "next/image";
-import GhibliIcon from "@/components/icons/GhibliIcon";
-import type { SaveItem } from "@/types";
+import GhibliIcon from "@/components/ui/GhibliIcon";
+import type { SaveItem } from "@/lib/types";
 
 interface SaveItemCardProps {
   item: SaveItem;
@@ -24,6 +24,7 @@ export default function SaveItemCard({
             alt={item.title}
             fill
             className="object-cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         </div>
       ) : (

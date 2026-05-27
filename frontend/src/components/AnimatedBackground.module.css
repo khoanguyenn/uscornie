@@ -1,0 +1,205 @@
+.animateDrift {
+  animation: drift 120s linear infinite;
+}
+.animateDriftReverse {
+  animation: driftReverse 150s linear infinite;
+}
+.animateCharBob {
+  animation: charBob 4s ease-in-out infinite;
+}
+.animateCalciferBob {
+  animation: calciferBob 3s ease-in-out infinite;
+}
+.animateSootBounceA {
+  animation:
+    sootBounce 2.5s ease-in-out infinite,
+    sootDrift1 20s ease-in-out infinite;
+}
+.animateSootBounceB {
+  animation:
+    sootBounce 2s ease-in-out infinite 0.5s,
+    sootDrift2 22s ease-in-out infinite;
+}
+.animateSootBounceC {
+  animation:
+    sootBounce 2.8s ease-in-out infinite 1s,
+    sootDrift3 18s ease-in-out infinite;
+}
+.animateSootBounceD {
+  animation: sootBounce 2.2s ease-in-out infinite 0.3s;
+}
+.animateHeartFloat {
+  animation: heartFloat linear infinite;
+}
+.animateSway {
+  animation: pureSway 4s ease-in-out infinite;
+}
+.animateSwaySlow {
+  animation: pureSway 6s ease-in-out infinite;
+}
+.animateButterflyFloat {
+  animation: butterflyFloat 10s ease-in-out infinite;
+}
+.animateBugFloat {
+  animation: bugFloat 6s ease-in-out infinite;
+}
+.animateWingFlap {
+  animation: wingFlap 0.5s ease-in-out infinite alternate;
+}
+.animateWingFlapR {
+  animation: wingFlapR 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes drift {
+  from {
+    left: -250px;
+  }
+  to {
+    left: 110vw;
+  }
+}
+@keyframes driftReverse {
+  from {
+    right: -250px;
+  }
+  to {
+    right: 110vw;
+  }
+}
+@keyframes charBob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+@keyframes calciferBob {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.04);
+  }
+}
+@keyframes sootBounce {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+  30% {
+    transform: translateY(-14px) rotate(-6deg);
+  }
+  60% {
+    transform: translateY(-4px) rotate(4deg);
+  }
+}
+@keyframes sootDrift1 {
+  0%,
+  100% {
+    left: 15%;
+  }
+  50% {
+    left: 20%;
+  }
+}
+@keyframes sootDrift2 {
+  0%,
+  100% {
+    left: 22%;
+  }
+  50% {
+    left: 26%;
+  }
+}
+@keyframes sootDrift3 {
+  0%,
+  100% {
+    right: 18%;
+  }
+  50% {
+    right: 24%;
+  }
+}
+@keyframes sootDrift4 {
+  0%,
+  100% {
+    left: 40%;
+  }
+  50% {
+    left: 45%;
+  }
+}
+@keyframes heartFloat {
+  0% {
+    bottom: -20px;
+    opacity: 0;
+    transform: translateX(0) scale(0.6);
+  }
+  10% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.35;
+    transform: translateX(20px) scale(1);
+  }
+  90% {
+    opacity: 0.1;
+  }
+  100% {
+    bottom: 105%;
+    opacity: 0;
+    transform: translateX(-15px) scale(0.7);
+  }
+}
+@keyframes pureSway {
+  0%,
+  100% {
+    transform: rotate(-3deg) translateY(0);
+  }
+  50% {
+    transform: rotate(3deg) translateY(0);
+  }
+}
+@keyframes butterflyFloat {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(30px, -20px) rotate(5deg);
+  }
+  50% {
+    transform: translate(60px, 0px) rotate(-5deg);
+  }
+  75% {
+    transform: translate(30px, 20px) rotate(5deg);
+  }
+}
+@keyframes bugFloat {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-20px);
+  }
+}
+@keyframes wingFlap {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0.2);
+  }
+}
+@keyframes wingFlapR {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0.2);
+  }
+}

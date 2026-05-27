@@ -3,7 +3,7 @@ import type {
   GiftMode,
   SuggestionsMap,
   TagsByCategoryMap,
-} from "@/types";
+} from "@/lib/types";
 
 export const SAVE_CATEGORIES: Category[] = [
   { id: "wishlist", label: "Wishlist quà tặng", ico: "gift" },

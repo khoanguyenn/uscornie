@@ -4,11 +4,11 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import AnimatedBackground from "@/components/AnimatedBackground";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
-import GhibliIcon from "@/components/icons/GhibliIcon";
 import NavBar from "@/components/NavBar";
-import { authService } from "@/services/authService";
-import { useAuthStore } from "@/stores/useAuthStore";
-import { cn } from "@/utils/cn";
+import GhibliIcon from "@/components/ui/GhibliIcon";
+import { useAuthStore } from "@/lib/providers/auth-store-provider";
+import { authService } from "@/lib/services/authService";
+import { cn } from "@/lib/utils/cn";
 
 export default function MainLayout({
   children,
@@ -70,7 +70,7 @@ export default function MainLayout({
           type="button"
           aria-label="Trang chủ"
         >
-          <div className="w-[60px] h-[60px] bg-[#fdf8f0] border-2 border-[#c9a96e] rounded-[16px] flex items-center justify-center shadow-[inset_0_0_10px_rgba(201,169,110,0.2),0_4px_12px_rgba(74,64,51,0.1)] relative after:content-[''] after:absolute after:inset-[4px] after:border after:border-[#c9a96e]/30 after:rounded-[12px]">
+          <div className="size-[60px] bg-[#fdf8f0] border-2 border-[#c9a96e] rounded-[16px] flex items-center justify-center shadow-[inset_0_0_10px_rgba(201,169,110,0.2),0_4px_12px_rgba(74,64,51,0.1)] relative after:content-[''] after:absolute after:inset-[4px] after:border after:border-[#c9a96e]/30 after:rounded-[12px]">
             <GhibliIcon type="leaf" size={40} />
           </div>
         </button>
