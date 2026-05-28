@@ -259,8 +259,10 @@ export default function SaveCategoryContent({
           placeholder={hints.d}
         />
 
-        <div className="form-group">
-          <span className="form-label">Gắn thẻ</span>
+        <div className="mb-4">
+          <span className="block font-semibold text-[0.9rem] text-ink mb-1.5">
+            Gắn thẻ
+          </span>
           <div className="flex gap-2 flex-wrap mt-1">
             {presetTags.map((t, idx) => {
               const tagStyle = tagPickStyles[idx % tagPickStyles.length] ||
@@ -295,7 +297,7 @@ export default function SaveCategoryContent({
           </div>
         </div>
 
-        <div className="form-group">
+        <div className="mb-4">
           <label
             className="inline-flex items-center gap-2 font-quicksand font-semibold text-[0.85rem] py-2.5 px-5 border-2 border-dashed border-earth rounded-xl bg-cream text-ink-light cursor-pointer transition-all duration-300 hover:border-grass hover:text-grass-dark"
             htmlFor="if"
