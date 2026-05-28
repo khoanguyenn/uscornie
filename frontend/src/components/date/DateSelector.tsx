@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/Button";
 import GhibliIcon from "@/components/ui/GhibliIcon";
 import { DATE_MOODS, DATE_SLOTS } from "@/lib/data/mock";
 
@@ -85,14 +86,14 @@ export default function DateSelector({
 
       {selectedSlots.length > 0 && selectedMoods.length > 0 ? (
         <div className="text-center">
-          <button
-            className="btn btn-primary !py-[13px] !px-10 text-[1rem] inline-flex items-center gap-2 cursor-pointer"
+          <Button
+            className="!py-[13px] !px-10 text-[1rem]"
             onClick={onGenerate}
             type="button"
           >
             <GhibliIcon type="heart" size={16} color="#fff" />
             Tạo kế hoạch hẹn hò
-          </button>
+          </Button>
         </div>
       ) : (
         <div className="text-center text-ink-light text-[0.9rem] py-2">

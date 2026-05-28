@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Button } from "@/components/ui/Button";
 import GhibliIcon from "@/components/ui/GhibliIcon";
 import { SUGGESTIONS } from "@/lib/data/mock";
 import type { SaveItem } from "@/lib/types";
@@ -97,13 +98,9 @@ export default function SuggestionsCard({
           <GhibliIcon type="calcifer" size={22} />
           Gợi ý {categoryLabel.toLowerCase()}
         </div>
-        <button
-          type="button"
-          className="btn btn-primary btn-small"
-          onClick={pickRandomSuggestion}
-        >
+        <Button size="small" onClick={pickRandomSuggestion}>
           {currentSuggestion ? "Gợi ý khác" : "Bốc thử một quán"}
-        </button>
+        </Button>
       </div>
 
       {currentSuggestion ? (
@@ -116,23 +113,19 @@ export default function SuggestionsCard({
             {currentSuggestion.d}
           </div>
           <div className="flex gap-2 flex-wrap">
-            <button
-              type="button"
-              className="btn btn-primary btn-small"
-              onClick={handleAddSuggestion}
-            >
+            <Button size="small" onClick={handleAddSuggestion}>
               <span className="inline-flex items-center gap-1">
                 <GhibliIcon type="heart" size={16} />
                 Thêm vào list
               </span>
-            </button>
-            <button
-              type="button"
-              className="btn btn-secondary btn-small"
+            </Button>
+            <Button
+              variant="secondary"
+              size="small"
               onClick={pickRandomSuggestion}
             >
               🔄 Gợi ý khác
-            </button>
+            </Button>
           </div>
           {isSuggestionAlreadyInList && (
             <div className="mt-2.5 text-[0.8rem] text-sunset italic text-center">

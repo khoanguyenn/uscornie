@@ -2,6 +2,7 @@
 
 import type React from "react";
 import { useRef, useState } from "react";
+import { Button } from "@/components/ui/Button";
 import type { SaveItem } from "@/lib/types";
 
 type QuickAddImportItem = Omit<SaveItem, "id" | "createdAt" | "category">;
@@ -373,13 +374,9 @@ export default function QuickAddCard({
                 placeholder={`VD:\nPhở Thìn Bờ Hồ - Phở bò tái chín, nước dùng đậm - Must try\nBún chả Hương Liên - Obama đã ăn ở đây\nCơm tấm Bụi Sài Gòn`}
               />
               <div className="flex gap-2 mt-2.5 items-center">
-                <button
-                  className="btn btn-primary btn-small"
-                  onClick={qaParseText}
-                  type="button"
-                >
+                <Button size="small" onClick={qaParseText} type="button">
                   Thêm tất cả
-                </button>
+                </Button>
                 {qaResult.msg && (
                   <span
                     className={`inline-block text-[0.82rem] font-semibold p-[8px_12px] rounded-lg ${
@@ -457,20 +454,17 @@ export default function QuickAddCard({
                     )}
                   </div>
                   <div className="flex gap-2 mt-2.5 items-center">
-                    <button
-                      className="btn btn-primary btn-small"
-                      onClick={qaImportRows}
-                      type="button"
-                    >
+                    <Button size="small" onClick={qaImportRows} type="button">
                       Import {fileRows.length} mục
-                    </button>
-                    <button
-                      className="btn btn-secondary btn-small"
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      size="small"
                       onClick={cancelImport}
                       type="button"
                     >
                       Huỷ
-                    </button>
+                    </Button>
                   </div>
                 </div>
               )}

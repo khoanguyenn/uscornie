@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/Button";
 import GhibliIcon from "@/components/ui/GhibliIcon";
 import { DATE_MOODS } from "@/lib/data/mock";
 
@@ -110,20 +111,17 @@ export default function PlanResultCard({
       </div>
 
       <div className="text-center mt-3">
-        <button
-          className="btn btn-secondary mr-2 cursor-pointer"
+        <Button
+          variant="secondary"
+          className="mr-2"
           onClick={onRegenerate}
           type="button"
         >
           🔄 Tạo lại
-        </button>
-        <button
-          className="btn btn-primary cursor-pointer"
-          onClick={onReset}
-          type="button"
-        >
+        </Button>
+        <Button onClick={onReset} type="button">
           Đặt lại
-        </button>
+        </Button>
       </div>
     </div>
   );

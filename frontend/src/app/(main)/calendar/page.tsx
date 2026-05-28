@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import GhibliIcon from "@/components/ui/GhibliIcon";
+import { Input } from "@/components/ui/Input";
 import { OCCASIONS } from "@/lib/data/mock";
 import { useDataStore } from "@/lib/providers/data-store-provider";
 
@@ -183,28 +184,24 @@ export default function Page() {
       </div>
 
       <div className="card">
-        <div className="form-group">
-          <label htmlFor="birthday-input">Ngày sinh nhật</label>
-          <input
-            id="birthday-input"
-            type="date"
-            className="form-input max-w-[220px]"
-            value={birthdayDate}
-            onChange={(e) => setBirthdayDate(e.target.value)}
-            aria-label="Ngày sinh nhật"
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="anniversary-input">Ngày anniversary</label>
-          <input
-            id="anniversary-input"
-            type="date"
-            className="form-input max-w-[220px]"
-            value={anniversaryDate}
-            onChange={(e) => setAnniversaryDate(e.target.value)}
-            aria-label="Ngày kỷ niệm"
-          />
-        </div>
+        <Input
+          id="birthday-input"
+          label="Ngày sinh nhật"
+          type="date"
+          className="max-w-[220px]"
+          value={birthdayDate}
+          onChange={(e) => setBirthdayDate(e.target.value)}
+          aria-label="Ngày sinh nhật"
+        />
+        <Input
+          id="anniversary-input"
+          label="Ngày anniversary"
+          type="date"
+          className="max-w-[220px]"
+          value={anniversaryDate}
+          onChange={(e) => setAnniversaryDate(e.target.value)}
+          aria-label="Ngày kỷ niệm"
+        />
       </div>
 
       <div className="card">

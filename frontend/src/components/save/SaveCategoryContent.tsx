@@ -9,7 +9,10 @@ import * as z from "zod";
 import QuickAddCard from "@/components/save/QuickAddCard";
 import SaveItemCard from "@/components/save/SaveItemCard";
 import SuggestionsCard from "@/components/save/SuggestionsCard";
+import { Button } from "@/components/ui/Button";
 import GhibliIcon from "@/components/ui/GhibliIcon";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/Textarea";
 import { HINTS, SAVE_CATEGORIES, TAGS_BY_CATEGORY } from "@/lib/data/mock";
 import { useDataStore } from "@/lib/providers/data-store-provider";
 import type { SaveItem } from "@/lib/types";
@@ -241,30 +244,20 @@ export default function SaveCategoryContent({
           {editingItemId ? "Sửa mục:" : "Thêm vào:"} {currentCategory?.label}
         </div>
 
-        <div className="form-group">
-          <label htmlFor="title-input">Tiêu đề</label>
-          <input
-            id="title-input"
-            {...register("title")}
-            className="form-input"
-            placeholder={hints.t}
-          />
-          {errors.title && (
-            <p className="text-[#c97070] text-[0.8rem] mt-1">
-              {errors.title.message}
-            </p>
-          )}
-        </div>
+        <Input
+          id="title-input"
+          label="Tiêu đề"
+          {...register("title")}
+          placeholder={hints.t}
+          error={errors.title?.message}
+        />
 
-        <div className="form-group">
-          <label htmlFor="desc-input">Mô tả</label>
-          <textarea
-            id="desc-input"
-            {...register("desc")}
-            className="form-textarea"
-            placeholder={hints.d}
-          />
-        </div>
+        <Textarea
+          id="desc-input"
+          label="Mô tả"
+          {...register("desc")}
+          placeholder={hints.d}
+        />
 
         <div className="form-group">
           <span className="form-label">Gắn thẻ</span>
@@ -329,17 +322,11 @@ export default function SaveCategoryContent({
         </div>
 
         <div className="flex gap-2.5 mt-2">
-          <button type="submit" className="btn btn-primary">
-            Lưu lại
-          </button>
+          <Button type="submit">Lưu lại</Button>
           {editingItemId && (
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={clearForm}
-            >
+            <Button type="button" variant="secondary" onClick={clearForm}>
               Huỷ
-            </button>
+            </Button>
           )}
         </div>
       </form>

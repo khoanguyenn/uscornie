@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useState } from "react";
+import { Button } from "@/components/ui/Button";
 import GhibliIcon from "@/components/ui/GhibliIcon";
 import { EXCEL_GIFTS, OCCASIONS } from "@/lib/data/mock";
 import { useDataStore } from "@/lib/providers/data-store-provider";
@@ -180,13 +181,13 @@ function GiftPageContentInner() {
 
           {selOcc && selGender && (
             <div className="text-center my-1 mb-6">
-              <button
-                className="btn btn-primary !py-3.5 !px-10 text-[1rem] cursor-pointer"
+              <Button
+                className="!py-3.5 !px-10 text-[1rem]"
                 onClick={doRG}
                 type="button"
               >
                 ✨ Gợi ý giúp mình
-              </button>
+              </Button>
             </div>
           )}
 
@@ -206,13 +207,9 @@ function GiftPageContentInner() {
                 </div>
               )}
               <div className="mt-5">
-                <button
-                  className="btn btn-secondary cursor-pointer"
-                  onClick={doRG}
-                  type="button"
-                >
+                <Button variant="secondary" onClick={doRG} type="button">
                   🔄 Gợi ý khác
-                </button>
+                </Button>
               </div>
             </div>
           )}
@@ -247,13 +244,13 @@ function GiftPageContentInner() {
 
           {selOcc && wishlistItems.length > 0 && (
             <div className="text-center my-5">
-              <button
-                className="btn btn-primary !py-3.5 !px-9 text-[1rem] cursor-pointer"
+              <Button
+                className="!py-3.5 !px-9 text-[1rem]"
                 onClick={doWG}
                 type="button"
               >
                 Bốc quà từ Wishlist
-              </button>
+              </Button>
             </div>
           )}
 
@@ -281,13 +278,9 @@ function GiftPageContentInner() {
                 />
               )}
               <div className="mt-4">
-                <button
-                  className="btn btn-secondary cursor-pointer"
-                  onClick={doWG}
-                  type="button"
-                >
+                <Button variant="secondary" onClick={doWG} type="button">
                   Bốc lại
-                </button>
+                </Button>
               </div>
             </div>
           )}
