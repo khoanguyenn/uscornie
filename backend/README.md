@@ -6,12 +6,37 @@ A high-performance FastAPI backend service built with Python 3.12+, SQLAlchemy 2
 
 The backend follows a domain-driven feature folder layout:
 
-*   [auth/](file:///Users/khoanguyen/work/uscornie/backend/auth/) - Authentication, user session management, and the `User` ORM model.
-*   [spaces/](file:///Users/khoanguyen/work/uscornie/backend/spaces/) - Shared and personal workspaces, membership management, and workspace ORM models.
-*   [invites/](file:///Users/khoanguyen/work/uscornie/backend/invites/) - Workspace invitation token generation, validation, and invitation ORM models.
-*   [models/](file:///Users/khoanguyen/work/uscornie/backend/models/) - Unified database registry index for re-exporting ORM models to prevent circular imports.
+```text
+backend/
+├── auth/                 # User profiles, login auth APIs & models
+│   ├── model.py          # User database ORM model
+│   ├── endpoints.py      # API endpoints for authentication
+│   ├── service.py        # Auth business logic
+│   └── repository.py     # User-specific query logic
+├── spaces/               # Shared & personal workspace management
+│   ├── model.py          # Space & SpaceMember database ORM models
+│   ├── endpoints.py      # API endpoints for workspaces
+│   ├── service.py        # Workspace business logic
+│   └── repository.py     # Workspace-specific query logic
+├── invites/              # Token-based workspace invitations
+│   ├── model.py          # Invitation database ORM model
+│   ├── endpoints.py      # API endpoints for invites
+│   ├── service.py        # Invitation business logic
+│   └── repository.py     # Invitation-specific query logic
+├── models/               # Centralized ORM re-export registry
+│   └── __init__.py       # Exposes all models to prevent circular imports
+├── migrations/           # Alembic database migrations & version history
+├── kit/                  # Shared core infrastructure (DB session, global exceptions)
+└── tests/                # Unit and integration test suites
+```
+
+Detailed Domain Folders:
+*   [auth/](file:///Users/khoanguyen/work/uscornie/backend/auth/) - Authentication, user session management, and `User` model.
+*   [spaces/](file:///Users/khoanguyen/work/uscornie/backend/spaces/) - Shared and personal workspaces, membership management, and `Space`/`SpaceMember` models.
+*   [invites/](file:///Users/khoanguyen/work/uscornie/backend/invites/) - Invitation token registry and `Invitation` model.
+*   [models/](file:///Users/khoanguyen/work/uscornie/backend/models/) - Unified database registry index for re-exporting ORM models.
 *   [migrations/](file:///Users/khoanguyen/work/uscornie/backend/migrations/) - Alembic database migration scripts.
-*   [kit/](file:///Users/khoanguyen/work/uscornie/backend/kit/) - Shared core infrastructure (database session generator, UUID/time helpers, global exception handling).
+*   [kit/](file:///Users/khoanguyen/work/uscornie/backend/kit/) - Shared core infrastructure (database session generator, UUID/time helpers).
 *   [tests/](file:///Users/khoanguyen/work/uscornie/backend/tests/) - Comprehensive integration and service-level test suites.
 
 ---
