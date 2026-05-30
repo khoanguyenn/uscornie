@@ -5,7 +5,7 @@ from main import app
 
 def test_validation_error_response_format():
     client = TestClient(app)
-    # Gửi request thiếu trường `credential` bắt buộc lên /auth/google
+    # Send request missing required `credential` body field to /auth/google
     response = client.post("/auth/google", json={})
 
     assert response.status_code == 422
@@ -20,7 +20,7 @@ def test_validation_error_response_format():
 
 def test_http_exception_404_format():
     client = TestClient(app)
-    # Truy cập một route không tồn tại
+    # Request a non-existent route
     response = client.get("/non-existent-route-12345")
 
     assert response.status_code == 404
@@ -33,7 +33,7 @@ def test_http_exception_404_format():
 
 def test_auth_unauthorized_missing_token_format():
     client = TestClient(app)
-    # Truy cập route được bảo vệ không có token -> Bị chặn bởi OAuth2PasswordBearer
+    # Request protected route without token -> Blocked by OAuth2PasswordBearer
     response = client.get("/spaces/me")
 
     assert response.status_code == 401
@@ -46,7 +46,7 @@ def test_auth_unauthorized_missing_token_format():
 
 def test_auth_unauthorized_invalid_token_format():
     client = TestClient(app)
-    # Truy cập với token không hợp lệ -> Bị chặn bởi logic xác thực JWT (CredentialsError)
+    # Request with invalid token -> Blocked by JWT auth logic (CredentialsError)
     response = client.get(
         "/spaces/me", headers={"Authorization": "Bearer invalid-token"}
     )

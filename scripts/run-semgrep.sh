@@ -1,8 +1,8 @@
 #!/bin/bash
-# Chặn script nếu có lỗi xảy ra
+# Exit immediately if a command exits with a non-zero status
 set -e
 
-echo "🔍 Đang chạy quét bảo mật tĩnh bằng Semgrep..."
+echo "🔍 Running static security scan using Semgrep..."
 semgrep scan \
   --config p/default \
   --config p/python \
