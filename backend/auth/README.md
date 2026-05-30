@@ -93,16 +93,52 @@ Consider a scenario where Token A is compromised (intercepted or stolen):
 
 #### Scenario 1: The legitimate user refreshes first
 
-1. **User Refreshes**: The legitimate user submits Token A for a refresh.
-2. **Server Response**: The server invalidates Token A, creates Token B, and returns Token B to the user.
-3. **Attacker Attempts**: The attacker later submits the stolen Token A for a refresh.
-4. **Detection**: The server checks Token A, sees it is inactive and has already been refreshed (rotated to Token B).
-5. **Revocation**: The server detects a replay attack, revokes all active sessions for the user (including Token B), logging out both the user and the attacker to secure the account.
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as Legitimate User
+    actor Attacker
+    participant Backend as Backend
+    participant DB as Database
+
+    %% User Refreshes
+    User->>Backend: POST /auth/refresh (Cookie: refresh_token = Token A)
+    Backend->>DB: Set Token A is_active = False, Create Token B (parent_id = A)
+    DB-->>Backend: Confirmed
+    Backend-->>User: Return Token B
+
+    %% Attacker Attempts Replay
+    Attacker->>Backend: POST /auth/refresh (Cookie: refresh_token = Token A)
+    Backend->>DB: Check Token A status (Inactive, parent_id A exists in child B)
+    Note over Backend, DB: Replay Detected!
+    Backend->>DB: Deactivate all user sessions (Revokes Token B)
+    DB-->>Backend: Confirmed
+    Backend-->>Attacker: Return 401 SESSION_REUSED
+    Note over User, Attacker: Both parties logged out!
+```
 
 #### Scenario 2: The attacker refreshes first
 
-1. **Attacker Refreshes**: The attacker submits the stolen Token A for a refresh.
-2. **Server Response**: The server invalidates Token A, creates Token B, and returns Token B to the attacker.
-3. **User Attempts**: The legitimate user later submits Token A for a refresh.
-4. **Detection**: The server checks Token A, sees it is inactive and has already been refreshed (rotated to Token B).
-5. **Revocation**: The server detects a replay attack, revokes all active sessions (including Token B currently held by the attacker). Both parties are logged out, terminating the attacker's unauthorized access.
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as Legitimate User
+    actor Attacker
+    participant Backend as Backend
+    participant DB as Database
+
+    %% Attacker Refreshes First
+    Attacker->>Backend: POST /auth/refresh (Cookie: refresh_token = Token A)
+    Backend->>DB: Set Token A is_active = False, Create Token B (parent_id = A)
+    DB-->>Backend: Confirmed
+    Backend-->>Attacker: Return Token B
+
+    %% Legitimate User Attempts Refresh
+    User->>Backend: POST /auth/refresh (Cookie: refresh_token = Token A)
+    Backend->>DB: Check Token A status (Inactive, parent_id A exists in child B)
+    Note over Backend, DB: Replay Detected!
+    Backend->>DB: Deactivate all user sessions (Revokes Token B)
+    DB-->>Backend: Confirmed
+    Backend-->>User: Return 401 SESSION_REUSED
+    Note over User, Attacker: Both parties logged out!
+```
