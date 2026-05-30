@@ -7,7 +7,8 @@ from auth.service import get_current_user
 from invites.schemas import InviteResponse
 from invites.service import InviteService
 from kit.database import get_db
-from models import User
+from kit.dependencies import require_space_member
+from models import SpaceMember, User
 
 router = APIRouter()
 
@@ -16,6 +17,7 @@ router = APIRouter()
 async def create_invite(
     space_id: str,
     current_user: Annotated[User, Depends(get_current_user)],
+    member: Annotated[SpaceMember, Depends(require_space_member)],
     db: Annotated[Session, Depends(get_db)],
 ):
     service = InviteService()

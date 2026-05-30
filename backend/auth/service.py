@@ -10,17 +10,23 @@ from google.oauth2 import id_token
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
-from auth.exceptions import CredentialsError, GoogleAuthError
-from auth.repository import UserRepository
+from auth.exceptions import (
+    CredentialsError,
+    GoogleAuthError,
+    SessionExpiredError,
+    SessionInvalidError,
+    SessionReusedError,
+)
+from auth.repository import SessionRepository, UserRepository
 from kit.database import get_db
-from models import User
+from models import User, UserSession
 from spaces.repository import SpaceMemberRepository, SpaceRepository
 
 logger = logging.getLogger(__name__)
 
 SECRET_KEY = os.getenv("JWT_SECRET", "super-secret-key-change-me")
 ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "43200"))
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "15"))
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/google")
@@ -32,10 +38,12 @@ class AuthService:
         user_repo: UserRepository | None = None,
         space_repo: SpaceRepository | None = None,
         space_member_repo: SpaceMemberRepository | None = None,
+        session_repo: SessionRepository | None = None,
     ):
         self.user_repo = user_repo or UserRepository()
         self.space_repo = space_repo or SpaceRepository()
         self.space_member_repo = space_member_repo or SpaceMemberRepository()
+        self.session_repo = session_repo or SessionRepository()
 
     def create_token(self, user_id: str) -> str:
         expires_delta = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -52,7 +60,9 @@ class AuthService:
             logger.exception("Google verification failed: %s", e)
             return None
 
-    def authenticate_google(self, db: Session, credential: str) -> str:
+    def authenticate_google(
+        self, db: Session, credential: str, device_info: str, ip_address: str
+    ) -> tuple[str, UserSession]:
         id_info = self.verify_google_token(credential, clock_skew_in_seconds=10)
         if not id_info:
             raise GoogleAuthError()
@@ -77,7 +87,55 @@ class AuthService:
                 db, space_id=new_space.id, user_id=user.id, role="admin"
             )
 
-        return self.create_token(user.id)
+        access_token = self.create_token(user.id)
+        session = self.session_repo.create_session(
+            db, user_id=user.id, device_info=device_info, ip_address=ip_address
+        )
+        return access_token, session
+
+    def refresh_token_rotation(
+        self, db: Session, refresh_token: str, ip_address: str
+    ) -> tuple[str, UserSession]:
+        session = self.session_repo.get_session_by_id(db, refresh_token)
+
+        # Replay attack check: If token is inactive, check if it was previously rotated
+        if session and not session.is_active:
+            if self.session_repo.is_session_rotated(db, refresh_token):
+                # Replay attack detected! Revoke all sessions for this user!
+                self.session_repo.deactivate_all_user_sessions(db, session.user_id)
+                raise SessionReusedError()
+            raise SessionInvalidError()
+
+        if not session:
+            raise SessionInvalidError()
+
+        expires_at = session.expires_at
+        now = datetime.now(UTC)
+        if expires_at.tzinfo is None and now.tzinfo is not None:
+            now = now.replace(tzinfo=None)
+        elif expires_at.tzinfo is not None and now.tzinfo is None:
+            expires_at = expires_at.replace(tzinfo=None)
+
+        if expires_at < now:
+            session.is_active = False
+            db.commit()
+            raise SessionExpiredError()
+
+        # Mark current session as rotated (inactive)
+        session.is_active = False
+        db.commit()
+
+        # Create new rotated session pointing to parent
+        new_session = self.session_repo.create_session(
+            db,
+            user_id=session.user_id,
+            device_info=session.device_info,
+            ip_address=ip_address,
+            parent_id=session.id,
+        )
+
+        access_token = self.create_token(session.user_id)
+        return access_token, new_session
 
     def get_user_by_id(self, db: Session, user_id: str) -> User | None:
         return self.user_repo.get_by_id(db, user_id)
