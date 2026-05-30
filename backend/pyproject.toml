@@ -64,6 +64,12 @@ python-version = "3.12"
 [tool.ty.rules]
 unresolved-import = "error"
 possibly-missing-attribute = "error"
+unused-awaitable = "error"
+unused-ignore-comment = "error"
+unused-type-ignore-comment = "error"
+unresolved-global = "error"
+unsupported-base = "error"
+useless-overload-body = "error"
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
