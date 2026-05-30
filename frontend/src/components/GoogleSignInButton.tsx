@@ -3,8 +3,7 @@
 import { useEffect, useRef } from "react";
 
 interface GoogleSignInButtonProps {
-  // biome-ignore lint/suspicious/noExplicitAny: Google Identity response type is dynamic
-  onSuccess: (response: any) => void;
+  onSuccess: (response: { credential: string }) => void;
 }
 
 export default function GoogleSignInButton({
@@ -13,14 +12,27 @@ export default function GoogleSignInButton({
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // biome-ignore lint/suspicious/noExplicitAny: window has no typing for google identity services
-    const win = window as any;
-    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+    const win = window as typeof window & {
+      google?: {
+        accounts: {
+          id: {
+            initialize: (config: {
+              client_id: string;
+              callback: (response: { credential: string }) => void;
+              auto_select?: boolean;
+            }) => void;
+            renderButton: (
+              element: HTMLElement,
+              options: { theme: string; size: string },
+            ) => void;
+            prompt: () => void;
+          };
+        };
+      };
+    };
+    const clientId: string = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "";
 
     if (!clientId) {
-      console.warn(
-        "NEXT_PUBLIC_GOOGLE_CLIENT_ID is not configured. Google sign-in skipped.",
-      );
       return;
     }
 
@@ -38,25 +50,7 @@ export default function GoogleSignInButton({
         size: "medium",
       });
 
-      // biome-ignore lint/suspicious/noExplicitAny: notification callback parameters are untyped
-      win.google.accounts.id.prompt((notification: any) => {
-        if (notification.isNotDisplayed()) {
-          console.warn(
-            "Google One Tap not displayed:",
-            notification.getNotDisplayedReason(),
-          );
-        } else if (notification.isSkippedMoment()) {
-          console.warn(
-            "Google One Tap skipped:",
-            notification.getSkippedReason(),
-          );
-        } else if (notification.isDismissedMoment()) {
-          console.warn(
-            "Google One Tap dismissed:",
-            notification.getDismissedReason(),
-          );
-        }
-      });
+      win.google.accounts.id.prompt();
 
       return true;
     }

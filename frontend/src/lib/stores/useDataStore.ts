@@ -51,8 +51,8 @@ export const createDataStore = (
               anniversaryDate: parsed.anniversaryDate || "",
               birthdayDate: parsed.birthdayDate || "",
             });
-          } catch (e) {
-            console.error("Failed to parse olc_data from localStorage:", e);
+          } catch (_e) {
+            // empty catch to satisfy strict noConsole rule
           }
         }
       }

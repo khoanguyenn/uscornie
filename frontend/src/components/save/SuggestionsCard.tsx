@@ -48,7 +48,7 @@ export default function SuggestionsCard({
   }, [currentSuggestion, items, category]);
 
   const pickRandomSuggestion = () => {
-    if (!pool || !pool.length) return;
+    if (!pool?.length) return;
 
     const existingNames = items.reduce((acc, i) => {
       if (i.category === category) {

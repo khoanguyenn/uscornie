@@ -59,8 +59,7 @@ function JoinPageContent() {
         const space = await spaceService.joinSpace(inviteToken);
         setSpaceId(space.id);
         setStatus("success");
-      } catch (err) {
-        console.error(err);
+      } catch (_err) {
         setStatus("error");
       }
     },

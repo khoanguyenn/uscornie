@@ -103,12 +103,15 @@ export default function SootCharacter({
       </ellipse>
 
       {sootLegs.map(
-        (
-          leg: { x1: number; y1: number; x2: number; y2: number; dur: number },
-          i: number,
-        ) => (
+        (leg: {
+          x1: number;
+          y1: number;
+          x2: number;
+          y2: number;
+          dur: number;
+        }) => (
           <line
-            key={`leg-${leg.x1}-${leg.y1}-${i}`}
+            key={`leg-${leg.x1}-${leg.y1}-${leg.x2}-${leg.y2}`}
             x1={leg.x1}
             y1={leg.y1}
             x2={leg.x2}
@@ -127,9 +130,9 @@ export default function SootCharacter({
         ),
       )}
 
-      {processedStars.map((star, i) => (
+      {processedStars.map((star) => (
         <polygon
-          key={`star-${star.points}-${i}`}
+          key={`star-${star.points}`}
           points={star.points}
           fill={star.fill}
         >

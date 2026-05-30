@@ -15,6 +15,8 @@ function NavBarContent() {
   const { get } = searchParams;
 
   const [openDD, setOpenDD] = useState<string | null>(null);
+  const saveDDRef = useRef<HTMLDivElement>(null);
+  const giftDDRef = useRef<HTMLDivElement>(null);
 
   const currentCat = get ? get.call(searchParams, "cat") : null;
   const currentMode = get ? get.call(searchParams, "mode") : null;
@@ -34,7 +36,14 @@ function NavBarContent() {
   }, [closeDD]);
 
   useEffect(() => {
-    const handleWindowClick = () => {
+    const handleWindowClick = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (
+        saveDDRef.current?.contains(target) ||
+        giftDDRef.current?.contains(target)
+      ) {
+        return;
+      }
       closeRef.current();
     };
     window.addEventListener("click", handleWindowClick);
@@ -74,9 +83,7 @@ function NavBarContent() {
       </div>
 
       {/* Lưu mọi thứ (Dropdown) */}
-      {/* biome-ignore lint/a11y/useKeyWithClickEvents: stopPropagation doesn't need keyboard access */}
-      {/* biome-ignore lint/a11y/noStaticElementInteractions: container only */}
-      <div className="relative" onClick={(e) => e.stopPropagation()}>
+      <div className="relative" ref={saveDDRef}>
         <button
           className={cn(btnBase, pathname === "/save" && btnActive)}
           onClick={(e) => toggleDD("save", e)}
@@ -133,9 +140,7 @@ function NavBarContent() {
       </div>
 
       {/* Gợi ý quà (Dropdown) */}
-      {/* biome-ignore lint/a11y/useKeyWithClickEvents: stopPropagation doesn't need keyboard access */}
-      {/* biome-ignore lint/a11y/noStaticElementInteractions: container only */}
-      <div className="relative" onClick={(e) => e.stopPropagation()}>
+      <div className="relative" ref={giftDDRef}>
         <button
           className={cn(btnBase, pathname === "/gift" && btnActive)}
           onClick={(e) => toggleDD("gift", e)}

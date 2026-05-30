@@ -41,8 +41,7 @@ export default function MainLayout({
   }, [showToast]);
 
   const handleLoginSuccess = useCallback(
-    // biome-ignore lint/suspicious/noExplicitAny: Google Identity response is untyped
-    async (response: any) => {
+    async (response: { credential: string }) => {
       try {
         const data = await authService.loginWithGoogle(response.credential);
         setToken(data.access_token);

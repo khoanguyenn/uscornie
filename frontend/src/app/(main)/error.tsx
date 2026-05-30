@@ -1,19 +1,14 @@
 "use client";
 
-import { useEffect } from "react";
 import GhibliIcon from "@/components/ui/GhibliIcon";
 
 export default function GlobalError({
-  error,
+  error: _error,
   reset,
 }: {
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  useEffect(() => {
-    console.error(error);
-  }, [error]);
-
   return (
     <div className="flex flex-col items-center justify-center min-h-[350px] gap-5 text-center p-5">
       <GhibliIcon type="soot" size={70} />
