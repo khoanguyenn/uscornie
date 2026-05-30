@@ -21,6 +21,7 @@ dev = [
     "pytest",
     "pytest-asyncio",
     "httpx",
+    "types-python-jose>=3.5.0.20260408",
 ]
 
 [tool.ruff]
