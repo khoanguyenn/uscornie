@@ -91,7 +91,7 @@ graph TD
 
 Consider a scenario where Token A is compromised (intercepted or stolen):
 
-#### Scenario 1: The legitimate user refreshes first
+### Scenario 1: The legitimate user refreshes first
 
 ```mermaid
 sequenceDiagram
@@ -119,7 +119,7 @@ sequenceDiagram
 
 The legitimate user successfully rotates Token A to Token B. When the attacker subsequently attempts to replay the already-rotated Token A, the server detects the reuse, triggers family revocation to invalidate Token B, and logs out both users.
 
-#### Scenario 2: The attacker refreshes first
+### Scenario 2: The attacker refreshes first
 
 ```mermaid
 sequenceDiagram
