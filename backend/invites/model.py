@@ -7,7 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from kit.database import Base, generate_uuid, utcnow
 
 if TYPE_CHECKING:
-    from models.space import Space
+    from spaces.model import Space
 
 
 class Invitation(Base):
