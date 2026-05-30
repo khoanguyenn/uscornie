@@ -18,7 +18,6 @@ RUN uv sync --no-dev
 RUN groupadd -g 999 appuser && \
     useradd -r -u 999 -g appuser appuser
 
-WORKDIR /app
 COPY --chown=appuser:appuser . .
 
 USER appuser
