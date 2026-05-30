@@ -8,6 +8,11 @@ pre-commit:
     large-added-files:
       desc: Prevent accidental commit of large binary files
       run: scripts/check-added-files-size.sh {staged_files}
+    hadolint:
+      desc: Lint Dockerfiles with Hadolint
+      glob: "**/Dockerfile*"
+      run: hadolint {staged_files}
+
     backend-lint:
       desc: Run Ruff linter on staged Python files
       root: "backend"
