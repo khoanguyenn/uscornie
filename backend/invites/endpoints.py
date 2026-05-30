@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from auth.service import get_current_user
+from invites.schemas import InviteResponse
 from invites.service import InviteService
 from kit.database import get_db
 from models import User
@@ -11,7 +12,7 @@ from models import User
 router = APIRouter()
 
 
-@router.post("/invites/{space_id}")
+@router.post("/invites/{space_id}", response_model=InviteResponse)
 async def create_invite(
     space_id: str,
     current_user: Annotated[User, Depends(get_current_user)],

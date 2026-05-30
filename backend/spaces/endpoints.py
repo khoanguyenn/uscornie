@@ -6,23 +6,23 @@ from sqlalchemy.orm import Session
 from auth.service import get_current_user
 from kit.database import get_db
 from models import User
-from spaces.schemas import JoinSpaceRequest
+from spaces.schemas import JoinSpaceRequest, JoinSpaceResponse, SpaceResponse
 from spaces.service import SpaceService
 
 router = APIRouter()
 
 
-@router.post("/spaces")
+@router.post("/spaces", response_model=SpaceResponse)
 async def create_space(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ):
     service = SpaceService()
     space = service.create_space(db, current_user)
-    return {"id": space.id, "name": space.name, "type": space.type}
+    return space
 
 
-@router.get("/spaces/me")
+@router.get("/spaces/me", response_model=list[SpaceResponse])
 async def get_my_spaces(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
@@ -31,7 +31,7 @@ async def get_my_spaces(
     return service.get_my_spaces(db, current_user)
 
 
-@router.post("/spaces/join")
+@router.post("/spaces/join", response_model=JoinSpaceResponse)
 async def join_space(
     request: JoinSpaceRequest,
     current_user: Annotated[User, Depends(get_current_user)],
