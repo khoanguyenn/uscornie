@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from auth.schemas import AuthGoogleRequest, SessionResponse, TokenResponse
 from auth.service import AuthService, get_current_user
+from auth.utils import parse_user_agent
 from kit.database import get_db
 from models import User
 
@@ -13,36 +14,6 @@ router = APIRouter()
 REFRESH_TOKEN_COOKIE_KEY = "refresh_token"
 COOKIE_MAX_AGE_DAYS = 30
 COOKIE_MAX_AGE_SECONDS = COOKIE_MAX_AGE_DAYS * 24 * 60 * 60
-
-
-def parse_user_agent(ua: str) -> str:
-    if not ua:
-        return "Unknown Device"
-    ua_lower = ua.lower()
-    browser = "Unknown Browser"
-    os = "Unknown OS"
-
-    if "chrome" in ua_lower or "chromium" in ua_lower:
-        browser = "Chrome"
-    elif "safari" in ua_lower:
-        browser = "Safari"
-    elif "firefox" in ua_lower:
-        browser = "Firefox"
-    elif "edge" in ua_lower:
-        browser = "Edge"
-
-    if "windows" in ua_lower:
-        os = "Windows"
-    elif "macintosh" in ua_lower or "mac os" in ua_lower:
-        os = "macOS"
-    elif "iphone" in ua_lower:
-        os = "iPhone"
-    elif "android" in ua_lower:
-        os = "Android"
-    elif "linux" in ua_lower:
-        os = "Linux"
-
-    return f"{browser} on {os}"
 
 
 @router.post("/auth/google", response_model=TokenResponse)
