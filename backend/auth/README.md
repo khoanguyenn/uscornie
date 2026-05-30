@@ -86,3 +86,23 @@ graph TD
 1. **Successful Rotation**: When a legitimate client refreshes Token A, it becomes inactive, and Token B is generated linked to Token A.
 2. **Replay Attack Detection**: If Token A is submitted again, the backend checks if a descendant session (Token B) already exists. If yes, a replay attack has occurred.
 3. **Family Revocation**: To protect the user, all active sessions belonging to the compromised user are deactivated in the Database. Both the legitimate user and the attacker are immediately logged out, forcing a clean re-authentication.
+
+### Replay Attack Race Condition Scenarios
+
+Consider a scenario where Token A is compromised (intercepted or stolen):
+
+#### Scenario 1: The legitimate user refreshes first
+
+1. **User Refreshes**: The legitimate user submits Token A for a refresh.
+2. **Server Response**: The server invalidates Token A, creates Token B, and returns Token B to the user.
+3. **Attacker Attempts**: The attacker later submits the stolen Token A for a refresh.
+4. **Detection**: The server checks Token A, sees it is inactive and has already been refreshed (rotated to Token B).
+5. **Revocation**: The server detects a replay attack, revokes all active sessions for the user (including Token B), logging out both the user and the attacker to secure the account.
+
+#### Scenario 2: The attacker refreshes first
+
+1. **Attacker Refreshes**: The attacker submits the stolen Token A for a refresh.
+2. **Server Response**: The server invalidates Token A, creates Token B, and returns Token B to the attacker.
+3. **User Attempts**: The legitimate user later submits Token A for a refresh.
+4. **Detection**: The server checks Token A, sees it is inactive and has already been refreshed (rotated to Token B).
+5. **Revocation**: The server detects a replay attack, revokes all active sessions (including Token B currently held by the attacker). Both parties are logged out, terminating the attacker's unauthorized access.
