@@ -1,4 +1,8 @@
 import asyncio
+import os
+
+# Set fallback DATABASE_URL for tests
+os.environ.setdefault("DATABASE_URL", "sqlite:///./test.db")
 
 import pytest
 

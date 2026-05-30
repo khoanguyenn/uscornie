@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from auth.service import get_current_user
-from invites import service
+from invites.service import InviteService
 from kit.database import get_db
 from models import User
 
@@ -17,5 +17,6 @@ async def create_invite(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ):
+    service = InviteService()
     token = service.create_invite(db, current_user, space_id)
     return {"invite_token": token, "url": f"/join?invite_token={token}"}
