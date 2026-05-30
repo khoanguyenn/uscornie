@@ -1,4 +1,6 @@
+import datetime
 import os
+import uuid
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
@@ -7,13 +9,18 @@ DATABASE_URL = os.getenv(
     "DATABASE_URL", "postgresql://postgres:postgres@db:5432/uscornie"
 )
 
-# Use standard engine for now as FastAPI standard depends often use it,
-# although async is preferred for FastAPI.
-# Let's stick to standard for simplicity as per common recipes.
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
+
+
+def generate_uuid():
+    return str(uuid.uuid4())
+
+
+def utcnow():
+    return datetime.datetime.now(datetime.UTC)
 
 
 def get_db():

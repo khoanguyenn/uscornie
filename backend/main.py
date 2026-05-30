@@ -1,34 +1,13 @@
-import secrets
-from typing import Annotated
-
-from fastapi import Depends, FastAPI
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from sqlalchemy.orm import Session
 
-import auth_utils
-from database import engine, get_db
-from exceptions import (
-    AlreadyJoinedSpaceError,
-    GoogleAuthError,
-    InvalidInviteTokenError,
-    NotSpaceMemberError,
-    PersonalSpaceInviteError,
-    SpaceAlreadyOwnedError,
-    SpaceFullError,
-    register_exception_handlers,
-)
-from models import Base, Invitation, Space, SpaceMember, User
-
-
-# Pydantic schemas for request bodies
-class AuthGoogleRequest(BaseModel):
-    credential: str
-
-
-class JoinSpaceRequest(BaseModel):
-    invite_token: str
-
+# This imports and registers all models on the metadata
+import models  # noqa: F401
+from auth.endpoints import router as auth_router
+from invites.endpoints import router as invites_router
+from kit.database import Base, engine
+from kit.exceptions import register_exception_handlers
+from spaces.endpoints import router as spaces_router
 
 # Create tables
 Base.metadata.create_all(bind=engine)
@@ -51,183 +30,12 @@ app.add_middleware(
 # Register centralized exception handlers
 register_exception_handlers(app)
 
+# Include routers
+app.include_router(auth_router, tags=["Auth"])
+app.include_router(spaces_router, tags=["Spaces"])
+app.include_router(invites_router, tags=["Invites"])
+
 
 @app.get("/")
 async def root():
     return {"message": "Welcome to Uscornie API"}
-
-
-# 1. AUTH: Google login
-@app.post("/auth/google")
-async def auth_google(
-    request: AuthGoogleRequest, db: Annotated[Session, Depends(get_db)]
-):
-    id_info = auth_utils.verify_google_token(
-        request.credential, clock_skew_in_seconds=10
-    )
-    if not id_info:
-        raise GoogleAuthError()
-
-    user = db.query(User).filter(User.email == id_info["email"]).first()
-    if not user:
-        user = User(
-            email=id_info["email"],
-            full_name=id_info.get("name"),
-            picture=id_info.get("picture"),
-        )
-        db.add(user)
-        db.commit()
-        db.refresh(user)
-
-    # Every user has a default space (owned space - personal)
-    personal_space = (
-        db.query(SpaceMember)
-        .join(Space)
-        .filter(SpaceMember.user_id == user.id, Space.type == "personal")
-        .first()
-    )
-
-    if not personal_space:
-        new_space = Space(name=f"Không gian của {user.full_name}", type="personal")
-        db.add(new_space)
-        db.commit()
-        db.refresh(new_space)
-
-        member = SpaceMember(space_id=new_space.id, user_id=user.id, role="admin")
-        db.add(member)
-        db.commit()
-
-    access_token = auth_utils.create_token(str(user.id))
-    return {"access_token": access_token, "token_type": "bearer"}
-
-
-# 2. SPACE: Create space
-@app.post("/spaces")
-async def create_space(
-    current_user: Annotated[User, Depends(auth_utils.get_current_user)],
-    db: Annotated[Session, Depends(get_db)],
-):
-    # Limit: User can only own ONE SHARED space
-    existing_shared = (
-        db.query(SpaceMember)
-        .join(Space)
-        .filter(
-            SpaceMember.user_id == current_user.id,
-            SpaceMember.role == "admin",
-            Space.type == "shared",
-        )
-        .first()
-    )
-
-    if existing_shared:
-        raise SpaceAlreadyOwnedError()
-
-    space = Space(name=f"Không gian chung của {current_user.full_name}", type="shared")
-    db.add(space)
-    db.commit()
-    db.refresh(space)
-
-    member = SpaceMember(space_id=space.id, user_id=current_user.id, role="admin")
-    db.add(member)
-    db.commit()
-
-    return {"id": space.id, "name": space.name, "type": space.type}
-
-
-@app.get("/spaces/me")
-async def get_my_spaces(
-    current_user: Annotated[User, Depends(auth_utils.get_current_user)],
-    db: Annotated[Session, Depends(get_db)],
-):
-    memberships = (
-        db.query(SpaceMember).filter(SpaceMember.user_id == current_user.id).all()
-    )
-    space_ids = [m.space_id for m in memberships]
-    spaces = db.query(Space).filter(Space.id.in_(space_ids)).all()
-    return spaces
-
-
-# 3. INVITE: Create invitation link
-@app.post("/invites/{space_id}")
-async def create_invite(
-    space_id: str,
-    current_user: Annotated[User, Depends(auth_utils.get_current_user)],
-    db: Annotated[Session, Depends(get_db)],
-):
-    # Check if user is admin/member of this space
-    member = (
-        db.query(SpaceMember)
-        .filter(
-            SpaceMember.space_id == space_id, SpaceMember.user_id == current_user.id
-        )
-        .first()
-    )
-
-    if not member:
-        raise NotSpaceMemberError()
-
-    # ONLY allow inviting to SHARED spaces
-    space = db.query(Space).filter(Space.id == space_id).first()
-    if space and space.type != "shared":
-        raise PersonalSpaceInviteError()
-
-    token = secrets.token_urlsafe(16)
-    invitation = Invitation(token=token, space_id=space_id, inviter_id=current_user.id)
-    db.add(invitation)
-    db.commit()
-
-    return {"invite_token": token, "url": f"/join?invite_token={token}"}
-
-
-# 4. JOIN: Join a space
-@app.post("/spaces/join")
-async def join_space(
-    request: JoinSpaceRequest,
-    current_user: Annotated[User, Depends(auth_utils.get_current_user)],
-    db: Annotated[Session, Depends(get_db)],
-):
-    inv = (
-        db.query(Invitation)
-        .filter(Invitation.token == request.invite_token, Invitation.is_used.is_(False))
-        .first()
-    )
-
-    if not inv:
-        raise InvalidInviteTokenError()
-
-    # Check 1: Already a member of THIS space?
-    existing_member = (
-        db.query(SpaceMember)
-        .filter(
-            SpaceMember.space_id == inv.space_id, SpaceMember.user_id == current_user.id
-        )
-        .first()
-    )
-
-    if existing_member:
-        return {"space_id": inv.space_id, "message": "Already a member"}
-
-    # Check 2: Limit - user can only join ONE other space as a member
-    already_joined_another = (
-        db.query(SpaceMember)
-        .filter(SpaceMember.user_id == current_user.id, SpaceMember.role == "member")
-        .first()
-    )
-
-    if already_joined_another:
-        raise AlreadyJoinedSpaceError()
-
-    # Check 3: Limit to 2 members total in a space
-    member_count = (
-        db.query(SpaceMember).filter(SpaceMember.space_id == inv.space_id).count()
-    )
-    if member_count >= 2:
-        raise SpaceFullError()
-
-    new_member = SpaceMember(
-        space_id=inv.space_id, user_id=current_user.id, role="member"
-    )
-    db.add(new_member)
-    db.commit()
-
-    return {"space_id": inv.space_id}

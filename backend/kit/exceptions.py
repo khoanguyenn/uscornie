@@ -9,10 +9,8 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 logger = logging.getLogger(__name__)
 
 
-# 1. Custom Exceptions
+# Base exception for all application errors
 class AppError(Exception):
-    """Base exception for all application errors"""
-
     status_code: int = 400
     error_code: str = "BAD_REQUEST"
     message: str = "Đã xảy ra lỗi ứng dụng."
@@ -28,55 +26,6 @@ class AppError(Exception):
         super().__init__(self.message)
 
 
-class CredentialsError(AppError):
-    status_code: int = 401
-    error_code: str = "UNAUTHORIZED"
-    message: str = "Không thể xác thực thông tin đăng nhập."
-
-
-class GoogleAuthError(AppError):
-    status_code: int = 400
-    error_code: str = "GOOGLE_AUTH_FAILED"
-    message: str = "Xác thực tài khoản Google thất bại."
-
-
-class SpaceAlreadyOwnedError(AppError):
-    status_code: int = 400
-    error_code: str = "SPACE_ALREADY_OWNED"
-    message: str = "Bạn đã tạo một không gian chung rồi."
-
-
-class NotSpaceMemberError(AppError):
-    status_code: int = 403
-    error_code: str = "FORBIDDEN"
-    message: str = "Bạn không phải thành viên của không gian này."
-
-
-class PersonalSpaceInviteError(AppError):
-    status_code: int = 400
-    error_code: str = "PERSONAL_SPACE_INVITE_FORBIDDEN"
-    message: str = "Bạn không thể mời người khác vào không gian cá nhân."
-
-
-class InvalidInviteTokenError(AppError):
-    status_code: int = 400
-    error_code: str = "INVALID_INVITATION"
-    message: str = "Liên kết mời không hợp lệ hoặc đã hết hạn."
-
-
-class AlreadyJoinedSpaceError(AppError):
-    status_code: int = 400
-    error_code: str = "ALREADY_JOINED_ANOTHER_SPACE"
-    message: str = "Bạn đã tham gia một không gian khác rồi."
-
-
-class SpaceFullError(AppError):
-    status_code: int = 400
-    error_code: str = "SPACE_FULL"
-    message: str = "Không gian này đã đầy."
-
-
-# 2. Pydantic Schemas for Error Responses
 class ErrorDetail(BaseModel):
     loc: list[str] | None = None
     msg: str
@@ -90,7 +39,6 @@ class ErrorResponse(BaseModel):
     details: list[ErrorDetail] | None = None
 
 
-# 3. Registration helper for FastAPI
 def register_exception_handlers(app: FastAPI) -> None:
     @app.exception_handler(AppError)
     async def app_exception_handler(request: Request, exc: AppError):
