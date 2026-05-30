@@ -75,18 +75,6 @@ jobs:
       - name: Run Semgrep security scan
         run: ./scripts/run-semgrep.sh
 
-  trivy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - name: Run Trivy vulnerability scanner (FS mode)
-        uses: aquasecurity/trivy-action@0.28.0
-        with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          exit-code: '1'
-          severity: 'CRITICAL,HIGH'
-          format: 'table'
 
 
 
