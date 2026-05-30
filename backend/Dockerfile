@@ -15,6 +15,12 @@ COPY pyproject.toml .
 COPY uv.lock* .
 RUN uv sync --no-dev
 
-COPY . .
+RUN groupadd -g 999 appuser && \
+    useradd -r -u 999 -g appuser appuser
+
+WORKDIR /app
+COPY --chown=appuser:appuser . .
+
+USER appuser
 
 CMD ["uv", "run", "--no-dev", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

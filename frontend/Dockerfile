@@ -7,6 +7,7 @@ RUN bun install
 
 COPY . .
 
+USER bun
 EXPOSE 5173
 
 CMD ["bun", "run", "dev"]

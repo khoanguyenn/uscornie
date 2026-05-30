@@ -49,7 +49,7 @@ class AuthService:
                 token, requests.Request(), GOOGLE_CLIENT_ID, clock_skew_in_seconds
             )
         except Exception as e:
-            logger.exception("Google token verification failed: %s", e)
+            logger.exception("Google verification failed: %s", e)
             return None
 
     def authenticate_google(self, db: Session, credential: str) -> str:

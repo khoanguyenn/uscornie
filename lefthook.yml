@@ -35,7 +35,7 @@ pre-push:
     semgrep:
       desc: Run Semgrep security scan
       tags: security
-      run: ./scripts/run-semgrep.sh
+      run: scripts/run-semgrep.sh
     gitleaks:
       desc: Final full-repository secret scan before pushing
       tags: security

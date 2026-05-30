@@ -14,8 +14,12 @@ spec:
       labels:
         app: uscornie-backend
     spec:
+      securityContext:
+        runAsNonRoot: true
       containers:
         - name: backend
+          securityContext:
+            allowPrivilegeEscalation: false
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
