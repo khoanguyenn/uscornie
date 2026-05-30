@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -9,8 +11,10 @@ from kit.database import Base, engine
 from kit.exceptions import register_exception_handlers
 from spaces.endpoints import router as spaces_router
 
-# Create tables
-Base.metadata.create_all(bind=engine)
+# Create tables automatically for dev/test. Production runs Alembic migrations.
+if os.getenv("ENV") in ("dev", "test") or not os.getenv("DATABASE_URL"):
+    Base.metadata.create_all(bind=engine)
+
 
 app = FastAPI(title="Uscornie API")
 

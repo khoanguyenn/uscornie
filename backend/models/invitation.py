@@ -1,16 +1,22 @@
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String
-from sqlalchemy.orm import relationship
+from datetime import datetime
+from typing import TYPE_CHECKING
+
+from sqlalchemy import Boolean, DateTime, ForeignKey, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from kit.database import Base, generate_uuid, utcnow
+
+if TYPE_CHECKING:
+    from models.space import Space
 
 
 class Invitation(Base):
     __tablename__ = "invitations"
-    id = Column(String, primary_key=True, default=generate_uuid)
-    token = Column(String, unique=True, index=True)
-    space_id = Column(String, ForeignKey("spaces.id"))
-    inviter_id = Column(String, ForeignKey("users.id"))
-    is_used = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=utcnow)
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=generate_uuid)
+    token: Mapped[str] = mapped_column(String, unique=True, index=True)
+    space_id: Mapped[str] = mapped_column(String, ForeignKey("spaces.id"))
+    inviter_id: Mapped[str] = mapped_column(String, ForeignKey("users.id"))
+    is_used: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
 
-    space = relationship("Space", back_populates="invitations")
+    space: Mapped["Space"] = relationship("Space", back_populates="invitations")

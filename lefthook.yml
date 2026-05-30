@@ -32,6 +32,10 @@ pre-commit:
 pre-push:
   parallel: true
   commands:
+    semgrep:
+      desc: Run Semgrep security scan
+      tags: security
+      run: ./scripts/run-semgrep.sh
     gitleaks:
       desc: Final full-repository secret scan before pushing
       tags: security

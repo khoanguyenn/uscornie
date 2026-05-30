@@ -22,7 +22,7 @@ class InviteService:
 
     def create_invite(self, db: Session, current_user: User, space_id: str) -> str:
         # Check if user is admin/member of this space
-        member = self.space_member_repo.get_member(db, space_id, str(current_user.id))
+        member = self.space_member_repo.get_member(db, space_id, current_user.id)
         if not member:
             raise NotSpaceMemberError()
 
@@ -33,7 +33,7 @@ class InviteService:
 
         token = secrets.token_urlsafe(16)
         self.invite_repo.create(
-            db, token=token, space_id=space_id, inviter_id=str(current_user.id)
+            db, token=token, space_id=space_id, inviter_id=current_user.id
         )
 
         return token

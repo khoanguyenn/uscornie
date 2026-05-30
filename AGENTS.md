@@ -18,10 +18,12 @@ cp .env.example .env         # then fill in real values
 
 ## Frontend (`frontend/`)
 
-- Vue 3, Vite, Tailwind CSS
-- `npm run lint` — oxlint
-- `npm run fmt:check` — oxfmt
-- `npm run test:run` — vitest
+- Next.js 16, React 19, Tailwind CSS v4, Bun
+- `bun run lint` — Biome linter
+- `bun run format` — Biome formatter
+- `bun run type-check` — tsgo type check
+- `bun run test` — bun test
+
 
 ## Full stack
 
@@ -32,7 +34,7 @@ docker-compose up --build    # runs postgres + backend + frontend
 ## Code style
 
 - Backend: ruff enforces style — double quotes, 88-char lines, Python 3.12+ idioms
-- Frontend: oxlint + oxfmt enforce style
+- Frontend: Biome check & format enforces style
 - Never commit a populated `.env` file
 
 ## Commits

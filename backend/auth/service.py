@@ -67,19 +67,17 @@ class AuthService:
             )
 
         # Every user has a default space (owned space - personal)
-        personal_space = self.space_member_repo.get_personal_space_member(
-            db, str(user.id)
-        )
+        personal_space = self.space_member_repo.get_personal_space_member(db, user.id)
 
         if not personal_space:
             new_space = self.space_repo.create(
                 db, name=f"Không gian của {user.full_name}", type="personal"
             )
             self.space_member_repo.create(
-                db, space_id=str(new_space.id), user_id=str(user.id), role="admin"
+                db, space_id=new_space.id, user_id=user.id, role="admin"
             )
 
-        return self.create_token(str(user.id))
+        return self.create_token(user.id)
 
     def get_user_by_id(self, db: Session, user_id: str) -> User | None:
         return self.user_repo.get_by_id(db, user_id)

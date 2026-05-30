@@ -12,6 +12,7 @@ dependencies = [
     "google-auth",
     "requests",
     "pydantic-settings",
+    "alembic>=1.18.4",
 ]
 
 [dependency-groups]
