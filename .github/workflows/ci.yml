@@ -75,17 +75,18 @@ jobs:
       - name: Run Semgrep security scan
         run: ./scripts/run-semgrep.sh
 
-  hadolint:
+  trivy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - name: Lint backend Dockerfile
-        uses: hadolint/hadolint-action@v3.1.0
+      - name: Run Trivy vulnerability scanner (FS mode)
+        uses: aquasecurity/trivy-action@0.28.0
         with:
-          dockerfile: backend/Dockerfile
-      - name: Lint frontend Dockerfile
-        uses: hadolint/hadolint-action@v3.1.0
-        with:
-          dockerfile: frontend/Dockerfile
+          scan-type: 'fs'
+          scan-ref: '.'
+          exit-code: '1'
+          severity: 'CRITICAL,HIGH'
+          format: 'table'
+
 
 
