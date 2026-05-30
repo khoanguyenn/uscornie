@@ -96,10 +96,13 @@ uscornie/
 │   ├── biome.json             # Lint + format config
 │   └── tsconfig.json          # Strict TypeScript config
 │
-├── backend/                   # FastAPI application
-│   ├── main.py                # Core REST endpoints
-│   ├── models.py              # SQLAlchemy database models
-│   ├── auth_utils.py          # JWT generation + Google token validation
+├── backend/                   # FastAPI application (Polar domain-driven structure)
+│   ├── kit/                   # Shared database config & base exception handlers
+│   ├── models/                # Centralized SQLAlchemy database models
+│   ├── auth/                  # Authentication domain (endpoints, service, schemas)
+│   ├── spaces/                # Space domain (endpoints, service, schemas)
+│   ├── invites/               # Invite domain (endpoints, service)
+│   ├── main.py                # Main entry point & app configuration
 │   └── pyproject.toml         # Ruff, ty, pytest, and dependency config
 │
 ├── .github/workflows/
