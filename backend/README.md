@@ -13,7 +13,9 @@ backend/
 │   ├── model.py          # Space & SpaceMember database ORM models
 │   ├── endpoints.py      # API endpoints for workspaces
 │   ├── service.py        # Workspace business logic
-│   └── repository.py     # Workspace-specific query logic
+│   ├── repository.py     # Workspace-specific query logic
+│   ├── schemas.py        # Pydantic schemas for request/response validation
+│   └── exceptions.py     # Custom exceptions for workspace actions
 ├── invites/              # Token-based workspace invitations (Folded)
 ├── models/               # Centralized ORM re-export registry
 │   └── __init__.py       # Exposes all models to prevent circular imports
