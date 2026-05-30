@@ -1,3 +1,4 @@
+import logging
 import os
 from datetime import UTC, datetime, timedelta
 from typing import Annotated
@@ -12,6 +13,8 @@ from sqlalchemy.orm import Session
 from database import get_db
 from models import User
 
+logger = logging.getLogger(__name__)
+
 SECRET_KEY = os.getenv("JWT_SECRET", "super-secret-key-change-me")
 ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "43200"))
@@ -24,18 +27,16 @@ def create_token(user_id: str):
     expires_delta = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     expire = datetime.now(UTC) + expires_delta
     to_encode = {"exp": expire, "sub": str(user_id)}
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
 def verify_google_token(token: str, clock_skew_in_seconds: int = 10):
     try:
-        idinfo = id_token.verify_oauth2_token(
+        return id_token.verify_oauth2_token(
             token, requests.Request(), GOOGLE_CLIENT_ID, clock_skew_in_seconds
         )
-        return idinfo
     except Exception as e:
-        print(f"Google token verification failed: {e}")
+        logger.exception("Google token verification failed: %s", e)
         return None
 
 

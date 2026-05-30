@@ -48,6 +48,7 @@ select = [
 ]
 ignore = [
     "E501",   # Line length (handled by ruff format)
+    "RET504", # Allow unnecessary assignment before return statement
 ]
 
 [tool.ruff.format]
@@ -55,14 +56,13 @@ quote-style = "double"
 indent-style = "space"
 
 [tool.ty]
-respect-ignore-files = true
 
 [tool.ty.environment]
 python-version = "3.12"
 
 [tool.ty.rules]
 unresolved-import = "error"
-possibly-unbound-attribute = "error"
+possibly-missing-attribute = "error"
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
