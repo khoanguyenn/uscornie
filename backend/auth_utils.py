@@ -3,7 +3,7 @@ import os
 from datetime import UTC, datetime, timedelta
 from typing import Annotated
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from google.auth.transport import requests
 from google.oauth2 import id_token
@@ -11,6 +11,7 @@ from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
 from database import get_db
+from exceptions import CredentialsError
 from models import User
 
 logger = logging.getLogger(__name__)
@@ -44,9 +45,8 @@ async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
     db: Annotated[Session, Depends(get_db)],
 ):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
+    credentials_exception = CredentialsError(
+        message="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:

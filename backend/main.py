@@ -1,13 +1,23 @@
 import secrets
 from typing import Annotated
 
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 import auth_utils
 from database import engine, get_db
+from exceptions import (
+    AlreadyJoinedSpaceError,
+    GoogleAuthError,
+    InvalidInviteTokenError,
+    NotSpaceMemberError,
+    PersonalSpaceInviteError,
+    SpaceAlreadyOwnedError,
+    SpaceFullError,
+    register_exception_handlers,
+)
 from models import Base, Invitation, Space, SpaceMember, User
 
 
@@ -38,6 +48,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Register centralized exception handlers
+register_exception_handlers(app)
+
 
 @app.get("/")
 async def root():
@@ -53,7 +66,7 @@ async def auth_google(
         request.credential, clock_skew_in_seconds=10
     )
     if not id_info:
-        raise HTTPException(status_code=400, detail="Invalid Google credential")
+        raise GoogleAuthError()
 
     user = db.query(User).filter(User.email == id_info["email"]).first()
     if not user:
@@ -107,9 +120,7 @@ async def create_space(
     )
 
     if existing_shared:
-        raise HTTPException(
-            status_code=400, detail="Bạn đã tạo một không gian chung rồi"
-        )
+        raise SpaceAlreadyOwnedError()
 
     space = Space(name=f"Không gian chung của {current_user.full_name}", type="shared")
     db.add(space)
@@ -153,14 +164,12 @@ async def create_invite(
     )
 
     if not member:
-        raise HTTPException(status_code=403, detail="Not a member of this space")
+        raise NotSpaceMemberError()
 
     # ONLY allow inviting to SHARED spaces
     space = db.query(Space).filter(Space.id == space_id).first()
     if space and space.type != "shared":
-        raise HTTPException(
-            status_code=400, detail="You cannot invite others to your personal space"
-        )
+        raise PersonalSpaceInviteError()
 
     token = secrets.token_urlsafe(16)
     invitation = Invitation(token=token, space_id=space_id, inviter_id=current_user.id)
@@ -184,9 +193,7 @@ async def join_space(
     )
 
     if not inv:
-        raise HTTPException(
-            status_code=400, detail="Invalid or expired invitation link"
-        )
+        raise InvalidInviteTokenError()
 
     # Check 1: Already a member of THIS space?
     existing_member = (
@@ -208,16 +215,14 @@ async def join_space(
     )
 
     if already_joined_another:
-        raise HTTPException(
-            status_code=400, detail="You are already participating in another space"
-        )
+        raise AlreadyJoinedSpaceError()
 
     # Check 3: Limit to 2 members total in a space
     member_count = (
         db.query(SpaceMember).filter(SpaceMember.space_id == inv.space_id).count()
     )
     if member_count >= 2:
-        raise HTTPException(status_code=400, detail="This space is already full")
+        raise SpaceFullError()
 
     new_member = SpaceMember(
         space_id=inv.space_id, user_id=current_user.id, role="member"
