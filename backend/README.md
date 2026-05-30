@@ -8,9 +8,13 @@ The backend follows a domain-driven feature folder layout:
 
 ```text
 backend/
-├── auth/                 # User profiles, login auth APIs & models
-├── spaces/               # Shared & personal workspace management
-├── invites/              # Token-based workspace invitations
+├── auth/                 # User profiles, login auth APIs & models (Folded)
+├── spaces/               # Shared & personal workspace management (Sample Expanded Domain)
+│   ├── model.py          # Space & SpaceMember database ORM models
+│   ├── endpoints.py      # API endpoints for workspaces
+│   ├── service.py        # Workspace business logic
+│   └── repository.py     # Workspace-specific query logic
+├── invites/              # Token-based workspace invitations (Folded)
 ├── models/               # Centralized ORM re-export registry
 │   └── __init__.py       # Exposes all models to prevent circular imports
 ├── migrations/           # Alembic database migrations & version history
