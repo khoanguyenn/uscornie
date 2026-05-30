@@ -5,16 +5,19 @@ Thư mục này được chừa sẵn để tích hợp Playwright E2E testing t
 ## Hướng dẫn cài đặt khi cần thêm E2E tests
 
 1. Cài đặt Playwright test runner trong thư mục `frontend`:
+
    ```bash
    bun add -d @playwright/test
    ```
 
 2. Cài đặt các trình duyệt cần thiết cho Playwright:
+
    ```bash
    npx playwright install
    ```
 
 3. Tạo file cấu hình `playwright.config.ts` ở thư mục `frontend/`:
+
    ```typescript
    import { defineConfig, devices } from '@playwright/test';
 
@@ -52,6 +55,7 @@ Thư mục này được chừa sẵn để tích hợp Playwright E2E testing t
    ```
 
 4. Tạo một bài test mẫu tại `tests/e2e/navigation.spec.ts`:
+
    ```typescript
    import { test, expect } from '@playwright/test';
 
@@ -62,6 +66,7 @@ Thư mục này được chừa sẵn để tích hợp Playwright E2E testing t
    ```
 
 5. Chạy test E2E:
+
    ```bash
    bun run test:e2e
    ```

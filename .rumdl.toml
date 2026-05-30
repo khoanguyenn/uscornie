@@ -1,2 +1,12 @@
 [global]
-disable = ["MD013"]
+disable = ["MD013", "MD041"]
+exclude = [
+    ".agent",
+    ".git",
+    "node_modules",
+    "backend/.venv",
+    "frontend/.next",
+    "frontend-vue/node_modules",
+    "**/.pytest_cache",
+    "**/.ruff_cache"
+]

@@ -48,20 +48,22 @@ docker-compose up --build
 
 | Service | URL |
 |---|---|
-| Frontend | http://localhost:5173 |
-| Backend API docs | http://localhost:8000/docs |
+| Frontend | <http://localhost:5173> |
+| Backend API docs | <http://localhost:8000/docs> |
 
 ## 🤝 Contributing
 
 ### Local Quality Gates
 
 `pre-commit` (runs in parallel):
+
 - Scan staged files for secrets with `gitleaks`
 - Block files larger than 2 MiB
 - Backend: Ruff lint + format check on staged `.py` files
 - Frontend: Biome lint + format on staged `.ts/.tsx/.json` files
 
 `pre-push` (runs in parallel):
+
 - Full repository secret scan with `gitleaks`
 - Backend: `ty` type check + `pytest`
 - Frontend: `next build` (compile + type check)
@@ -76,7 +78,7 @@ If you need to bypass hooks for an emergency commit, use `git --no-verify`. CI r
 
 ## 📂 Project Structure
 
-```
+```text
 uscornie/
 ├── frontend/                  # Next.js 16 App Router SPA
 │   ├── src/

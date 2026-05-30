@@ -34,11 +34,11 @@ graph LR
 
 ## Workflow
 
-1.  **Frontend Access**: User accesses `uscornie.com` -> Cloudflare Pages serves the static SPA (Vue).
-2.  **API Call**: Frontend calls the API at `https://api.uscornie.com/`.
-3.  **Tunnel Routing**: `api.uscornie.com` is routed through **Cloudflare Tunnel** (no public ports or IPs required).
-4.  **Homelab Processing**: `cloudflared` Pod receives the request -> forwards it to the **K8s Service** `uscornie-backend` (ClusterIP).
-5.  **Backend Execution**: The Service load-balances to backend Pods. Backend accesses the **CloudNativePG** database.
+1. **Frontend Access**: User accesses `uscornie.com` -> Cloudflare Pages serves the static SPA (Vue).
+2. **API Call**: Frontend calls the API at `https://api.uscornie.com/`.
+3. **Tunnel Routing**: `api.uscornie.com` is routed through **Cloudflare Tunnel** (no public ports or IPs required).
+4. **Homelab Processing**: `cloudflared` Pod receives the request -> forwards it to the **K8s Service** `uscornie-backend` (ClusterIP).
+5. **Backend Execution**: The Service load-balances to backend Pods. Backend accesses the **CloudNativePG** database.
 
 ## Responsibility Matrix
 

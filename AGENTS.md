@@ -24,7 +24,6 @@ cp .env.example .env         # then fill in real values
 - `bun run type-check` — tsgo type check
 - `bun run test` — bun test
 
-
 ## Full stack
 
 ```bash
