@@ -1,8 +1,8 @@
 [global]
-# Disabled Rules Configuration:
-# - MD013: Line length. Disabled to allow long lines and paragraphs without strict wrapping at 80 characters, enhancing raw text readability.
-# - MD041: First line in file should be a level 1 heading. Disabled because certain metadata/config files (e.g., CLAUDE.md) or specific structured templates may not start with an H1 header.
-disable = ["MD013", "MD041"]
+disable = [
+    "MD013", # line length
+    "MD041", # first line heading
+]
 
 # Directories and patterns excluded from markdown linting
 exclude = [
