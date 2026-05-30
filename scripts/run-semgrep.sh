@@ -3,7 +3,7 @@
 set -e
 
 echo "🔍 Running static security scan using Semgrep..."
-semgrep scan \
+uv run --project backend semgrep scan \
   --config p/default \
   --config p/python \
   --config p/fastapi \
