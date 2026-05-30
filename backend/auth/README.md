@@ -117,6 +117,8 @@ sequenceDiagram
     Note over User, Attacker: Both parties logged out!
 ```
 
+**Description**: The legitimate user successfully rotates Token A to Token B. When the attacker subsequently attempts to replay the already-rotated Token A, the server detects the reuse, triggers family revocation to invalidate Token B, and logs out both users.
+
 #### Scenario 2: The attacker refreshes first
 
 ```mermaid
@@ -142,3 +144,5 @@ sequenceDiagram
     Backend-->>User: Return 401 SESSION_REUSED
     Note over User, Attacker: Both parties logged out!
 ```
+
+**Description**: The attacker gets there first, rotating the stolen Token A to Token B. When the legitimate user later tries to refresh using Token A, the server detects that Token A has already been rotated, invalidates the attacker's Token B, and forces a logout for both parties.
