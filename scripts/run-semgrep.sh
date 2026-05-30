@@ -2,9 +2,8 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 
-# NOTE: We run Semgrep using the virtual environment configured in the 'backend' folder
-# (to avoid requiring a global installation), but it scans the entire monorepo
-# (all folders: backend, frontend, infra) starting from the directory where the command is executed.
+# Uses backend venv to run Semgrep without global installation.
+# Scans all folders (backend, frontend, infra) starting from the execution directory.
 echo "🔍 Running static security scan using Semgrep..."
 uv run --project backend semgrep scan \
   --config p/default \
