@@ -71,7 +71,7 @@ graph TD
     C1 --> C2[Create Token B with parent_id = Token A]
     C2 --> C3[Return Access Token + Set Token B cookie]
 
-    B -- No --> D{Does another session have parent_id = Token A?}
+    B -- No --> D{Was Token A already used?}
 
     D -- Yes --> E[Replay Attack Detected!]
     E --> E1[Revoke all active sessions for User<br>Family Revocation]
