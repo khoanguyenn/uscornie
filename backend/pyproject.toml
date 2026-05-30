@@ -48,11 +48,15 @@ select = [
     "RET",    # flake8-return
     "PTH",    # flake8-use-pathlib
     "T20",    # flake8-print (forbid print in production)
+    "C90",    # flake8-mccabe (complexity)
 ]
 ignore = [
     "E501",   # Line length (handled by ruff format)
     "RET504", # Allow unnecessary assignment before return statement
 ]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 5
 
 [tool.ruff.format]
 quote-style = "double"

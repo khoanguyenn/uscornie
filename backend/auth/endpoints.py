@@ -3,9 +3,9 @@ from typing import Annotated
 from fastapi import APIRouter, Cookie, Depends, Request, Response
 from sqlalchemy.orm import Session
 
+from auth.parsers import parse_user_agent
 from auth.schemas import AuthGoogleRequest, SessionResponse, TokenResponse
 from auth.service import AuthService, get_current_user
-from auth.utils import parse_user_agent
 from kit.database import get_db
 from models import User
 

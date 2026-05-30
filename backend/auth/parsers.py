@@ -1,4 +1,4 @@
-def parse_user_agent(ua: str) -> str:
+def parse_user_agent(ua: str) -> str:  # noqa: C901
     if not ua:
         return "Unknown Device"
     ua_lower = ua.lower()

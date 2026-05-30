@@ -16,6 +16,12 @@ class User(Base):
 
 
 class UserSession(Base):
+    """User login session supporting token rotation.
+
+    parent_id tracks token rotation lineage. Reusing a rotated session
+    triggers immediate revocation of all active sessions (Family Revocation).
+    """
+
     __tablename__ = "user_sessions"
     id: Mapped[str] = mapped_column(String, primary_key=True, default=generate_uuid)
     user_id: Mapped[str] = mapped_column(String, ForeignKey("users.id"))

@@ -32,6 +32,15 @@ GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/google")
 
 
+def _is_expired(expires_at: datetime) -> bool:
+    now = datetime.now(UTC)
+    if expires_at.tzinfo is None and now.tzinfo is not None:
+        now = now.replace(tzinfo=None)
+    elif expires_at.tzinfo is not None and now.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=None)
+    return expires_at < now
+
+
 class AuthService:
     def __init__(
         self,
@@ -93,9 +102,7 @@ class AuthService:
         )
         return access_token, session
 
-    def refresh_token_rotation(
-        self, db: Session, refresh_token: str, ip_address: str
-    ) -> tuple[str, UserSession]:
+    def _validate_and_get_session(self, db: Session, refresh_token: str) -> UserSession:
         session = self.session_repo.get_session_by_id(db, refresh_token)
 
         # Replay attack check: If token is inactive, check if it was previously rotated
@@ -109,24 +116,22 @@ class AuthService:
         if not session:
             raise SessionInvalidError()
 
-        expires_at = session.expires_at
-        now = datetime.now(UTC)
-        if expires_at.tzinfo is None and now.tzinfo is not None:
-            now = now.replace(tzinfo=None)
-        elif expires_at.tzinfo is not None and now.tzinfo is None:
-            expires_at = expires_at.replace(tzinfo=None)
-
-        if expires_at < now:
+        if _is_expired(session.expires_at):
             session.is_active = False
             db.commit()
             raise SessionExpiredError()
 
+        return session
+
+    def _rotate_session(
+        self, db: Session, session: UserSession, ip_address: str
+    ) -> UserSession:
         # Mark current session as rotated (inactive)
         session.is_active = False
         db.commit()
 
         # Create new rotated session pointing to parent
-        new_session = self.session_repo.create_session(
+        return self.session_repo.create_session(
             db,
             user_id=session.user_id,
             device_info=session.device_info,
@@ -134,6 +139,11 @@ class AuthService:
             parent_id=session.id,
         )
 
+    def refresh_token_rotation(
+        self, db: Session, refresh_token: str, ip_address: str
+    ) -> tuple[str, UserSession]:
+        session = self._validate_and_get_session(db, refresh_token)
+        new_session = self._rotate_session(db, session, ip_address)
         access_token = self.create_token(session.user_id)
         return access_token, new_session
 
