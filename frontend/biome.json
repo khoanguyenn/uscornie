@@ -9,54 +9,40 @@
     "ignoreUnknown": true
   },
   "formatter": {
-    "enabled": true,
     "indentStyle": "space",
     "indentWidth": 2,
-    "lineWidth": 80
+    "lineWidth": 80,
+    "lineEnding": "lf"
   },
   "linter": {
     "enabled": true,
+    "domains": {
+      "next": "recommended",
+      "react": "recommended"
+    },
     "rules": {
       "recommended": true,
       "suspicious": {
-        "noArrayIndexKey": "error",
-        "noExplicitAny": "error",
         "noConsole": "error"
       },
-      "performance": {
-        "noImgElement": "error"
-      },
-      "correctness": {
-        "useExhaustiveDependencies": "error",
-        "noUnusedVariables": "error",
-        "noUnusedImports": "error"
-      },
-      "style": {
-        "useConst": "error",
-        "useTemplate": "error"
-      },
-      "complexity": {
-        "noExtraBooleanCast": "error",
-        "useFlatMap": "error"
-      },
       "a11y": {
-        "recommended": true,
-        "noStaticElementInteractions": "error",
-        "useKeyWithClickEvents": "error",
-        "useSemanticElements": "error",
-        "useButtonType": "error"
+        "noStaticElementInteractions": "error"
       }
     }
   },
   "javascript": {
     "formatter": {
       "quoteStyle": "double",
+      "semicolons": "always",
       "trailingCommas": "all"
     }
   },
   "css": {
     "parser": {
       "tailwindDirectives": true
+    },
+    "linter": {
+      "enabled": true
     }
   },
   "assist": {
