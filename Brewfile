@@ -5,4 +5,5 @@ brew "uv"
 brew "lefthook"
 brew "gitleaks"
 brew "hadolint"
+brew "rumdl"
 
