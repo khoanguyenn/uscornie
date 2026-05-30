@@ -105,15 +105,17 @@ class AuthService:
     def _validate_and_get_session(self, db: Session, refresh_token: str) -> UserSession:
         session = self.session_repo.get_session_by_id(db, refresh_token)
 
-        # Replay attack check: If token is inactive, check if it was previously rotated
-        if session and not session.is_active:
+        # 1. Check if session exists in DB
+        if not session:
+            raise SessionInvalidError()
+
+        # 2. Check if session is inactive
+        if not session.is_active:
+            # Replay attack check: If token is inactive, check if it was previously rotated
             if self.session_repo.is_session_rotated(db, refresh_token):
                 # Replay attack detected! Revoke all sessions for this user!
                 self.session_repo.deactivate_all_user_sessions(db, session.user_id)
                 raise SessionReusedError()
-            raise SessionInvalidError()
-
-        if not session:
             raise SessionInvalidError()
 
         if _is_expired(session.expires_at):
