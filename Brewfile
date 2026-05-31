@@ -6,4 +6,5 @@ brew "lefthook"
 brew "gitleaks"
 brew "hadolint"
 brew "rumdl"
+brew "changie"
 
