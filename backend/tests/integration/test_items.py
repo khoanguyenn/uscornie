@@ -204,8 +204,8 @@ def test_api_items_not_found(client: TestClient, db: Session):
 
 def test_api_items_cross_space_idor(client: TestClient, db: Session):
     """
-    Verify IDOR prevention: a member of both Space A and Space B cannot modify or
-    delete Space A's item using Space B's URL path.
+    Verify IDOR (Insecure Direct Object Reference) prevention: a member of both Space A
+    and Space B cannot modify or delete Space A's item using Space B's URL path.
     """
     # Setup user who is a member of both Space A and Space B
     user = User(email="shared_user@example.com", full_name="Shared User")
