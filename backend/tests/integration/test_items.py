@@ -7,6 +7,10 @@ from models import Space, SpaceMember, User
 
 
 def test_api_items_crud_flow_success(client: TestClient, db: Session):
+    """
+    Test standard CRUD operations for save items inside a user's personal space.
+    Verifies creation, retrieval, updates, and deletion workflows.
+    """
     # Setup User and their personal space
     user = User(email="tester@example.com", full_name="Tester")
     db.add(user)
@@ -91,6 +95,10 @@ def test_api_items_crud_flow_success(client: TestClient, db: Session):
 
 
 def test_api_items_unauthorized_access(client: TestClient, db: Session):
+    """
+    Test RBAC authorization settings. Ensures users cannot list, create,
+    update, or delete items in personal spaces they do not belong to.
+    """
     # Setup two users with their own personal spaces
     user_a = User(email="a@example.com", full_name="User A")
     user_b = User(email="b@example.com", full_name="User B")
@@ -155,6 +163,9 @@ def test_api_items_unauthorized_access(client: TestClient, db: Session):
 
 
 def test_api_items_not_found(client: TestClient, db: Session):
+    """
+    Verify that trying to update or delete non-existent items yields a 404 status code.
+    """
     # Setup User and their personal space
     user = User(email="tester@example.com", full_name="Tester")
     db.add(user)
@@ -192,6 +203,10 @@ def test_api_items_not_found(client: TestClient, db: Session):
 
 
 def test_api_items_cross_space_idor(client: TestClient, db: Session):
+    """
+    Verify IDOR prevention: a member of both Space A and Space B cannot modify or
+    delete Space A's item using Space B's URL path.
+    """
     # Setup user who is a member of both Space A and Space B
     user = User(email="shared_user@example.com", full_name="Shared User")
     db.add(user)
@@ -241,6 +256,10 @@ def test_api_items_cross_space_idor(client: TestClient, db: Session):
 
 
 def test_api_items_validation_failures(client: TestClient, db: Session):
+    """
+    Ensure Pydantic schema constraints (allowed category literals and non-empty/whitespace
+    titles) are correctly validated and return a 422 error.
+    """
     # Setup User and space
     user = User(email="validator@example.com", full_name="Validator")
     db.add(user)
