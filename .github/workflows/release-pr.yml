@@ -57,6 +57,7 @@ jobs:
         if: steps.check_changes.outputs.has_changes == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
+          token: ${{ secrets.USCORNIE_RELEASE_BOT_TOKEN }}
           branch: release-preview
           title: "chore(release): release v${{ steps.changie_version.outputs.version }}"
           body: "Automated release pull request created by Changie. Merging this PR will automatically tag and deploy."
