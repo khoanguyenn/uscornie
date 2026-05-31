@@ -16,7 +16,7 @@ COPY uv.lock* .
 RUN uv sync --no-dev
 
 RUN groupadd -g 999 appuser && \
-    useradd -r -u 999 -g appuser appuser
+    useradd -m -r -u 999 -g appuser appuser
 
 COPY --chown=appuser:appuser . .
 
