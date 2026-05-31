@@ -1,0 +1,4 @@
+component: infra
+kind: fixed
+body: fix frontend build path in release workflow
+time: 2026-05-31T18:46:36.748495+07:00
