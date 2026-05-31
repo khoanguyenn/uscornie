@@ -37,6 +37,10 @@ pre-commit:
       root: "frontend"
       glob: "src/**/*.{js,ts,jsx,tsx,json}"
       run: bunx biome format --write {staged_files}
+    frontend-react-doctor:
+      desc: Run React Doctor diagnostics on staged React files and enforce score threshold
+      run: scripts/check-react-health.sh --staged
+
 
 pre-push:
   parallel: true
