@@ -1,16 +1,20 @@
 name: Release & Deploy
 
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_run:
+    workflows: ["Tag Release"]
+    types:
+      - completed
 
 jobs:
   deploy-frontend:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -18,13 +22,15 @@ jobs:
           bun-version: latest
 
       - name: Install dependencies
+        working-directory: frontend
         run: bun install
 
       - name: Build frontend
         env:
           NEXT_PUBLIC_API_URL: https://api.uscornie.com
           # Add other build envs here if needed
-        run: bun --filter frontend run build
+        working-directory: frontend
+        run: bun run build
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
@@ -37,12 +43,26 @@ jobs:
 
   build-and-push-backend:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     permissions:
       contents: read
       packages: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Changie
+        uses: miniscruff/changie-action@v2
+        with:
+          version: latest
+
+      - name: Get latest version
+        id: changie_version
+        run: |
+          VERSION=$(changie latest)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -60,7 +80,7 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository }}-backend
           tags: |
-            type=raw,value=${{ github.ref_name }}
+            type=raw,value=${{ steps.changie_version.outputs.version }}
             type=raw,value=latest
 
       - name: Build and push
