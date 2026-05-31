@@ -36,15 +36,15 @@ kinds:
     key: security
     auto: patch
 replacements:
-  - filepath: backend/pyproject.toml
-    find: 'version = ".*"'
-    replace: 'version = "{{.Version}}"'
-  - filepath: frontend/package.json
-    find: '"version": ".*"'
-    replace: '"version": "{{.Version}}"'
-  - filepath: infra/charts/backend/values.yaml
-    find: 'tag: v.*'
-    replace: 'tag: v{{.Version}}'
-  - filepath: infra/charts/backend/Chart.yaml
-    find: 'appVersion: ".*"'
-    replace: 'appVersion: "{{.Version}}"'
+  - path: backend/pyproject.toml
+    find: '(?m)^version = ".*"'
+    replace: 'version = "{{.VersionNoPrefix}}"'
+  - path: frontend/package.json
+    find: '(?m)^  "version": ".*"'
+    replace: '  "version": "{{.VersionNoPrefix}}"'
+  - path: infra/charts/backend/values.yaml
+    find: '(?m)^  tag: v.*'
+    replace: '  tag: v{{.VersionNoPrefix}}'
+  - path: infra/charts/backend/Chart.yaml
+    find: '(?m)^appVersion: ".*"'
+    replace: 'appVersion: "{{.VersionNoPrefix}}"'
