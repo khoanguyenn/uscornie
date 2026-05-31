@@ -20,6 +20,6 @@ RUN groupadd -g 999 appuser && \
 
 COPY --chown=appuser:appuser . .
 
-USER appuser
+USER 999
 
 CMD ["uv", "run", "--no-dev", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
