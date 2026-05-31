@@ -5,6 +5,8 @@ on:
     workflows: ["Tag Release"]
     types:
       - completed
+  workflow_dispatch:
+
 
 jobs:
   deploy-frontend:
@@ -80,7 +82,7 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository }}-backend
           tags: |
-            type=raw,value=${{ steps.changie_version.outputs.version }}
+            type=raw,value=v${{ steps.changie_version.outputs.version }}
             type=raw,value=latest
 
       - name: Build and push
