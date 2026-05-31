@@ -26,6 +26,7 @@ services:
 
   frontend:
     build: ./frontend
+    user: root
     command: sh -c "bun install && bun run dev"
     restart: always
     ports:
