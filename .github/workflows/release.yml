@@ -18,13 +18,15 @@ jobs:
           bun-version: latest
 
       - name: Install dependencies
+        working-directory: frontend
         run: bun install
 
       - name: Build frontend
         env:
           NEXT_PUBLIC_API_URL: https://api.uscornie.com
           # Add other build envs here if needed
-        run: bun --filter frontend run build
+        working-directory: frontend
+        run: bun run build
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
