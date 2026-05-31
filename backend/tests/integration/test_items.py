@@ -188,3 +188,109 @@ def test_api_items_not_found(client: TestClient, db: Session):
         headers=headers,
     )
     assert response.status_code == 404
+    assert "Mục lưu trữ không tồn tại." in response.json()["message"]
+
+
+def test_api_items_cross_space_idor(client: TestClient, db: Session):
+    # Setup user who is a member of both Space A and Space B
+    user = User(email="shared_user@example.com", full_name="Shared User")
+    db.add(user)
+    db.commit()
+
+    space_a = Space(name="Space A", type="personal")
+    space_b = Space(name="Space B", type="personal")
+    db.add_all([space_a, space_b])
+    db.commit()
+
+    member_a = SpaceMember(space_id=space_a.id, user_id=user.id, role="admin")
+    member_b = SpaceMember(space_id=space_b.id, user_id=user.id, role="admin")
+    db.add_all([member_a, member_b])
+    db.commit()
+
+    # Create an item inside Space A
+    item_a = Item(
+        space_id=space_a.id,
+        category="movies",
+        title="Spirited Away",
+        desc="Ghibli masterclass",
+    )
+    db.add(item_a)
+    db.commit()
+
+    # Generate JWT
+    auth_service = AuthService()
+    jwt_token = auth_service.create_token(user.id)
+    headers = {"Authorization": f"Bearer {jwt_token}"}
+
+    # Cross-space update attempt (Space B path, Item A ID) -> should return 404
+    response = client.put(
+        f"/spaces/{space_b.id}/items/{item_a.id}",
+        json={"title": "Hacked Title"},
+        headers=headers,
+    )
+    assert response.status_code == 404
+    assert "Mục lưu trữ không tồn tại." in response.json()["message"]
+
+    # Cross-space delete attempt (Space B path, Item A ID) -> should return 404
+    response = client.delete(
+        f"/spaces/{space_b.id}/items/{item_a.id}",
+        headers=headers,
+    )
+    assert response.status_code == 404
+    assert "Mục lưu trữ không tồn tại." in response.json()["message"]
+
+
+def test_api_items_validation_failures(client: TestClient, db: Session):
+    # Setup User and space
+    user = User(email="validator@example.com", full_name="Validator")
+    db.add(user)
+    db.commit()
+
+    space = Space(name="Space", type="personal")
+    db.add(space)
+    db.commit()
+
+    member = SpaceMember(space_id=space.id, user_id=user.id, role="admin")
+    db.add(member)
+    db.commit()
+
+    auth_service = AuthService()
+    jwt_token = auth_service.create_token(user.id)
+    headers = {"Authorization": f"Bearer {jwt_token}"}
+
+    # 1. Invalid category value
+    payload = {"category": "invalid_cat", "title": "Test Title"}
+    response = client.post(
+        f"/spaces/{space.id}/items",
+        json=payload,
+        headers=headers,
+    )
+    assert response.status_code == 422
+
+    # 2. Empty/whitespace-only title on create
+    payload = {"category": "movies", "title": "   "}
+    response = client.post(
+        f"/spaces/{space.id}/items",
+        json=payload,
+        headers=headers,
+    )
+    assert response.status_code == 422
+
+    # 3. Empty/whitespace-only title on update
+    # First create a valid item
+    payload = {"category": "movies", "title": "Valid Movie"}
+    response = client.post(
+        f"/spaces/{space.id}/items",
+        json=payload,
+        headers=headers,
+    )
+    assert response.status_code == 201
+    item_id = response.json()["id"]
+
+    # Now attempt to update with whitespace title
+    response = client.put(
+        f"/spaces/{space.id}/items/{item_id}",
+        json={"title": "   "},
+        headers=headers,
+    )
+    assert response.status_code == 422
