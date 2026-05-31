@@ -19,16 +19,22 @@ components:
 kinds:
   - label: Added
     key: added
+    auto: minor
   - label: Changed
     key: changed
+    auto: minor
   - label: Deprecated
     key: deprecated
+    auto: minor
   - label: Removed
     key: removed
+    auto: major
   - label: Fixed
     key: fixed
+    auto: patch
   - label: Security
     key: security
+    auto: patch
 replacements:
   - filepath: backend/pyproject.toml
     find: 'version = ".*"'

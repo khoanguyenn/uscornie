@@ -21,23 +21,40 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check for unreleased changes
+        id: check_changes
+        run: |
+          # Count number of yaml files in .changie/unreleased
+          # We exclude .gitkeep by searching only for *.yaml or *.yml files
+          CHANGE_COUNT=$(find .changie/unreleased -name "*.yaml" -o -name "*.yml" | wc -l)
+          echo "Found $CHANGE_COUNT unreleased changes"
+          if [ "$CHANGE_COUNT" -eq 0 ]; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
       - name: Install Changie
+        if: steps.check_changes.outputs.has_changes == 'true'
         uses: miniscruff/changie-action@v2
         with:
           version: latest
 
       - name: Run Changie Batch & Merge
+        if: steps.check_changes.outputs.has_changes == 'true'
         run: |
           changie batch auto
           changie merge
 
       - name: Get latest version
+        if: steps.check_changes.outputs.has_changes == 'true'
         id: changie_version
         run: |
           VERSION=$(changie latest)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Create or Update Pull Request
+        if: steps.check_changes.outputs.has_changes == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
           branch: release-preview
