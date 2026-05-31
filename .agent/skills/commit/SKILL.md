@@ -1,5 +1,5 @@
 ---
-name: conventional-commits
+name: commit
 description: >
   Formats git commit messages using Conventional Commits v1.0.0.
   Use when writing, reviewing, or suggesting commit messages for uscornie.
@@ -9,20 +9,29 @@ compatibility: Requires git
 allowed-tools: Bash(git:*)
 ---
 
-# Conventional Commits
+# Conventional Commits & Custom Constraints
 
 ## Commit message template
 
 ```
 <type>[(<scope>)][!]: <description>
 
-- <why this change was made>
-- <additional context if needed>
+- <bullet point 1 summarizing change>
+- <bullet point 2 summarizing change>
+- <bullet point 3 summarizing change>
 
 [footer(s)]
 ```
 
-Rules: imperative mood · lowercase first letter · no trailing period · blank line before body and footer · one logical change per commit.
+Rules:
+* **Header**: Imperative mood · lowercase first letter · no trailing period · maximum of 15 words · one logical change per commit.
+* **Blank Line**: A blank line must separate the header from the body, and the body from the footer.
+* **Body Constraints**: 
+  - A body is **ALWAYS** required (cannot be empty).
+  - The body must contain exactly **3 to 5 bullet points**.
+  - Each bullet point must start with `- `.
+  - Each bullet point must have a **maximum of 2 sentences**.
+  - Each bullet point must have a **maximum of 10 words**.
 
 ## How to choose a type
 
@@ -66,6 +75,10 @@ Append `!` to type/scope **and** a `BREAKING CHANGE:` footer:
 ```
 feat(api)!: remove /invite/accept endpoint
 
+- remove invite accept route.
+- add join space endpoint.
+- update database membership schema.
+
 BREAKING CHANGE: replaced by POST /spaces/{id}/join
 ```
 
@@ -75,22 +88,14 @@ BREAKING CHANGE: replaced by POST /spaces/{id}/join
 - `Closes #<N>` — auto-closes GitHub issue on merge
 - `Refs #<N>` — references without closing
 
-## Output format
-
-When producing a commit message:
-- Header only when the diff is self-evident
-- Add a body when the *why* isn't obvious from the diff
-- Add `Closes #N` footer whenever a commit resolves a tracked issue
+## Correct Output Format Example
 
 ```
-feat(spaces): add single-use invite link generation
-```
+fix(auth): validate JWT expiry on every request
 
-```
-fix(auth): validate JWT expiry on every protected request
-
-- token expiry was only checked at login
-- middleware now validates `exp` on every protected request
+- token expiry validated per request.
+- middleware checks exp payload.
+- invalid tokens return 401.
 
 Closes #42
 ```

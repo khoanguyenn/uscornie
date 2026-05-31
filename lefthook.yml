@@ -61,3 +61,18 @@ pre-push:
       desc: Verify frontend build compiles cleanly before pushing
       root: "frontend"
       run: bun run build
+
+commit-msg:
+  commands:
+    commitlint:
+      run: bunx commitlint --edit {1}
+
+
+
+
+
+
+
+
+
+

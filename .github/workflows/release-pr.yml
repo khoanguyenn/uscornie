@@ -1,0 +1,46 @@
+name: Update Release PR
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'CHANGELOG.md'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-pr:
+    runs-on: ubuntu-latest
+    if: "!startsWith(github.event.head_commit.message, 'chore(release):')"
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Changie
+        uses: miniscruff/changie-action@v2
+        with:
+          version: latest
+
+      - name: Run Changie Batch & Merge
+        run: |
+          changie batch auto
+          changie merge
+
+      - name: Get latest version
+        id: changie_version
+        run: |
+          VERSION=$(changie latest)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create or Update Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: release-preview
+          title: "chore(release): release v${{ steps.changie_version.outputs.version }}"
+          body: "Automated release pull request created by Changie. Merging this PR will automatically tag and deploy."
+          commit-message: "chore(release): prepare release v${{ steps.changie_version.outputs.version }}"

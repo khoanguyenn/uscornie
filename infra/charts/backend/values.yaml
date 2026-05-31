@@ -1,15 +1,38 @@
+# Default values for uscornie-backend.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# -- Configuration for the backend container image
 image:
+  # -- The Docker image repository
   repository: ghcr.io/khoanguyenn/uscornie-backend
+  # -- Overrides the image tag (default is the chart appVersion)
   tag: v0.1.7
+  # -- Image pull policy
   pullPolicy: IfNotPresent
 
+# -- Configuration for the Kubernetes Service exposing the backend
 service:
+  # -- Service type (ClusterIP, NodePort, LoadBalancer)
   type: ClusterIP
+  # -- Port exposed by the Service
   port: 8000
 
+# -- Configuration for the CloudNativePG PostgreSQL database cluster
 postgres:
+  # -- Number of database replica instances
   instances: 1
+  # -- Size of persistent storage volume for the database
   storageSize: 5Gi
+
+# -- Database schema migration configuration (Alembic)
+migration:
+  # -- Run Alembic database migrations automatically on deployment
+  enabled: true
+
+# -- Set to true if deploying via ArgoCD to use ArgoCD resources/sync hooks.
+# If false, standard Helm templates and lifecycle hooks will be used instead.
+argoCD: false
 
 # These secrets must be created manually in the uscornie namespace:
 # kubectl -n uscornie create secret generic uscornie-secrets \
