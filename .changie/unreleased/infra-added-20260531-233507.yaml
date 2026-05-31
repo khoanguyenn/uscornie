@@ -1,0 +1,4 @@
+component: infra
+kind: added
+body: add changie fragment validation to pre-push git hook
+time: 2026-05-31T23:35:07.520612+07:00
