@@ -8,6 +8,7 @@ headerTemplate: |
   # Changelog
   All notable changes to this project will be documented in this file.
 changelogPath: CHANGELOG.md
+versionExt: md
 versionHeaderTemplate: "## v{{.Version}} - {{.Date}}"
 versionFooterTemplate: ""
 changeFormat: "- **[{{.Component}}]** {{.Body}}"
