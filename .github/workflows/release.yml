@@ -39,9 +39,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: 'uscornie' # Name of your Cloudflare Pages project
-          directory: './frontend/out'
-          gitBranch: 'main'
+          command: pages deploy ./frontend/out --project-name=uscornie --branch=main
 
   build-and-push-backend:
     runs-on: ubuntu-latest
