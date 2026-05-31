@@ -20,7 +20,10 @@ This guide outlines our contribution process chronologically, from local develop
 
 ## 1. Development Loop (TBD)
 
-We practice **Trunk-Based Development (TBD)**. All developers merge changes frequently into the `main` branch.
+We practice **Trunk-Based Development (TBD)**. All developers merge changes frequently into the `main` branch. 
+*   **Always pull the latest `main`** branch locally before creating any new feature or fix branch.
+*   **Regularly merge `main`** into your local working branch to resolve potential integration conflicts early.
+
 
 ```mermaid
 sequenceDiagram

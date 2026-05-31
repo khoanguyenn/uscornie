@@ -3,47 +3,31 @@ name: create-pr
 description: >
   Guides the creation of Pull Requests (PRs) in the uscornie repository.
   Use when opening, formatting, or updating pull requests.
-  Ensures PR titles and bodies comply with project standards (PR template, Conventional Commits).
-compatibility: Requires GitHub CLI (gh)
-allowed-tools: Bash(gh:*)
+  Ensures PRs comply with the project standards defined in CONTRIBUTING.md.
+compatibility: Requires GitHub CLI (gh) and Git
+allowed-tools: Bash(gh pr create, gh pr checks, git checkout, git push, git add, git commit)
 ---
 
 # Creating Pull Requests
 
 Follow these instructions when creating or proposing Pull Requests in this repository.
 
-## PR Title Format
-PR titles must match the **Conventional Commits v1.0.0** specification, similar to commit headers:
-`<type>(<scope>): <description>` (e.g., `feat(backend): add authentication middleware`)
+## Single Source of Truth: CONTRIBUTING.md
+You **MUST** read and follow the official guidelines in [CONTRIBUTING.md](/CONTRIBUTING.md) before writing code, committing changes, or opening a PR. Specifically:
 
-Rules:
-- Title must be in the imperative mood.
-- Title must start with a lowercase letter.
-- No trailing period.
-- Limit to a maximum of 15 words.
+1. **Changelog Generation**: If your changes introduce user-visible or structural edits, you must generate a changelog fragment using `changie new` **before** opening a PR (see [CONTRIBUTING.md Section 4](/CONTRIBUTING.md#4-versioning--release-pr-changie)).
+2. **PR & Commit Format**: 
+   - PR Title must match the Conventional Commits v1.0.0 header standard (see [CONTRIBUTING.md Section 2](/CONTRIBUTING.md#2-commit-standards-conventional)).
+   - PR Body must fill out the template in [.github/pull_request_template.md](/.github/pull_request_template.md) (see [CONTRIBUTING.md Section 3](/CONTRIBUTING.md#3-pull-request-process)).
 
-## PR Body Template
-Every Pull Request must use the standard template located at [.github/pull_request_template.md](file:///.github/pull_request_template.md):
-
-```markdown
-## Context
-
-- **Closes**: #<issue_number> or #none
-
-## What changed?
-
-- <bullet point summarizing changes>
-- <bullet point summarizing changes>
-```
-
-Rules for the body:
-- **Context**: Reference any issues that are closed or resolved by this PR. Use `#none` if there is no corresponding issue.
-- **What changed**: Provide clear, concise bullet points summarizing the changes. Keep bullet points brief and easy to scan.
-
-## Standard Command to Create a PR
-Use the GitHub CLI (`gh`) to open pull requests:
+## Command to Create a PR
+Use the GitHub CLI (`gh`) to open a pull request. Make sure you are on your feature branch:
 
 ```bash
+# Verify changie unreleased file exists if changes are user-visible
+ls -la .changie/unreleased/
+
+# Create the pull request
 gh pr create \
   --title "<type>(<scope>): <description>" \
   --body-file .github/pull_request_template.md \
