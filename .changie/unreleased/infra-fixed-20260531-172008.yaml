@@ -1,4 +1,0 @@
-component: infra
-kind: fixed
-body: fix changie replacement path keys and regex matches in .changie.yaml
-time: 2026-05-31T17:20:08.637101+07:00
