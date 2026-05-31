@@ -8,6 +8,8 @@
 .idea/
 .vscode/
 *.log
+node_modules/
+
 
 # CI / tooling caches
 .github/.cache/

@@ -1,0 +1,44 @@
+# Changie configuration file
+# See https://changie.dev for details
+
+changesDir: .changie
+unreleasedDir: unreleased
+commitTemplate: "chore(release): bump version to v{{.Version}}"
+headerTemplate: |
+  # Changelog
+  All notable changes to this project will be documented in this file.
+changelogPath: CHANGELOG.md
+versionHeaderTemplate: "## v{{.Version}} - {{.Date}}"
+versionFooterTemplate: ""
+changeFormat: "- **[{{.Component}}]** {{.Body}}"
+components:
+  - backend
+  - frontend
+  - infra
+  - docs
+kinds:
+  - label: Added
+    key: added
+  - label: Changed
+    key: changed
+  - label: Deprecated
+    key: deprecated
+  - label: Removed
+    key: removed
+  - label: Fixed
+    key: fixed
+  - label: Security
+    key: security
+replacements:
+  - filepath: backend/pyproject.toml
+    find: 'version = ".*"'
+    replace: 'version = "{{.Version}}"'
+  - filepath: frontend/package.json
+    find: '"version": ".*"'
+    replace: '"version": "{{.Version}}"'
+  - filepath: infra/charts/backend/values.yaml
+    find: 'tag: v.*'
+    replace: 'tag: v{{.Version}}'
+  - filepath: infra/charts/backend/Chart.yaml
+    find: 'appVersion: ".*"'
+    replace: 'appVersion: "{{.Version}}"'
