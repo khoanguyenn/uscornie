@@ -24,6 +24,6 @@ The backend is currently packaged as a Docker image via GitHub Actions and pushe
 
 ### Process
 
-1. Push a version tag (e.g., `v0.1.6`).
+1. Push a version tag (e.g., `v0.1.7`).
 2. Workflow automatically builds and pushes the image.
 3. Update the Helm chart in the `homelab` repository (or `uscornie/infra`) for ArgoCD to automatically sync to the cluster.
