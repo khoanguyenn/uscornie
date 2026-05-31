@@ -16,6 +16,8 @@ components:
   - backend
   - frontend
   - infra
+  - ci
+  - tooling
   - docs
 kinds:
   - label: Added
