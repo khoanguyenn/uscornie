@@ -180,19 +180,19 @@ We use **Unified Versioning** (both frontend and backend share the same version 
 ```mermaid
 sequenceDiagram
     actor Dev as Developer
-    participant main as Nhánh main (GitHub)
+    participant main as main Branch (GitHub)
     participant PR_Workflow as release-pr.yml
     participant Tag_Workflow as release-tag.yml
 
-    Note over Dev, main: Phase 1: Merge PR & Tích lũy
-    Dev->>main: Merge PR tính năng (chứa changie YAML)
-    main->>PR_Workflow: Kích hoạt (On push to main)
-    PR_Workflow->>main: Tạo / Cập nhật Release PR nháp ("release-preview")
+    Note over Dev, main: Phase 1: Merge PR & Accumulate
+    Dev->>main: Merge feature PR (containing changie YAML)
+    main->>PR_Workflow: Trigger (On push to main)
+    PR_Workflow->>main: Create / Update Draft Release PR ("release-preview")
 
     Note over Dev, main: Phase 2: Merge Release PR
-    Dev->>main: Merge Release PR "release-preview" vào main
-    main->>Tag_Workflow: Kích hoạt (On PR merged)
-    Tag_Workflow->>main: Tạo và Push Git Tag vX.Y.Z
+    Dev->>main: Merge Release PR "release-preview" into main
+    main->>Tag_Workflow: Trigger (On PR merged)
+    Tag_Workflow->>main: Create & Push Git Tag vX.Y.Z
 ```
 
 ### Workflow:
