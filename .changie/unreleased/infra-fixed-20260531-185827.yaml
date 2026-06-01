@@ -1,4 +1,0 @@
-component: infra
-kind: fixed
-body: allow release-tag.yml to use GH_PAT to trigger deploy workflow
-time: 2026-05-31T18:58:27.476685+07:00
