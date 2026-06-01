@@ -121,4 +121,44 @@ describe("error formatting helper logic", () => {
       expect(errorMsg).toContain("• Mục số 2: Tiêu đề không được để trống");
     }
   });
+
+  test("reproduces user custom multiline input validation flow", () => {
+    const allowedTagsFood = [
+      "Yêu thích",
+      "Must try",
+      "Muốn đến",
+      "Kỉ niệm",
+      "Khác",
+    ];
+    const schemaFood = createBulkImportSchema(allowedTagsFood);
+
+    const inputData = [
+      { title: "Phở Hòa Pasteur", desc: "Nước lèo béo ngon", tag: "must try" },
+      { title: "Bún chả ngon", desc: "Thịt mềm", tag: "Must try" },
+      { title: "", desc: "Bún đậu mắm tôm", tag: "Khác" },
+      {
+        title: "Bánh cuốn Hải Nam",
+        desc: "Nhân thịt băm",
+        tag: "ThẻSiêuDàiĐểTestLỗiGiớiHạnĐộDàiCủaThẻHơnNămMươiKýTựNày",
+      },
+    ];
+
+    const result = schemaFood.safeParse(inputData);
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const errorMsg = result.error.issues
+        .map((e) => {
+          const index = e.path[0];
+          if (typeof index === "number") {
+            return `• Mục số ${index + 1}: ${e.message}`;
+          }
+          return `• ${e.path.join(".")}: ${e.message}`;
+        })
+        .join("\n");
+
+      expect(errorMsg).toContain('• Mục số 1: Thẻ "must try" không hợp lệ.');
+      expect(errorMsg).toContain("• Mục số 3: Tiêu đề không được để trống");
+      expect(errorMsg).toContain("• Mục số 4: Thẻ tối đa 50 ký tự");
+    }
+  });
 });
