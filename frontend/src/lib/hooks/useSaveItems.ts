@@ -124,9 +124,9 @@ export function useSaveItems(category: string) {
         .map((e) => {
           const index = e.path[0];
           if (typeof index === "number") {
-            return `Mục số ${index + 1}: ${e.message}`;
+            return `• Mục số ${index + 1}: ${e.message}`;
           }
-          return `${e.path.join(".")}: ${e.message}`;
+          return `• ${e.path.join(".")}: ${e.message}`;
         })
         .join("\n");
       throw new Error(`Dữ liệu không hợp lệ:\n${errorMsg}`);

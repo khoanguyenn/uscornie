@@ -21,10 +21,17 @@ interface ParsedFileRow {
   img: string;
 }
 
+interface ValidationErrorDetail {
+  loc: (string | number)[];
+  msg: string;
+  type: string;
+}
+
 interface AxiosErrorLike {
   response?: {
     data?: {
       message?: string;
+      detail?: ValidationErrorDetail[];
     };
   };
   message?: string;
@@ -76,10 +83,34 @@ export default function QuickAddCard({
         });
       } catch (err: unknown) {
         const error = err as AxiosErrorLike;
-        const errMsg =
-          error?.response?.data?.message ||
-          error?.message ||
-          "Đã xảy ra lỗi khi thêm nhanh.";
+        let errMsg = "";
+        if (error?.response?.data?.detail) {
+          const detail = error.response.data.detail;
+          if (Array.isArray(detail)) {
+            errMsg =
+              "Dữ liệu không hợp lệ từ máy chủ:\n" +
+              detail
+                .map((d: ValidationErrorDetail) => {
+                  const loc = d.loc;
+                  const index = loc.find(
+                    (x: string | number) => typeof x === "number",
+                  );
+                  const field = loc[loc.length - 1];
+                  if (typeof index === "number") {
+                    return `• Mục số ${index + 1} (${field}): ${d.msg}`;
+                  }
+                  return `• ${loc.join(".")}: ${d.msg}`;
+                })
+                .join("\n");
+          } else {
+            errMsg = String(detail);
+          }
+        } else {
+          errMsg =
+            error?.response?.data?.message ||
+            error?.message ||
+            "Đã xảy ra lỗi khi thêm nhanh.";
+        }
         setQaResult({
           msg: errMsg,
           isErr: true,
@@ -322,10 +353,34 @@ export default function QuickAddCard({
       });
     } catch (err: unknown) {
       const error = err as AxiosErrorLike;
-      const errMsg =
-        error?.response?.data?.message ||
-        error?.message ||
-        "Đã xảy ra lỗi khi import file.";
+      let errMsg = "";
+      if (error?.response?.data?.detail) {
+        const detail = error.response.data.detail;
+        if (Array.isArray(detail)) {
+          errMsg =
+            "Dữ liệu không hợp lệ từ máy chủ:\n" +
+            detail
+              .map((d: ValidationErrorDetail) => {
+                const loc = d.loc;
+                const index = loc.find(
+                  (x: string | number) => typeof x === "number",
+                );
+                const field = loc[loc.length - 1];
+                if (typeof index === "number") {
+                  return `• Mục số ${index + 1} (${field}): ${d.msg}`;
+                }
+                return `• ${loc.join(".")}: ${d.msg}`;
+              })
+              .join("\n");
+        } else {
+          errMsg = String(detail);
+        }
+      } else {
+        errMsg =
+          error?.response?.data?.message ||
+          error?.message ||
+          "Đã xảy ra lỗi khi import file.";
+      }
       setQaResult({
         msg: errMsg,
         isErr: true,
