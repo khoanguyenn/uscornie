@@ -1,11 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
+import { TAGS_BY_CATEGORY } from "@/lib/data/mock";
 import { useAuthStore } from "@/lib/providers/auth-store-provider";
 import { useDataStore } from "@/lib/providers/data-store-provider";
 import { itemService } from "@/lib/services/itemService";
 import { spaceService } from "@/lib/services/spaceService";
 import type { SaveItem, Space } from "@/lib/types";
-import { bulkImportSchema } from "@/lib/validation/items";
+import { createBulkImportSchema } from "@/lib/validation/items";
 
 export function useSaveItems(category: string) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
@@ -107,14 +108,26 @@ export function useSaveItems(category: string) {
     }
   };
 
+  const presetTags = useMemo(
+    () => TAGS_BY_CATEGORY[category as keyof typeof TAGS_BY_CATEGORY] || [],
+    [category],
+  );
+
   const bulkImport = async (
     newItems: Omit<SaveItem, "id" | "createdAt" | "category">[],
   ) => {
-    // Validate locally using Zod
-    const validationResult = bulkImportSchema.safeParse(newItems);
+    // Validate locally using Zod and allowed category-specific tags
+    const schema = createBulkImportSchema(presetTags);
+    const validationResult = schema.safeParse(newItems);
     if (!validationResult.success) {
       const errorMsg = validationResult.error.issues
-        .map((e) => `${e.path.join(".")}: ${e.message}`)
+        .map((e) => {
+          const index = e.path[0];
+          if (typeof index === "number") {
+            return `Mục số ${index + 1}: ${e.message}`;
+          }
+          return `${e.path.join(".")}: ${e.message}`;
+        })
         .join("\n");
       throw new Error(`Dữ liệu không hợp lệ:\n${errorMsg}`);
     }

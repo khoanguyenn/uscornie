@@ -1,5 +1,8 @@
 import { describe, expect, test } from "bun:test";
-import { bulkImportSchema } from "@/lib/validation/items";
+import {
+  bulkImportSchema,
+  createBulkImportSchema,
+} from "@/lib/validation/items";
 
 describe("bulkImportSchema validation", () => {
   test("passes validation with valid items", () => {
@@ -48,6 +51,27 @@ describe("bulkImportSchema validation", () => {
       },
     ];
     const result = bulkImportSchema.safeParse(invalidData);
+    expect(result.success).toBe(false);
+  });
+});
+
+describe("createBulkImportSchema validation with allowedTags", () => {
+  const allowedTags = ["Must try", "Cafe", "Restaurant"];
+  const schema = createBulkImportSchema(allowedTags);
+
+  test("passes with valid tags or empty tag", () => {
+    const validData = [
+      { title: "Item 1", tag: "Must try" },
+      { title: "Item 2", tag: "" },
+      { title: "Item 3", tag: null },
+    ];
+    const result = schema.safeParse(validData);
+    expect(result.success).toBe(true);
+  });
+
+  test("fails with invalid tag", () => {
+    const invalidData = [{ title: "Item 1", tag: "Invalid Tag" }];
+    const result = schema.safeParse(invalidData);
     expect(result.success).toBe(false);
   });
 });

@@ -51,19 +51,17 @@ export default function QuickAddCard({
     const lines = qaText.split("\n").filter((l) => l.trim());
     const parsedItems: QuickAddImportItem[] = [];
 
-    const tagsSet = new Set(presetTags);
     for (const line of lines) {
       const parts = line.split("-").map((p) => p.trim());
       const title = parts[0];
       if (!title) continue;
       const desc = parts[1] || "";
       const tagVal = parts[2] || "";
-      const validTag = tagsSet.has(tagVal) ? tagVal : "";
 
       parsedItems.push({
         title,
         desc,
-        tag: validTag,
+        tag: tagVal,
         image: null,
       });
     }
@@ -306,11 +304,10 @@ export default function QuickAddCard({
     if (!fileRows.length) return;
 
     const parsedItems = fileRows.map((r) => {
-      const validTag = presetTags.includes(r.tag) ? r.tag : "";
       return {
         title: r.name,
         desc: r.desc,
-        tag: validTag,
+        tag: r.tag,
         image: r.img || null,
       };
     });
