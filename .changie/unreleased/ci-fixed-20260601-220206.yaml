@@ -1,0 +1,4 @@
+component: ci
+kind: fixed
+body: revert accidental direct push to main
+time: 2026-06-01T22:02:06.981996+07:00
