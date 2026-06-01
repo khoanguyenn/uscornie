@@ -13,13 +13,7 @@ export const itemService = {
     const res = await api.post(`/spaces/${spaceId}/items`, item);
     return res.data;
   },
-  async addItemsBulk(
-    spaceId: string,
-    items: Omit<SaveItem, "id" | "createdAt">[],
-  ): Promise<SaveItem[]> {
-    const res = await api.post(`/spaces/${spaceId}/items/bulk`, { items });
-    return res.data;
-  },
+
   async updateItem(
     spaceId: string,
     itemId: string,

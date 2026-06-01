@@ -1,12 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { TAGS_BY_CATEGORY } from "@/lib/data/mock";
 import { useAuthStore } from "@/lib/providers/auth-store-provider";
 import { useDataStore } from "@/lib/providers/data-store-provider";
 import { itemService } from "@/lib/services/itemService";
 import { spaceService } from "@/lib/services/spaceService";
 import type { SaveItem, Space } from "@/lib/types";
-import { createBulkImportSchema } from "@/lib/validation/items";
 
 export function useSaveItems(category: string) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
@@ -15,7 +13,6 @@ export function useSaveItems(category: string) {
   const loadData = useDataStore((s) => s.loadData);
   const localItems = useDataStore((s) => s.items);
   const addLocalItem = useDataStore((s) => s.addItem);
-  const addLocalItems = useDataStore((s) => s.addItems);
   const updateLocalItem = useDataStore((s) => s.updateItem);
   const deleteLocalItem = useDataStore((s) => s.deleteItem);
 
@@ -108,48 +105,6 @@ export function useSaveItems(category: string) {
     }
   };
 
-  const presetTags = useMemo(
-    () => TAGS_BY_CATEGORY[category as keyof typeof TAGS_BY_CATEGORY] || [],
-    [category],
-  );
-
-  const bulkImport = async (
-    newItems: Omit<SaveItem, "id" | "createdAt" | "category">[],
-  ) => {
-    // Validate locally using Zod and allowed category-specific tags
-    const schema = createBulkImportSchema(presetTags);
-    const validationResult = schema.safeParse(newItems);
-    if (!validationResult.success) {
-      const errorMsg = validationResult.error.issues
-        .map((e) => {
-          const index = e.path[0];
-          if (typeof index === "number") {
-            return `• Mục số ${index + 1}: ${e.message}`;
-          }
-          return `• ${e.path.join(".")}: ${e.message}`;
-        })
-        .join("\n");
-      throw new Error(`Dữ liệu không hợp lệ:\n${errorMsg}`);
-    }
-
-    const itemsWithCat = newItems.map((item) => ({ ...item, category }));
-    if (isAuthenticated && activeSpace) {
-      await itemService.addItemsBulk(
-        activeSpace.id,
-        itemsWithCat.map((item) => ({
-          category: item.category,
-          title: item.title,
-          desc: item.desc || "",
-          tag: item.tag || "",
-          image: item.image || null,
-        })),
-      );
-      queryClient.invalidateQueries({ queryKey: ["items", activeSpace.id] });
-    } else {
-      addLocalItems(itemsWithCat);
-    }
-  };
-
   const isLoading = isAuthenticated ? isSpacesLoading || isItemsLoading : false;
 
   return {
@@ -158,7 +113,6 @@ export function useSaveItems(category: string) {
     addItem,
     updateItem,
     deleteItem,
-    bulkImport,
     isLoading,
     loadData,
   };

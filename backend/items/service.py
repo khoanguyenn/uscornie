@@ -2,7 +2,6 @@ from sqlalchemy.orm import Session
 
 from items.exceptions import ItemNotFoundError
 from items.repository import ItemRepository
-from items.schemas import ItemCreate
 from models import Item, User
 from spaces.exceptions import NotSpaceMemberError
 from spaces.repository import SpaceMemberRepository
@@ -45,16 +44,6 @@ class ItemService:
             desc=desc,
             tag=tag,
         )
-
-    def create_items_bulk(
-        self,
-        db: Session,
-        space_id: str,
-        current_user: User,
-        items_data: list[ItemCreate],
-    ) -> list[Item]:
-        self._verify_space_membership(db, space_id, current_user.id)
-        return self.item_repo.create_bulk(db, space_id=space_id, items_data=items_data)
 
     def update_item(
         self,
