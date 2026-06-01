@@ -10,7 +10,7 @@ type QuickAddImportItem = Omit<SaveItem, "id" | "createdAt" | "category">;
 interface QuickAddCardProps {
   presetTags: string[];
   hasFile: boolean;
-  onImported: (items: QuickAddImportItem[]) => void;
+  onImported: (items: QuickAddImportItem[]) => Promise<void>;
 }
 
 interface ParsedFileRow {
@@ -19,6 +19,15 @@ interface ParsedFileRow {
   desc: string;
   tag: string;
   img: string;
+}
+
+interface AxiosErrorLike {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+  message?: string;
 }
 
 export default function QuickAddCard({
@@ -37,7 +46,7 @@ export default function QuickAddCard({
     if (fileInputRef.current) fileInputRef.current.click();
   };
 
-  const qaParseText = () => {
+  const qaParseText = async () => {
     if (!qaText.trim()) return;
     const lines = qaText.split("\n").filter((l) => l.trim());
     const parsedItems: QuickAddImportItem[] = [];
@@ -60,12 +69,24 @@ export default function QuickAddCard({
     }
 
     if (parsedItems.length > 0) {
-      onImported(parsedItems);
-      setQaText("");
-      setQaResult({
-        msg: `Đã thêm thành công ${parsedItems.length} mục!`,
-        isErr: false,
-      });
+      try {
+        await onImported(parsedItems);
+        setQaText("");
+        setQaResult({
+          msg: `Đã thêm thành công ${parsedItems.length} mục!`,
+          isErr: false,
+        });
+      } catch (err: unknown) {
+        const error = err as AxiosErrorLike;
+        const errMsg =
+          error?.response?.data?.message ||
+          error?.message ||
+          "Đã xảy ra lỗi khi thêm nhanh.";
+        setQaResult({
+          msg: errMsg,
+          isErr: true,
+        });
+      }
     } else {
       setQaResult({ msg: "Không tìm thấy dòng nào hợp lệ.", isErr: true });
     }
@@ -281,7 +302,7 @@ export default function QuickAddCard({
     }
   };
 
-  const qaImportRows = () => {
+  const qaImportRows = async () => {
     if (!fileRows.length) return;
 
     const parsedItems = fileRows.map((r) => {
@@ -294,13 +315,25 @@ export default function QuickAddCard({
       };
     });
 
-    onImported(parsedItems);
-    setFileRows([]);
-    if (fileInputRef.current) fileInputRef.current.value = "";
-    setQaResult({
-      msg: `Đã import thành công ${parsedItems.length} mục!`,
-      isErr: false,
-    });
+    try {
+      await onImported(parsedItems);
+      setFileRows([]);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      setQaResult({
+        msg: `Đã import thành công ${parsedItems.length} mục!`,
+        isErr: false,
+      });
+    } catch (err: unknown) {
+      const error = err as AxiosErrorLike;
+      const errMsg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Đã xảy ra lỗi khi import file.";
+      setQaResult({
+        msg: errMsg,
+        isErr: true,
+      });
+    }
   };
 
   const cancelImport = () => {
