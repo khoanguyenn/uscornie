@@ -1,4 +1,0 @@
-component: ci
-kind: fixed
-body: add google client id to frontend build in release workflow
-time: 2026-06-01T22:06:21.147811+07:00
