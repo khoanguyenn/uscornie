@@ -1,4 +1,5 @@
 
+- **[ci]** add google client id to frontend build in release workflow
 - **[frontend]** implement TanStack Query sync for Save page items with backend database
 - **[infra]** add changie fragment validation to pre-push git hook
 - **[infra]** allow release-tag.yml to use GH_PAT to trigger deploy workflow
