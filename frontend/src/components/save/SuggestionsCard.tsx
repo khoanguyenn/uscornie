@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import GhibliIcon from "@/components/ui/GhibliIcon";
 import { SUGGESTIONS } from "@/lib/data/mock";
@@ -25,13 +25,6 @@ export default function SuggestionsCard({
     n: string;
     d: string;
   } | null>(null);
-
-  // Reset suggestion when category changes
-  useEffect(() => {
-    if (category) {
-      setCurrentSuggestion(null);
-    }
-  }, [category]);
 
   const pool = useMemo(() => {
     return SUGGESTIONS[category as keyof typeof SUGGESTIONS] || null;

@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import models  # noqa: F401
 from auth.endpoints import router as auth_router
 from invites.endpoints import router as invites_router
+from items.endpoints import router as items_router
 from kit.database import Base, engine
 from kit.exceptions import register_exception_handlers
 from spaces.endpoints import router as spaces_router
@@ -38,6 +39,7 @@ register_exception_handlers(app)
 app.include_router(auth_router, tags=["Auth"])
 app.include_router(spaces_router, tags=["Spaces"])
 app.include_router(invites_router, tags=["Invites"])
+app.include_router(items_router, tags=["Items"])
 
 
 @app.get("/")
