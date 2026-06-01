@@ -12,7 +12,8 @@ export const bulkImportItemSchema = z.object({
 
 export const bulkImportSchema = z
   .array(bulkImportItemSchema)
-  .min(1, "Danh sách không được trống");
+  .min(1, "Danh sách không được trống")
+  .max(100, "Không thể nhập quá 100 mục cùng lúc");
 
 export const createBulkImportSchema = (allowedTags: string[]) =>
   z
@@ -43,4 +44,5 @@ export const createBulkImportSchema = (allowedTags: string[]) =>
         image: z.string().optional().nullable(),
       }),
     )
-    .min(1, "Danh sách không được trống");
+    .min(1, "Danh sách không được trống")
+    .max(100, "Không thể nhập quá 100 mục cùng lúc");
