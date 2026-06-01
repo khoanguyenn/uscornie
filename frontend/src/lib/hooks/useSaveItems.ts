@@ -5,6 +5,7 @@ import { useDataStore } from "@/lib/providers/data-store-provider";
 import { itemService } from "@/lib/services/itemService";
 import { spaceService } from "@/lib/services/spaceService";
 import type { SaveItem, Space } from "@/lib/types";
+import { bulkImportSchema } from "@/lib/validation/items";
 
 export function useSaveItems(category: string) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
@@ -109,18 +110,26 @@ export function useSaveItems(category: string) {
   const bulkImport = async (
     newItems: Omit<SaveItem, "id" | "createdAt" | "category">[],
   ) => {
+    // Validate locally using Zod
+    const validationResult = bulkImportSchema.safeParse(newItems);
+    if (!validationResult.success) {
+      const errorMsg = validationResult.error.issues
+        .map((e) => `${e.path.join(".")}: ${e.message}`)
+        .join("\n");
+      throw new Error(`Dữ liệu không hợp lệ:\n${errorMsg}`);
+    }
+
     const itemsWithCat = newItems.map((item) => ({ ...item, category }));
     if (isAuthenticated && activeSpace) {
-      await Promise.all(
-        itemsWithCat.map((item) =>
-          itemService.addItem(activeSpace.id, {
-            category: item.category,
-            title: item.title,
-            desc: item.desc || "",
-            tag: item.tag || "",
-            image: null,
-          }),
-        ),
+      await itemService.addItemsBulk(
+        activeSpace.id,
+        itemsWithCat.map((item) => ({
+          category: item.category,
+          title: item.title,
+          desc: item.desc || "",
+          tag: item.tag || "",
+          image: item.image || null,
+        })),
       );
       queryClient.invalidateQueries({ queryKey: ["items", activeSpace.id] });
     } else {

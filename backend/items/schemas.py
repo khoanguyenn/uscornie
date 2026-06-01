@@ -24,6 +24,10 @@ class ItemCreate(ItemBase):
     pass
 
 
+class ItemBulkCreate(BaseModel):
+    items: list[ItemCreate] = Field(..., min_length=1, max_length=100)
+
+
 class ItemUpdate(BaseModel):
     title: str | None = Field(None, min_length=1, max_length=200)
     desc: str | None = Field(None, max_length=1000)

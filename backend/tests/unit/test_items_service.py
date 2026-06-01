@@ -2,6 +2,7 @@ import pytest
 from sqlalchemy.orm import Session
 
 from items.exceptions import ItemNotFoundError
+from items.schemas import ItemCreate
 from items.service import ItemService
 from models import Space, SpaceMember, User
 from spaces.exceptions import NotSpaceMemberError
@@ -215,3 +216,29 @@ def test_item_not_found(db: Session):
         service.delete_item(
             db, space_id=space.id, item_id="non-existent-id", current_user=user
         )
+
+
+def test_bulk_create_items_success(db: Session):
+    user = User(email="alice@example.com", full_name="Alice")
+    db.add(user)
+    db.commit()
+
+    space = Space(name="Alice's Space", type="personal")
+    db.add(space)
+    db.commit()
+
+    member = SpaceMember(space_id=space.id, user_id=user.id, role="admin")
+    db.add(member)
+    db.commit()
+
+    service = ItemService()
+    items_data = [
+        ItemCreate(category="wishlist", title="Item 1", desc="Desc 1", tag="Tag 1"),
+        ItemCreate(category="food", title="Item 2", desc="Desc 2", tag="Tag 2"),
+    ]
+    created = service.create_items_bulk(
+        db, space_id=space.id, current_user=user, items_data=items_data
+    )
+    assert len(created) == 2
+    assert created[0].title == "Item 1"
+    assert created[1].title == "Item 2"

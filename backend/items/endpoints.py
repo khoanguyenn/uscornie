@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from auth.service import get_current_user
-from items.schemas import ItemCreate, ItemResponse, ItemUpdate
+from items.schemas import ItemBulkCreate, ItemCreate, ItemResponse, ItemUpdate
 from items.service import ItemService
 from kit.database import get_db
 from models import User
@@ -43,6 +43,33 @@ async def create_item(
         desc=item_data.desc,
         tag=item_data.tag,
     )
+
+
+@router.post(
+    "/spaces/{space_id}/items/bulk",
+    response_model=list[ItemResponse],
+    status_code=status.HTTP_201_CREATED,
+)
+async def create_items_bulk(
+    space_id: str,
+    payload: ItemBulkCreate,
+    current_user: Annotated[User, Depends(get_current_user)],
+    db: Annotated[Session, Depends(get_db)],
+):
+    service = ItemService()
+    try:
+        with db.begin_nested():
+            res = service.create_items_bulk(
+                db,
+                space_id=space_id,
+                current_user=current_user,
+                items_data=payload.items,
+            )
+        db.commit()
+        return res
+    except Exception as e:
+        db.rollback()
+        raise e
 
 
 @router.put("/spaces/{space_id}/items/{item_id}", response_model=ItemResponse)
