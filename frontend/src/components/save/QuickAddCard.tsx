@@ -409,7 +409,7 @@ export default function QuickAddCard({
                 </Button>
                 {qaResult.msg && (
                   <span
-                    className={`inline-block text-[0.82rem] font-semibold p-[8px_12px] rounded-lg ${
+                    className={`inline-block text-[0.82rem] font-semibold p-[8px_12px] rounded-lg whitespace-pre-line ${
                       qaResult.isErr
                         ? "text-[#c97070] bg-[#c97070]/[0.08]"
                         : "text-grass-dark bg-grass/[0.08]"
@@ -500,7 +500,7 @@ export default function QuickAddCard({
               )}
               {qaResult.msg && (
                 <span
-                  className={`inline-block text-[0.82rem] font-semibold p-[8px_12px] rounded-lg mt-2.5 ${
+                  className={`inline-block text-[0.82rem] font-semibold p-[8px_12px] rounded-lg mt-2.5 whitespace-pre-line ${
                     qaResult.isErr
                       ? "text-[#c97070] bg-[#c97070]/[0.08]"
                       : "text-grass-dark bg-grass/[0.08]"
