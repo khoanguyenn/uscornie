@@ -13,7 +13,6 @@ export function useSaveItems(category: string) {
   const loadData = useDataStore((s) => s.loadData);
   const localItems = useDataStore((s) => s.items);
   const addLocalItem = useDataStore((s) => s.addItem);
-  const addLocalItems = useDataStore((s) => s.addItems);
   const updateLocalItem = useDataStore((s) => s.updateItem);
   const deleteLocalItem = useDataStore((s) => s.deleteItem);
 
@@ -106,28 +105,6 @@ export function useSaveItems(category: string) {
     }
   };
 
-  const bulkImport = async (
-    newItems: Omit<SaveItem, "id" | "createdAt" | "category">[],
-  ) => {
-    const itemsWithCat = newItems.map((item) => ({ ...item, category }));
-    if (isAuthenticated && activeSpace) {
-      await Promise.all(
-        itemsWithCat.map((item) =>
-          itemService.addItem(activeSpace.id, {
-            category: item.category,
-            title: item.title,
-            desc: item.desc || "",
-            tag: item.tag || "",
-            image: null,
-          }),
-        ),
-      );
-      queryClient.invalidateQueries({ queryKey: ["items", activeSpace.id] });
-    } else {
-      addLocalItems(itemsWithCat);
-    }
-  };
-
   const isLoading = isAuthenticated ? isSpacesLoading || isItemsLoading : false;
 
   return {
@@ -136,7 +113,6 @@ export function useSaveItems(category: string) {
     addItem,
     updateItem,
     deleteItem,
-    bulkImport,
     isLoading,
     loadData,
   };

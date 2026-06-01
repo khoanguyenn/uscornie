@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import QuickAddCard from "@/components/save/QuickAddCard";
 import SaveItemCard from "@/components/save/SaveItemCard";
 import SaveItemForm, {
   type SaveItemFormValues,
@@ -28,7 +27,6 @@ export default function SaveCategoryContent({
     addItem,
     updateItem,
     deleteItem,
-    bulkImport,
     isLoading,
   } = useSaveItems(category);
 
@@ -41,10 +39,6 @@ export default function SaveCategoryContent({
   );
   const presetTags = useMemo(
     () => TAGS_BY_CATEGORY[category as keyof typeof TAGS_BY_CATEGORY] || [],
-    [category],
-  );
-  const hasFile = useMemo(
-    () => ["food", "cafe", "places"].includes(category),
     [category],
   );
 
@@ -120,13 +114,6 @@ export default function SaveCategoryContent({
         onAddSuggestion={(title, desc) =>
           addItem({ title, desc, tag: "", image: null })
         }
-      />
-
-      {/* 3. Bulk import */}
-      <QuickAddCard
-        presetTags={presetTags}
-        hasFile={hasFile}
-        onImported={bulkImport}
       />
 
       {/* 4. Filter by tags */}
