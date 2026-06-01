@@ -1,0 +1,67 @@
+{
+  "permissions": {
+    "allow": [
+      // Allow general Git commands
+      "command(git)",
+
+      // Python/uv project commands
+      "command(uv run)",
+      "command(uv sync)",
+
+      // Bun project commands
+      "command(bun run)",
+      "command(bun install)",
+      "command(bun i)",
+      "command(bunx)",
+      "command(bun x)",
+
+      // Development workflow tools
+      "command(changie)",
+      "command(lefthook)",
+
+      // Safe utilities
+      "command(ls)",
+      "command(grep)",
+      "command(find)",
+      "command(cat)",
+      "command(pwd)",
+      "command(echo)"
+    ],
+    "deny": [
+      // Block reading/writing workspace environment files using workspace-relative paths
+      "read_file(.env)",
+      "write_file(.env)",
+      "read_file(.env.local)",
+      "write_file(.env.local)",
+      "read_file(.env.production)",
+      "write_file(.env.production)",
+      "read_file(.env.development)",
+      "write_file(.env.development)",
+      "read_file(.env.staging)",
+      "write_file(.env.staging)",
+      "read_file(.env.bak)",
+      "write_file(.env.bak)",
+
+      // Dangerous system commands and write actions
+      "command(rm -rf /)",
+      "command(rm -rf ~)",
+      "write_file(/etc/)",
+      "write_file(/Users/khoanguyen/.ssh/)"
+    ],
+    "ask": [
+      // Explicitly ask for PR creation (gh) and code pushes (overriding general git allow)
+      "command(gh pr)",
+      "command(git push)",
+
+      // Commands requiring explicit confirmation
+      "command(docker)",
+      "command(docker-compose)",
+      "command(uv pip install)",
+      "command(bun add)",
+      
+      // Fallback defaults
+      "command(*)",
+      "read_url(*)"
+    ]
+  }
+}
