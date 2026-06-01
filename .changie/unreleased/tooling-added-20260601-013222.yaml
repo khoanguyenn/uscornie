@@ -1,4 +1,0 @@
-component: tooling
-kind: added
-body: enforce minimum react-doctor score threshold in pre-commit git hooks
-time: 2026-06-01T01:32:22.245292+07:00
