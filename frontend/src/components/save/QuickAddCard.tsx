@@ -60,8 +60,7 @@ export default function QuickAddCard({
 
     for (const line of lines) {
       const parts = line.split("-").map((p) => p.trim());
-      const title = parts[0];
-      if (!title) continue;
+      const title = parts[0] || "";
       const desc = parts[1] || "";
       const tagVal = parts[2] || "";
 
