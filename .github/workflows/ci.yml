@@ -49,6 +49,8 @@ jobs:
         working-directory: frontend
         run: bun run lint
       - name: Build check
+        env:
+          SKIP_ENV_VALIDATION: "true"
         working-directory: frontend
         run: bun run build
 
