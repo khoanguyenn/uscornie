@@ -74,6 +74,23 @@ describe("createBulkImportSchema validation with allowedTags", () => {
     const result = schema.safeParse(invalidData);
     expect(result.success).toBe(false);
   });
+
+  test("fails with wrong casing on tags due to case sensitivity", () => {
+    const invalidData = [{ title: "Item 1", tag: "must try" }];
+    const result = schema.safeParse(invalidData);
+    expect(result.success).toBe(false);
+  });
+
+  test("fails with tag exceeding max length boundary of 50 chars", () => {
+    const longTag = "a".repeat(51);
+    const schemaWithLongTag = createBulkImportSchema([longTag]);
+    const invalidData = [{ title: "Item 1", tag: longTag }];
+    const result = schemaWithLongTag.safeParse(invalidData);
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues[0].message).toContain("Thẻ tối đa 50 ký tự");
+    }
+  });
 });
 
 describe("error formatting helper logic", () => {
