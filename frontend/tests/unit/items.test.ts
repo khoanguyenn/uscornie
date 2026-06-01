@@ -88,6 +88,7 @@ describe("createBulkImportSchema validation with allowedTags", () => {
     const result = schemaWithLongTag.safeParse(invalidData);
     expect(result.success).toBe(false);
     if (!result.success) {
+      expect(result.error.issues.length).toBe(1);
       expect(result.error.issues[0].message).toContain("Thẻ tối đa 50 ký tự");
     }
   });
@@ -159,6 +160,7 @@ describe("error formatting helper logic", () => {
       expect(errorMsg).toContain('• Mục số 1: Thẻ "must try" không hợp lệ.');
       expect(errorMsg).toContain("• Mục số 3: Tiêu đề không được để trống");
       expect(errorMsg).toContain("• Mục số 4: Thẻ tối đa 50 ký tự");
+      expect(errorMsg).not.toContain('• Mục số 4: Thẻ "ThẻSiêuDài');
     }
   });
 });

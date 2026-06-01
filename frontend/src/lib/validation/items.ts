@@ -31,7 +31,7 @@ export const createBulkImportSchema = (allowedTags: string[]) =>
           .string()
           .max(50, "Thẻ tối đa 50 ký tự")
           .superRefine((val, ctx) => {
-            if (val && !allowedTags.includes(val)) {
+            if (val && val.length <= 50 && !allowedTags.includes(val)) {
               ctx.addIssue({
                 code: z.ZodIssueCode.custom,
                 message: `Thẻ "${val}" không hợp lệ. Chỉ chấp nhận: ${allowedTags.join(", ")}`,
