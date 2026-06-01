@@ -1,0 +1,4 @@
+component: backend
+kind: removed
+body: remove quick add bulk import endpoint and repository service
+time: 2026-06-01T23:51:51.629621+07:00
