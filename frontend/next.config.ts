@@ -8,6 +8,8 @@ const REQUIRED_ENV_VARS = [
 if (
   process.env.NODE_ENV === "production" &&
   // biome-ignore lint/complexity/useLiteralKeys: TypeScript requires bracket notation for index signatures
+  process.env["CI"] === "true" &&
+  // biome-ignore lint/complexity/useLiteralKeys: TypeScript requires bracket notation for index signatures
   process.env["SKIP_ENV_VALIDATION"] !== "true"
 ) {
   for (const envVar of REQUIRED_ENV_VARS) {
