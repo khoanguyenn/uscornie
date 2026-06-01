@@ -75,3 +75,33 @@ describe("createBulkImportSchema validation with allowedTags", () => {
     expect(result.success).toBe(false);
   });
 });
+
+describe("error formatting helper logic", () => {
+  const allowedTags = ["Must try", "Cafe"];
+  const schema = createBulkImportSchema(allowedTags);
+
+  test("produces correct bullet point index and message for empty title and invalid tag", () => {
+    const invalidData = [
+      { title: "Item 1", tag: "Invalid Tag" },
+      { title: "", tag: "Cafe" },
+    ];
+    const result = schema.safeParse(invalidData);
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const errorMsg = result.error.issues
+        .map((e) => {
+          const index = e.path[0];
+          if (typeof index === "number") {
+            return `• Mục số ${index + 1}: ${e.message}`;
+          }
+          return `• ${e.path.join(".")}: ${e.message}`;
+        })
+        .join("\n");
+
+      expect(errorMsg).toContain(
+        '• Mục số 1: Thẻ "Invalid Tag" không hợp lệ. Chỉ chấp nhận: Must try, Cafe',
+      );
+      expect(errorMsg).toContain("• Mục số 2: Tiêu đề không được để trống");
+    }
+  });
+});
