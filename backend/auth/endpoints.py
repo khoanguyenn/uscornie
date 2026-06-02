@@ -16,6 +16,18 @@ COOKIE_MAX_AGE_DAYS = 30
 COOKIE_MAX_AGE_SECONDS = COOKIE_MAX_AGE_DAYS * 24 * 60 * 60
 
 
+def get_ip_address(request: Request) -> str:
+    cf_ip = request.headers.get("cf-connecting-ip")
+    if cf_ip:
+        return cf_ip
+
+    x_forwarded_for = request.headers.get("x-forwarded-for")
+    if x_forwarded_for:
+        return x_forwarded_for.split(",")[0].strip()
+
+    return request.client.host if request.client else "Unknown IP"
+
+
 @router.post("/auth/google", response_model=TokenResponse)
 async def auth_google(
     request_data: AuthGoogleRequest,
@@ -26,7 +38,7 @@ async def auth_google(
     service = AuthService()
     ua = request.headers.get("user-agent", "Unknown Device")
     device_info = parse_user_agent(ua)
-    ip_address = request.client.host if request.client else "Unknown IP"
+    ip_address = get_ip_address(request)
 
     access_token, session = service.authenticate_google(
         db, request_data.credential, device_info, ip_address
@@ -56,7 +68,7 @@ async def auth_refresh(
         raise SessionInvalidError(message="Refresh token is missing")
 
     service = AuthService()
-    ip_address = request.client.host if request.client else "Unknown IP"
+    ip_address = get_ip_address(request)
 
     access_token, new_session = service.refresh_token_rotation(
         db, refresh_token, ip_address

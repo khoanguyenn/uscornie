@@ -70,7 +70,7 @@ class AuthService:
             return None
 
     def authenticate_google(
-        self, db: Session, credential: str, device_info: str, ip_address: str
+        self, db: Session, credential: str, device_info: dict, ip_address: str
     ) -> tuple[str, UserSession]:
         id_info = self.verify_google_token(credential, clock_skew_in_seconds=10)
         if not id_info:

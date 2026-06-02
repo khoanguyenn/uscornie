@@ -51,7 +51,7 @@ class SessionRepository:
         self,
         db: Session,
         user_id: str,
-        device_info: str,
+        device_info: dict,
         ip_address: str,
         expires_in_days: int = 30,
         parent_id: str | None = None,

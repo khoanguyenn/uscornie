@@ -1,6 +1,7 @@
 from datetime import UTC, datetime, timedelta
 from unittest.mock import patch
 
+import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
@@ -42,7 +43,9 @@ def test_api_google_login_creates_session_in_db(
     assert session is not None
     assert session.is_active is True
     assert session.ip_address == "testclient"
-    assert session.device_info == "Chrome on macOS"
+    assert isinstance(session.device_info, dict)
+    assert session.device_info["browser"]["family"] == "Chrome"
+    assert session.device_info["os"]["family"] == "Mac OS X"
 
     # Verify user exists and default personal space was created
     user = db.query(User).filter(User.email == "test_e2e@example.com").first()
@@ -57,6 +60,101 @@ def test_api_google_login_creates_session_in_db(
     assert space.type == "personal"
 
 
+@pytest.mark.parametrize(
+    (
+        "user_agent",
+        "expected_browser",
+        "expected_os",
+        "expected_device",
+        "cf_ip",
+        "expected_ip",
+    ),
+    [
+        (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Chrome",
+            "Windows",
+            "Other",
+            "1.1.1.1",
+            "1.1.1.1",
+        ),
+        (
+            "Mozilla/5.0 (iPhone; CPU iPhone OS 17_1_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1.1 Mobile/15E148 Safari/604.1",
+            "Mobile Safari",
+            "iOS",
+            "iPhone",
+            None,
+            "testclient",
+        ),
+        (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0",
+            "Edge",
+            "Windows",
+            "Other",
+            "203.0.113.195",
+            "203.0.113.195",
+        ),
+        (
+            "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
+            "Chrome Mobile",
+            "Android",
+            "K",
+            None,
+            "testclient",
+        ),
+        (
+            "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+            "Googlebot",
+            "Other",
+            "Spider",
+            None,
+            "testclient",
+        ),
+    ],
+)
+@patch("auth.service.AuthService.verify_google_token")
+def test_api_google_login_user_agent_variations(
+    mock_verify,
+    client: TestClient,
+    db: Session,
+    user_agent,
+    expected_browser,
+    expected_os,
+    expected_device,
+    cf_ip,
+    expected_ip,
+):
+    # Dynamic email for unique users per test parameters
+    email = f"ua_test_{expected_browser.lower().replace(' ', '_')}@example.com"
+    mock_verify.return_value = {
+        "email": email,
+        "name": "UA Test User",
+        "picture": "https://example.com/ua.jpg",
+    }
+
+    headers = {"User-Agent": user_agent}
+    if cf_ip:
+        headers["CF-Connecting-IP"] = cf_ip
+
+    response = client.post(
+        "/auth/google",
+        json={"credential": "mock_google_token"},
+        headers=headers,
+    )
+
+    assert response.status_code == 200
+    session_id = response.cookies["refresh_token"]
+
+    session = db.query(UserSession).filter(UserSession.id == session_id).first()
+    assert session is not None
+    assert session.ip_address == expected_ip
+    assert isinstance(session.device_info, dict)
+    assert session.device_info["browser"]["family"] == expected_browser
+    assert session.device_info["os"]["family"] == expected_os
+    assert session.device_info["device"]["family"] == expected_device
+    assert session.device_info["raw"] == user_agent
+
+
 def test_api_refresh_token_rotation_success(client: TestClient, db: Session):
     # Setup: Create user and an active session
     user = User(email="rotate@example.com", full_name="Rotate User")
@@ -65,7 +163,7 @@ def test_api_refresh_token_rotation_success(client: TestClient, db: Session):
 
     repo = SessionRepository()
     session = repo.create_session(
-        db, user_id=user.id, device_info="Test Device", ip_address="127.0.0.1"
+        db, user_id=user.id, device_info={"raw": "Test Device"}, ip_address="127.0.0.1"
     )
 
     # Action: Refresh using the session ID as cookie
@@ -100,7 +198,7 @@ def test_api_refresh_token_expired(client: TestClient, db: Session):
     expires_at = datetime.now(UTC) - timedelta(days=1)
     session = UserSession(
         user_id=user.id,
-        device_info="Test Device",
+        device_info={"raw": "Test Device"},
         ip_address="127.0.0.1",
         expires_at=expires_at,
         is_active=True,
@@ -128,7 +226,7 @@ def test_api_replay_attack_revokes_all_user_sessions(client: TestClient, db: Ses
     # Logged in devices: Session A (rotated), Session B (descendant of A), Session C (independent active session)
     session_a = UserSession(
         user_id=user.id,
-        device_info="Device 1",
+        device_info={"raw": "Device 1"},
         ip_address="127.0.0.1",
         expires_at=datetime.now(UTC) + timedelta(days=30),
         is_active=False,
@@ -139,12 +237,12 @@ def test_api_replay_attack_revokes_all_user_sessions(client: TestClient, db: Ses
     session_b = repo.create_session(
         db,
         user_id=user.id,
-        device_info="Device 1",
+        device_info={"raw": "Device 1"},
         ip_address="127.0.0.1",
         parent_id=session_a.id,
     )
     session_c = repo.create_session(
-        db, user_id=user.id, device_info="Device 2", ip_address="192.168.1.1"
+        db, user_id=user.id, device_info={"raw": "Device 2"}, ip_address="192.168.1.1"
     )
 
     # Replay attack: client tries to refresh using Session A (which is already rotated/inactive)
@@ -168,7 +266,7 @@ def test_api_logout_invalidates_current_session(client: TestClient, db: Session)
 
     repo = SessionRepository()
     session = repo.create_session(
-        db, user_id=user.id, device_info="Device", ip_address="127.0.0.1"
+        db, user_id=user.id, device_info={"raw": "Device"}, ip_address="127.0.0.1"
     )
 
     client.cookies.set("refresh_token", session.id)
@@ -193,10 +291,10 @@ def test_api_get_sessions_list(client: TestClient, db: Session):
 
     repo = SessionRepository()
     session_a = repo.create_session(
-        db, user_id=user.id, device_info="Device A", ip_address="127.0.0.1"
+        db, user_id=user.id, device_info={"raw": "Device A"}, ip_address="127.0.0.1"
     )
     session_b = repo.create_session(
-        db, user_id=user.id, device_info="Device B", ip_address="192.168.1.1"
+        db, user_id=user.id, device_info={"raw": "Device B"}, ip_address="192.168.1.1"
     )
 
     # Generate access token
@@ -219,7 +317,7 @@ def test_api_get_sessions_list(client: TestClient, db: Session):
 
     assert sessions_map[session_a.id]["is_current"] is True
     assert sessions_map[session_b.id]["is_current"] is False
-    assert sessions_map[session_b.id]["device_info"] == "Device B"
+    assert sessions_map[session_b.id]["device_info"] == {"raw": "Device B"}
 
 
 def test_api_revoke_specific_device_session(client: TestClient, db: Session):
@@ -229,10 +327,10 @@ def test_api_revoke_specific_device_session(client: TestClient, db: Session):
 
     repo = SessionRepository()
     session_a = repo.create_session(
-        db, user_id=user.id, device_info="Device A", ip_address="127.0.0.1"
+        db, user_id=user.id, device_info={"raw": "Device A"}, ip_address="127.0.0.1"
     )
     session_b = repo.create_session(
-        db, user_id=user.id, device_info="Device B", ip_address="192.168.1.1"
+        db, user_id=user.id, device_info={"raw": "Device B"}, ip_address="192.168.1.1"
     )
 
     auth_service = AuthService()

@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -14,7 +15,7 @@ class TokenResponse(BaseModel):
 
 class SessionResponse(BaseModel):
     id: str
-    device_info: str
+    device_info: dict[str, Any]
     ip_address: str
     last_active_at: datetime
     is_current: bool
