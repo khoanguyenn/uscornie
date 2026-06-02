@@ -1,0 +1,4 @@
+component: backend
+kind: security
+body: secure container and restrict network egress using multi-stage builds and CiliumNetworkPolicy
+time: 2026-06-03T00:01:50.033373+07:00
