@@ -1,0 +1,44 @@
+{{- if .Values.ciliumNetworkPolicy.enabled -}}
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: uscornie-backend
+spec:
+  endpointSelector:
+    matchLabels:
+      app: uscornie-backend
+  ingress:
+    # Allow inbound to backend container port
+    - toPorts:
+        - ports:
+            - port: "{{ .Values.service.port }}"
+              protocol: TCP
+  egress:
+    # 1. Allow CoreDNS queries for domain resolution
+    - toEndpoints:
+        - matchLabels:
+            "k8s:io.kubernetes.pod.namespace": kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+          rules:
+            dns:
+              - matchPattern: "*"
+    # 2. Allow DB access to CloudNativePG database cluster
+    - toEndpoints:
+        - matchLabels:
+            cnpg.io/cluster: uscornie-db
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
+    # 3. Allow Google OAuth API egress (Domain-based L7 filter)
+    - toFQDNs:
+        - matchPattern: "*.googleapis.com"
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+{{- end }}
