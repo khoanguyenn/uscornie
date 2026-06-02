@@ -7,6 +7,7 @@ from auth.parsers import parse_user_agent
 from auth.schemas import AuthGoogleRequest, SessionResponse, TokenResponse
 from auth.service import AuthService, get_current_user
 from kit.database import get_db
+from kit.http import get_ip_address
 from models import User
 
 router = APIRouter()
@@ -26,7 +27,7 @@ async def auth_google(
     service = AuthService()
     ua = request.headers.get("user-agent", "Unknown Device")
     device_info = parse_user_agent(ua)
-    ip_address = request.client.host if request.client else "Unknown IP"
+    ip_address = get_ip_address(request)
 
     access_token, session = service.authenticate_google(
         db, request_data.credential, device_info, ip_address
@@ -56,7 +57,7 @@ async def auth_refresh(
         raise SessionInvalidError(message="Refresh token is missing")
 
     service = AuthService()
-    ip_address = request.client.host if request.client else "Unknown IP"
+    ip_address = get_ip_address(request)
 
     access_token, new_session = service.refresh_token_rotation(
         db, refresh_token, ip_address

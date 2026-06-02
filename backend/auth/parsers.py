@@ -1,28 +1,28 @@
-def parse_user_agent(ua: str) -> str:  # noqa: C901
+from user_agents import parse
+
+
+def parse_user_agent(ua: str) -> dict:
     if not ua:
-        return "Unknown Device"
-    ua_lower = ua.lower()
-    browser = "Unknown Browser"
-    os = "Unknown OS"
+        ua = ""
 
-    if "chrome" in ua_lower or "chromium" in ua_lower:
-        browser = "Chrome"
-    elif "safari" in ua_lower:
-        browser = "Safari"
-    elif "firefox" in ua_lower:
-        browser = "Firefox"
-    elif "edge" in ua_lower:
-        browser = "Edge"
-
-    if "windows" in ua_lower:
-        os = "Windows"
-    elif "macintosh" in ua_lower or "mac os" in ua_lower:
-        os = "macOS"
-    elif "iphone" in ua_lower:
-        os = "iPhone"
-    elif "android" in ua_lower:
-        os = "Android"
-    elif "linux" in ua_lower:
-        os = "Linux"
-
-    return f"{browser} on {os}"
+    user_agent = parse(ua)
+    return {
+        "browser": {
+            "family": user_agent.browser.family,
+            "version": user_agent.browser.version_string,
+        },
+        "os": {
+            "family": user_agent.os.family,
+            "version": user_agent.os.version_string,
+        },
+        "device": {
+            "family": user_agent.device.family,
+            "brand": user_agent.device.brand,
+            "model": user_agent.device.model,
+        },
+        "is_mobile": user_agent.is_mobile,
+        "is_tablet": user_agent.is_tablet,
+        "is_pc": user_agent.is_pc,
+        "is_bot": user_agent.is_bot,
+        "raw": ua,
+    }

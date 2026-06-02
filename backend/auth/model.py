@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, String
+from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from kit.database import Base, generate_uuid, utcnow
@@ -25,8 +25,8 @@ class UserSession(Base):
     __tablename__ = "user_sessions"
     id: Mapped[str] = mapped_column(String, primary_key=True, default=generate_uuid)
     user_id: Mapped[str] = mapped_column(String, ForeignKey("users.id"))
-    device_info: Mapped[str] = mapped_column(String)
-    ip_address: Mapped[str] = mapped_column(String)
+    device_info: Mapped[dict] = mapped_column(JSON)
+    ip_address: Mapped[str | None] = mapped_column(String, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     parent_id: Mapped[str | None] = mapped_column(
         String, ForeignKey("user_sessions.id"), nullable=True
