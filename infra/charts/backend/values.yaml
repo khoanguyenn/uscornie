@@ -39,3 +39,9 @@ argoCD: false
 #   --from-literal=GOOGLE_CLIENT_ID=xxx \
 #   --from-literal=GOOGLE_CLIENT_SECRET=xxx \
 #   --from-literal=JWT_SECRET=xxx
+
+# -- Cilium Network Policy configurations (Least Privilege)
+ciliumNetworkPolicy:
+  # -- Enables CiliumNetworkPolicy template for backend network isolation
+  enabled: false
+

@@ -25,7 +25,7 @@ spec:
       containers:
         - name: migrate
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          command: ["uv", "run", "--no-dev", "alembic", "upgrade", "head"]
+          command: ["alembic", "upgrade", "head"]
           env:
             - name: DATABASE_URL
               valueFrom:
