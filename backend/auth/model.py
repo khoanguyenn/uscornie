@@ -26,7 +26,7 @@ class UserSession(Base):
     id: Mapped[str] = mapped_column(String, primary_key=True, default=generate_uuid)
     user_id: Mapped[str] = mapped_column(String, ForeignKey("users.id"))
     device_info: Mapped[dict] = mapped_column(JSON)
-    ip_address: Mapped[str] = mapped_column(String)
+    ip_address: Mapped[str | None] = mapped_column(String, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     parent_id: Mapped[str | None] = mapped_column(
         String, ForeignKey("user_sessions.id"), nullable=True

@@ -52,7 +52,7 @@ class SessionRepository:
         db: Session,
         user_id: str,
         device_info: dict,
-        ip_address: str,
+        ip_address: str | None,
         expires_in_days: int = 30,
         parent_id: str | None = None,
     ) -> UserSession:
@@ -89,7 +89,7 @@ class SessionRepository:
         db.commit()
 
     def update_session_activity(
-        self, db: Session, session_id: str, ip_address: str
+        self, db: Session, session_id: str, ip_address: str | None
     ) -> None:
         session = self.get_session_by_id(db, session_id)
         if session:

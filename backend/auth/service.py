@@ -70,7 +70,7 @@ class AuthService:
             return None
 
     def authenticate_google(
-        self, db: Session, credential: str, device_info: dict, ip_address: str
+        self, db: Session, credential: str, device_info: dict, ip_address: str | None
     ) -> tuple[str, UserSession]:
         id_info = self.verify_google_token(credential, clock_skew_in_seconds=10)
         if not id_info:
@@ -126,7 +126,7 @@ class AuthService:
         return session
 
     def _rotate_session(
-        self, db: Session, session: UserSession, ip_address: str
+        self, db: Session, session: UserSession, ip_address: str | None
     ) -> UserSession:
         # Mark current session as rotated (inactive)
         session.is_active = False
@@ -142,7 +142,7 @@ class AuthService:
         )
 
     def refresh_token_rotation(
-        self, db: Session, refresh_token: str, ip_address: str
+        self, db: Session, refresh_token: str, ip_address: str | None
     ) -> tuple[str, UserSession]:
         session = self._validate_and_get_session(db, refresh_token)
         new_session = self._rotate_session(db, session, ip_address)

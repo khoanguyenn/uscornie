@@ -16,6 +16,6 @@ class TokenResponse(BaseModel):
 class SessionResponse(BaseModel):
     id: str
     device_info: dict[str, Any]
-    ip_address: str
+    ip_address: str | None
     last_active_at: datetime
     is_current: bool
