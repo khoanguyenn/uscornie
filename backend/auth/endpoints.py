@@ -7,6 +7,7 @@ from auth.parsers import parse_user_agent
 from auth.schemas import AuthGoogleRequest, SessionResponse, TokenResponse
 from auth.service import AuthService, get_current_user
 from kit.database import get_db
+from kit.utils import get_ip_address
 from models import User
 
 router = APIRouter()
@@ -14,18 +15,6 @@ router = APIRouter()
 REFRESH_TOKEN_COOKIE_KEY = "refresh_token"
 COOKIE_MAX_AGE_DAYS = 30
 COOKIE_MAX_AGE_SECONDS = COOKIE_MAX_AGE_DAYS * 24 * 60 * 60
-
-
-def get_ip_address(request: Request) -> str:
-    cf_ip = request.headers.get("cf-connecting-ip")
-    if cf_ip:
-        return cf_ip
-
-    x_forwarded_for = request.headers.get("x-forwarded-for")
-    if x_forwarded_for:
-        return x_forwarded_for.split(",")[0].strip()
-
-    return request.client.host if request.client else "Unknown IP"
 
 
 @router.post("/auth/google", response_model=TokenResponse)
