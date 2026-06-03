@@ -19,6 +19,7 @@ components:
   - ci
   - tooling
   - docs
+  - test
 kinds:
   - label: Added
     key: added

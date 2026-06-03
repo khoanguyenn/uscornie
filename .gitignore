@@ -51,4 +51,8 @@ backend/.mypy_cache/
 .coverage.*
 htmlcov/
 *.db
+*.egg-info/
+.pytest_cache/
+.venv/
+
 
