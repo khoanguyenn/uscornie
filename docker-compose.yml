@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5433:5432"
+      - "${DB_PORT:-5433}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -17,7 +17,7 @@ services:
     restart: always
     env_file: .env
     ports:
-      - "8000:8000"
+      - "${BACKEND_PORT:-8000}:8000"
     depends_on:
       - db
     volumes:
@@ -30,13 +30,13 @@ services:
     command: sh -c "bun install && bun run dev"
     restart: always
     ports:
-      - "5173:5173"
+      - "${FRONTEND_PORT:-5173}:5173"
     volumes:
       - ./frontend:/app
       - /app/node_modules
     environment:
       - NEXT_PUBLIC_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
-      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_API_URL=http://localhost:${BACKEND_PORT:-8000}
     depends_on:
       - backend
 

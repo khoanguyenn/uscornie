@@ -3,6 +3,7 @@ import json
 import logging
 import os
 import time
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -30,6 +31,21 @@ def pytest_sessionstart(session):
     # Only run on the master process (or when xdist is not active)
     if not hasattr(session.config, "workerinput"):
         logger.info("\n[Master] Starting Docker Compose...")
+        
+        # Set default ports
+        os.environ["DB_PORT"] = "5433"
+        os.environ["BACKEND_PORT"] = "8000"
+        os.environ["FRONTEND_PORT"] = "5173"
+        
+        # Clean up any leftover containers from previous runs
+        with contextlib.suppress(Exception):
+            subprocess.run(
+                ["docker", "compose", "down", "-v"],
+                cwd=str(ROOT_DIR),
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+
         global _compose_instance
         _compose_instance = DockerCompose(
             str(ROOT_DIR), compose_file_name="docker-compose.yml"
@@ -47,7 +63,6 @@ def pytest_sessionstart(session):
                     e,
                 )
                 if attempt < 2:
-                    logger.info("Waiting 3 seconds before retrying...")
                     time.sleep(3)
                 else:
                     raise e
@@ -64,10 +79,7 @@ def pytest_sessionstart(session):
         if db_host == "0.0.0.0":
             db_host = "localhost"
         db_port = _compose_instance.get_service_port("db", 5432)
-        db_user = os.environ.get("POSTGRES_USER", "postgres")
-        db_password = os.environ.get("POSTGRES_PASSWORD", "postgres")
-        db_name = os.environ.get("POSTGRES_DB", "uscornie")
-        db_url = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
+        db_url = f"postgresql://postgres:postgres@{db_host}:{db_port}/uscornie"
 
         info = {
             "FRONTEND_URL": frontend_url,
@@ -76,6 +88,11 @@ def pytest_sessionstart(session):
         }
 
         # Import models package to register all schema metadata dynamically
+        import sys
+        backend_path = str(ROOT_DIR / "backend")
+        if backend_path not in sys.path:
+            sys.path.insert(0, backend_path)
+
         import models
 
         engine = create_engine(db_url)
@@ -103,7 +120,17 @@ def pytest_sessionfinish(session, exitstatus):
                     logger.info(stdout)
                     logger.info("\n=== DOCKER COMPOSE LOGS STDERR ===")
                     logger.info(stderr)
-            _compose_instance.stop()
+            with contextlib.suppress(Exception):
+                _compose_instance.stop()
+
+        # Absolutely guarantee full deletion of containers, volumes, networks
+        with contextlib.suppress(Exception):
+            subprocess.run(
+                ["docker", "compose", "down", "-v"],
+                cwd=str(ROOT_DIR),
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
 
         if COMPOSE_INFO_FILE.exists():
             with contextlib.suppress(OSError):
