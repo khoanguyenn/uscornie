@@ -6,7 +6,12 @@ from sqlalchemy.orm import Session
 from auth.service import get_current_user
 from kit.database import get_db
 from models import User
-from spaces.schemas import JoinSpaceRequest, JoinSpaceResponse, SpaceResponse
+from spaces.schemas import (
+    JoinSpaceRequest,
+    JoinSpaceResponse,
+    SpaceResponse,
+    SpaceStatsResponse,
+)
 from spaces.service import SpaceService
 
 router = APIRouter()
@@ -40,3 +45,13 @@ async def join_space(
     service = SpaceService()
     space_id = service.join_space(db, current_user, request.invite_token)
     return {"space_id": space_id}
+
+
+@router.get("/spaces/{space_id}/stats", response_model=SpaceStatsResponse)
+async def get_space_stats(
+    space_id: str,
+    current_user: Annotated[User, Depends(get_current_user)],
+    db: Annotated[Session, Depends(get_db)],
+):
+    service = SpaceService()
+    return service.get_space_stats(db, space_id, current_user=current_user)

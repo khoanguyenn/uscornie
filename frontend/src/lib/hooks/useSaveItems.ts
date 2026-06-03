@@ -49,6 +49,9 @@ export function useSaveItems(category: string) {
       itemService.addItem(activeSpace?.id || "", item),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["items", activeSpace?.id] });
+      queryClient.invalidateQueries({
+        queryKey: ["spaceStats", activeSpace?.id],
+      });
     },
   });
 
@@ -57,6 +60,9 @@ export function useSaveItems(category: string) {
       itemService.updateItem(activeSpace?.id || "", id, item),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["items", activeSpace?.id] });
+      queryClient.invalidateQueries({
+        queryKey: ["spaceStats", activeSpace?.id],
+      });
     },
   });
 
@@ -65,6 +71,9 @@ export function useSaveItems(category: string) {
       itemService.deleteItem(activeSpace?.id || "", id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["items", activeSpace?.id] });
+      queryClient.invalidateQueries({
+        queryKey: ["spaceStats", activeSpace?.id],
+      });
     },
   });
 

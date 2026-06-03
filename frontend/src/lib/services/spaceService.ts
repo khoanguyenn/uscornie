@@ -17,4 +17,16 @@ export const spaceService = {
     const res = await api.post("/spaces/join", { invite_token: inviteToken });
     return res.data;
   },
+  async updateInviteStatus(inviteToken: string, status: string) {
+    const res = await api.patch(`/invites/${inviteToken}`, { status });
+    return res.data;
+  },
+  async getInviteStatus(inviteToken: string) {
+    const res = await api.get(`/invites/${inviteToken}/status`);
+    return res.data;
+  },
+  async getSpaceStats(spaceId: string) {
+    const res = await api.get(`/spaces/${spaceId}/stats`);
+    return res.data;
+  },
 };

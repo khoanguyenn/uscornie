@@ -32,42 +32,11 @@ export const createDataStore = (
     ...initState,
 
     loadData: () => {
-      if (typeof window !== "undefined") {
-        let dataStr = localStorage.getItem("olc_data:v1");
-        if (!dataStr) {
-          // Fallback and migration
-          const oldData = localStorage.getItem("olc_data");
-          if (oldData) {
-            localStorage.setItem("olc_data:v1", oldData);
-            localStorage.removeItem("olc_data");
-            dataStr = oldData;
-          }
-        }
-        if (dataStr) {
-          try {
-            const parsed = JSON.parse(dataStr);
-            set({
-              items: parsed.items || [],
-              anniversaryDate: parsed.anniversaryDate || "",
-              birthdayDate: parsed.birthdayDate || "",
-            });
-          } catch (_e) {
-            // empty catch to satisfy strict noConsole rule
-          }
-        }
-      }
+      // Disabled localStorage: Only use database for persistence
     },
 
     saveData: () => {
-      if (typeof window !== "undefined") {
-        const state = get();
-        const data = {
-          items: state.items,
-          anniversaryDate: state.anniversaryDate,
-          birthdayDate: state.birthdayDate,
-        };
-        localStorage.setItem("olc_data:v1", JSON.stringify(data));
-      }
+      // Disabled localStorage: Only use database for persistence
     },
 
     addItem: (item) => {

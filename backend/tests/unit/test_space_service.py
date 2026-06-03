@@ -159,7 +159,8 @@ def test_join_space_already_member(db: Session):
 def test_join_space_already_joined_another_member(db: Session):
     # Setup: User is already a member of Shared Space 1
     user = User(email="user@example.com", full_name="User")
-    db.add(user)
+    admin = User(email="admin@example.com", full_name="Admin")
+    db.add_all([user, admin])
     db.commit()
 
     space1 = Space(name="Shared Space 1", type="shared")
@@ -167,9 +168,9 @@ def test_join_space_already_joined_another_member(db: Session):
     db.add_all([space1, space2])
     db.commit()
 
-    # Member role in space 1
-    member1 = SpaceMember(space_id=space1.id, user_id=user.id, role="member")
-    db.add(member1)
+    # User is member of space 1, Admin is admin of space 1 (making it active shared space)
+    db.add(SpaceMember(space_id=space1.id, user_id=admin.id, role="admin"))
+    db.add(SpaceMember(space_id=space1.id, user_id=user.id, role="member"))
     db.commit()
 
     invitation = Invitation(
@@ -211,3 +212,367 @@ def test_join_space_full_error(db: Session):
     service = SpaceService()
     with pytest.raises(SpaceFullError):
         service.join_space(db, user3, "valid-token-full")
+
+
+def test_join_space_already_in_shared_space(db: Session):
+    # Setup
+    host = User(email="host@example.com", full_name="Host")
+    guest = User(email="guest@example.com", full_name="Guest")
+    other_admin = User(email="other_admin@example.com", full_name="Other Admin")
+    db.add_all([host, guest, other_admin])
+    db.commit()
+
+    space_host = Space(name="Host Space", type="shared")
+    space_other = Space(name="Other Space", type="shared")
+    db.add_all([space_host, space_other])
+    db.commit()
+
+    db.add(SpaceMember(space_id=space_host.id, user_id=host.id, role="admin"))
+    db.add(SpaceMember(space_id=space_other.id, user_id=other_admin.id, role="admin"))
+    db.add(SpaceMember(space_id=space_other.id, user_id=guest.id, role="member"))
+    db.commit()
+
+    invitation = Invitation(
+        token="token-guest-full", space_id=space_host.id, inviter_id=host.id
+    )
+    db.add(invitation)
+    db.commit()
+
+    # Guest is already in another shared space, should raise AlreadyJoinedSpaceError
+    service = SpaceService()
+    with pytest.raises(AlreadyJoinedSpaceError):
+        service.join_space(db, guest, "token-guest-full")
+
+
+def test_join_space_inviter_already_in_another_space(db: Session):
+    # Setup
+    host = User(email="host@example.com", full_name="Host")
+    guest = User(email="guest@example.com", full_name="Guest")
+    other_admin = User(email="other_admin@example.com", full_name="Other Admin")
+    db.add_all([host, guest, other_admin])
+    db.commit()
+
+    space_host = Space(name="Host Space", type="shared")
+    space_other = Space(name="Other Space", type="shared")
+    db.add_all([space_host, space_other])
+    db.commit()
+
+    # Host originally created space_host, but then joined space_other
+    db.add(SpaceMember(space_id=space_host.id, user_id=host.id, role="admin"))
+    db.add(SpaceMember(space_id=space_other.id, user_id=other_admin.id, role="admin"))
+    db.add(SpaceMember(space_id=space_other.id, user_id=host.id, role="member"))
+    db.commit()
+
+    invitation = Invitation(
+        token="token-host-other", space_id=space_host.id, inviter_id=host.id
+    )
+    db.add(invitation)
+    db.commit()
+
+    # Should raise error since inviter is in another space
+    service = SpaceService()
+    with pytest.raises(AlreadyJoinedSpaceError):
+        service.join_space(db, guest, "token-host-other")
+
+
+def test_join_space_merging_items(db: Session):
+    from models import Item
+
+    # Setup
+    host = User(email="host@example.com", full_name="Host")
+    guest = User(email="guest@example.com", full_name="Guest")
+    db.add_all([host, guest])
+    db.commit()
+
+    space_shared = Space(name="Shared Space", type="shared")
+    space_personal_host = Space(name="Personal Host", type="personal")
+    space_personal_guest = Space(name="Personal Guest", type="personal")
+    db.add_all([space_shared, space_personal_host, space_personal_guest])
+    db.commit()
+
+    db.add(SpaceMember(space_id=space_shared.id, user_id=host.id, role="admin"))
+    db.add(SpaceMember(space_id=space_personal_host.id, user_id=host.id, role="admin"))
+    db.add(
+        SpaceMember(space_id=space_personal_guest.id, user_id=guest.id, role="admin")
+    )
+    db.commit()
+
+    # Add items to personal spaces
+    item1 = Item(
+        space_id=space_personal_host.id, category="memories", title="Memory Host"
+    )
+    item2 = Item(
+        space_id=space_personal_guest.id, category="wishlist", title="Wishlist Guest"
+    )
+    db.add_all([item1, item2])
+    db.commit()
+
+    invitation = Invitation(
+        token="merge-token", space_id=space_shared.id, inviter_id=host.id
+    )
+    db.add(invitation)
+    db.commit()
+
+    # Join and Merge
+    service = SpaceService()
+    service.join_space(db, guest, "merge-token")
+
+    # Assert items are merged to shared space
+    db.refresh(item1)
+    db.refresh(item2)
+    assert item1.space_id == space_shared.id
+    assert item2.space_id == space_shared.id
+
+
+def test_space_stats(db: Session):
+    from models import Item
+
+    # Setup
+    space = Space(name="Shared Space", type="shared")
+    db.add(space)
+    db.commit()
+
+    item1 = Item(space_id=space.id, category="memories", title="Memory 1")
+    item2 = Item(space_id=space.id, category="memories", title="Memory 2")
+    item3 = Item(space_id=space.id, category="wishlist", title="Wishlist 1")
+    db.add_all([item1, item2, item3])
+    db.commit()
+
+    service = SpaceService()
+    stats = service.get_space_stats(db, space.id)
+
+    # Assert dynamic counts and total
+    assert stats["total"] == 3
+    assert stats["categories"]["memories"] == 2
+    assert stats["categories"]["wishlist"] == 1
+    # Check default category value is 0
+    assert stats["categories"]["cafe"] == 0
+
+
+def test_join_space_simultaneous_cross_invitation(db: Session):
+    # Setup: User A invites User B, and User B invites User A
+    user_a = User(email="a@example.com", full_name="A")
+    user_b = User(email="b@example.com", full_name="B")
+    db.add_all([user_a, user_b])
+    db.commit()
+
+    space_a = Space(name="A Space", type="shared")
+    space_b = Space(name="B Space", type="shared")
+    db.add_all([space_a, space_b])
+    db.commit()
+
+    db.add(SpaceMember(space_id=space_a.id, user_id=user_a.id, role="admin"))
+    db.add(SpaceMember(space_id=space_b.id, user_id=user_b.id, role="admin"))
+    db.commit()
+
+    inv_a = Invitation(
+        token="token-a", space_id=space_a.id, inviter_id=user_a.id, status="pending"
+    )
+    inv_b = Invitation(
+        token="token-b", space_id=space_b.id, inviter_id=user_b.id, status="pending"
+    )
+    db.add_all([inv_a, inv_b])
+    db.commit()
+
+    # User B accepts User A's invite (token-a) -> succeeds
+    service = SpaceService()
+    service.join_space(db, user_b, "token-a")
+
+    # Now User A tries to accept User B's invite (token-b) -> must fail since User B (and A) are already in a shared space
+    with pytest.raises(AlreadyJoinedSpaceError):
+        service.join_space(db, user_a, "token-b")
+
+
+def test_join_space_double_click_prevention(db: Session):
+    # Setup
+    host = User(email="host@example.com", full_name="Host")
+    guest = User(email="guest@example.com", full_name="Guest")
+    db.add_all([host, guest])
+    db.commit()
+
+    space = Space(name="Shared Space", type="shared")
+    db.add(space)
+    db.commit()
+
+    db.add(SpaceMember(space_id=space.id, user_id=host.id, role="admin"))
+    db.commit()
+
+    invitation = Invitation(
+        token="double-click-token",
+        space_id=space.id,
+        inviter_id=host.id,
+        status="pending",
+    )
+    db.add(invitation)
+    db.commit()
+
+    service = SpaceService()
+    # First join call succeeds
+    space_id_1 = service.join_space(db, guest, "double-click-token")
+    assert space_id_1 == space.id
+
+    # Second concurrent join call should return the existing space_id without error or duplicate memberships
+    space_id_2 = service.join_space(db, guest, "double-click-token")
+    assert space_id_2 == space.id
+
+    members_count = (
+        db.query(SpaceMember)
+        .filter(SpaceMember.space_id == space.id, SpaceMember.user_id == guest.id)
+        .count()
+    )
+    assert members_count == 1
+
+
+def test_get_space_stats_unauthorized_access(db: Session):
+    # Setup
+    user_a = User(email="a@example.com", full_name="A")
+    user_b = User(email="b@example.com", full_name="B")
+    db.add_all([user_a, user_b])
+    db.commit()
+
+    space = Space(name="A Space", type="shared")
+    db.add(space)
+    db.commit()
+
+    db.add(SpaceMember(space_id=space.id, user_id=user_a.id, role="admin"))
+    db.commit()
+
+    service = SpaceService()
+    # User B is not member of space, should raise NotSpaceMemberError
+    from spaces.exceptions import NotSpaceMemberError
+
+    with pytest.raises(NotSpaceMemberError):
+        # We need to make sure we verify user membership on stats query. Let's pass user to verify.
+        service.get_space_stats(db, space.id, current_user=user_b)
+
+
+def test_accept_cancelled_or_expired_token(db: Session):
+    # Setup
+    host = User(email="host@example.com", full_name="Host")
+    guest = User(email="guest@example.com", full_name="Guest")
+    db.add_all([host, guest])
+    db.commit()
+
+    space = Space(name="Shared Space", type="shared")
+    db.add(space)
+    db.commit()
+
+    db.add(SpaceMember(space_id=space.id, user_id=host.id, role="admin"))
+    db.commit()
+
+    # Cancelled token
+    inv_cancelled = Invitation(
+        token="token-cancelled",
+        space_id=space.id,
+        inviter_id=host.id,
+        status="cancelled",
+    )
+    db.add(inv_cancelled)
+
+    # Expired token (older than 48 hours)
+    from datetime import UTC, datetime, timedelta
+
+    old_time = datetime.now(UTC) - timedelta(hours=49)
+    inv_expired = Invitation(
+        token="token-expired",
+        space_id=space.id,
+        inviter_id=host.id,
+        status="pending",
+        created_at=old_time,
+    )
+    db.add(inv_expired)
+    db.commit()
+
+    from invites.exceptions import InvalidInviteTokenError
+
+    service = SpaceService()
+
+    # Cancelled token join attempt raises error
+    with pytest.raises(InvalidInviteTokenError):
+        service.join_space(db, guest, "token-cancelled")
+
+    # Expired token join attempt raises error
+    with pytest.raises(InvalidInviteTokenError):
+        service.join_space(db, guest, "token-expired")
+
+
+def test_merge_items_transactional_atomicity_on_failure(db: Session):
+    from models import Item
+
+    # Setup
+    host = User(email="host@example.com", full_name="Host")
+    guest = User(email="guest@example.com", full_name="Guest")
+    db.add_all([host, guest])
+    db.commit()
+
+    space_shared = Space(name="Shared Space", type="shared")
+    space_personal_host = Space(name="Personal Host", type="personal")
+    db.add_all([space_shared, space_personal_host])
+    db.commit()
+
+    db.add(SpaceMember(space_id=space_shared.id, user_id=host.id, role="admin"))
+    db.add(SpaceMember(space_id=space_personal_host.id, user_id=host.id, role="admin"))
+    db.commit()
+
+    item = Item(space_id=space_personal_host.id, category="memories", title="Host Item")
+    db.add(item)
+    db.commit()
+
+    invitation = Invitation(
+        token="atom-token",
+        space_id=space_shared.id,
+        inviter_id=host.id,
+        status="pending",
+    )
+    db.add(invitation)
+    db.commit()
+
+    # Mock the db commit or item updates to raise an exception during join_space to simulate failure midway
+    # We will raise a Mock exception during update.
+    # To do this cleanly, we can make spaceRepository or member creation raise an error, or mock the session query.
+    original_update = db.query
+
+    def fail_query(*args, **kwargs):
+        # Fail when querying/updating Item
+        if len(args) > 0 and args[0] is Item:
+            raise Exception("Mock DB Failure midway")
+        return original_update(*args, **kwargs)
+
+    db.query = fail_query
+
+    service = SpaceService()
+    with pytest.raises(Exception, match="Mock DB Failure midway"):
+        service.join_space(db, guest, "atom-token")
+
+    # Restore DB query
+    db.query = original_update
+
+    # Assert that the item was NOT merged and remains in personal space (atomicity)
+    db.refresh(item)
+    assert item.space_id == space_personal_host.id
+
+
+def test_recreate_shared_space_after_leaving(db: Session):
+    # Setup
+    user = User(email="user@example.com", full_name="User")
+    db.add(user)
+    db.commit()
+
+    space_old = Space(name="Old Shared Space", type="shared")
+    db.add(space_old)
+    db.commit()
+
+    # User joined as member
+    member = SpaceMember(space_id=space_old.id, user_id=user.id, role="member")
+    db.add(member)
+    db.commit()
+
+    # User leaves/deletes membership (membership row deleted)
+    db.delete(member)
+    db.commit()
+
+    # User should now be allowed to create a new shared space
+    service = SpaceService()
+    new_space = service.create_space(db, user)
+    assert new_space.id is not None
+    assert new_space.type == "shared"

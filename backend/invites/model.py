@@ -17,6 +17,7 @@ class Invitation(Base):
     space_id: Mapped[str] = mapped_column(String, ForeignKey("spaces.id"))
     inviter_id: Mapped[str] = mapped_column(String, ForeignKey("users.id"))
     is_used: Mapped[bool] = mapped_column(Boolean, default=False)
+    status: Mapped[str] = mapped_column(String, default="pending")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
 
     space: Mapped["Space"] = relationship("Space", back_populates="invitations")

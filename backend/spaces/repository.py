@@ -70,6 +70,42 @@ class SpaceMemberRepository:
     def count_members(self, db: Session, space_id: str) -> int:
         return db.query(SpaceMember).filter(SpaceMember.space_id == space_id).count()
 
+    def is_in_shared_space(self, db: Session, user_id: str) -> bool:
+        shared_space_ids = (
+            db.query(SpaceMember.space_id)
+            .join(Space)
+            .filter(SpaceMember.user_id == user_id, Space.type == "shared")
+            .all()
+        )
+        for (sp_id,) in shared_space_ids:
+            member_count = (
+                db.query(SpaceMember).filter(SpaceMember.space_id == sp_id).count()
+            )
+            if member_count >= 2:
+                return True
+        return False
+
+    def is_in_other_shared_space(
+        self, db: Session, user_id: str, space_id: str
+    ) -> bool:
+        shared_space_ids = (
+            db.query(SpaceMember.space_id)
+            .join(Space)
+            .filter(
+                SpaceMember.user_id == user_id,
+                Space.type == "shared",
+                SpaceMember.space_id != space_id,
+            )
+            .all()
+        )
+        for (sp_id,) in shared_space_ids:
+            member_count = (
+                db.query(SpaceMember).filter(SpaceMember.space_id == sp_id).count()
+            )
+            if member_count >= 2:
+                return True
+        return False
+
     def create(
         self, db: Session, space_id: str, user_id: str, role: str
     ) -> SpaceMember:

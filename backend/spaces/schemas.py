@@ -18,3 +18,8 @@ class SpaceResponse(BaseModel):
 
 class JoinSpaceResponse(BaseModel):
     space_id: str
+
+
+class SpaceStatsResponse(BaseModel):
+    total: int
+    categories: dict[str, int]
