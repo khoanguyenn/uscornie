@@ -32,7 +32,8 @@ def pytest_sessionstart(session):
     if not hasattr(session.config, "workerinput"):
         logger.info("\n[Master] Starting Docker Compose...")
         
-        # Set default ports
+        # Set default ports and test namespace
+        os.environ["COMPOSE_PROJECT_NAME"] = "uscornie-test"
         os.environ["DB_PORT"] = "5433"
         os.environ["BACKEND_PORT"] = "8000"
         os.environ["FRONTEND_PORT"] = "5173"
@@ -40,7 +41,7 @@ def pytest_sessionstart(session):
         # Clean up any leftover containers from previous runs
         with contextlib.suppress(Exception):
             subprocess.run(
-                ["docker", "compose", "down", "-v"],
+                ["docker", "compose", "-p", "uscornie-test", "down", "-v"],
                 cwd=str(ROOT_DIR),
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
@@ -126,7 +127,7 @@ def pytest_sessionfinish(session, exitstatus):
         # Absolutely guarantee full deletion of containers, volumes, networks
         with contextlib.suppress(Exception):
             subprocess.run(
-                ["docker", "compose", "down", "-v"],
+                ["docker", "compose", "-p", "uscornie-test", "down", "-v"],
                 cwd=str(ROOT_DIR),
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
