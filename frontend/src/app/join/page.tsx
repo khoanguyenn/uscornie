@@ -1,16 +1,29 @@
 "use client";
 
-import { AnimatePresence, domAnimation, LazyMotion, m } from "framer-motion";
+import {
+  AnimatePresence,
+  domAnimation,
+  LazyMotion,
+  m,
+  useReducedMotion,
+} from "framer-motion";
+import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect } from "react";
-import AnimatedBackground from "@/components/AnimatedBackground";
 import DoubleStatsPanel from "@/components/space/DoubleStatsPanel";
 import GhibliIcon from "@/components/ui/GhibliIcon";
 import GhibliScenery from "@/components/ui/GhibliScenery";
-import { useAuthStore } from "@/lib/providers/auth-store-provider";
 import { authService } from "@/lib/services/authService";
 import { spaceService } from "@/lib/services/spaceService";
+import { useAuthStore } from "@/lib/stores/useAuthStore";
 import { cn } from "@/lib/utils/cn";
+
+const AnimatedBackground = dynamic(
+  () => import("@/components/AnimatedBackground"),
+  {
+    ssr: false,
+  },
+);
 
 interface GoogleCredentialResponse {
   credential: string;
@@ -138,6 +151,7 @@ const useJoinStore = create<JoinState>((set, get) => ({
 }));
 
 function JoinPageContent() {
+  useReducedMotion();
   const { push } = useRouter();
   const searchParams = useSearchParams();
   const { get } = searchParams;

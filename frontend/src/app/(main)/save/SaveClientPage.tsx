@@ -1,6 +1,12 @@
 "use client";
 
-import { AnimatePresence, domAnimation, LazyMotion, m } from "framer-motion";
+import {
+  AnimatePresence,
+  domAnimation,
+  LazyMotion,
+  m,
+  useReducedMotion,
+} from "framer-motion";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useMemo } from "react";
 import CategoryTabs from "@/components/save/CategoryTabs";
@@ -9,6 +15,7 @@ import GhibliIcon from "@/components/ui/GhibliIcon";
 import { SAVE_CATEGORIES } from "@/lib/data/mock";
 
 function SavePageContentInner() {
+  useReducedMotion();
   const { push } = useRouter();
   const searchParams = useSearchParams();
   const { get } = searchParams;

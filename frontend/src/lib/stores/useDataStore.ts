@@ -1,4 +1,4 @@
-import { createStore } from "zustand";
+import { create } from "zustand";
 import type { SaveItem } from "@/lib/types";
 
 export interface DataState {
@@ -21,77 +21,60 @@ export interface DataActions {
 
 export type DataStore = DataState & DataActions;
 
-export const createDataStore = (
-  initState: DataState = {
-    items: [],
-    anniversaryDate: "",
-    birthdayDate: "",
+export const useDataStore = create<DataStore>()((set, get) => ({
+  items: [],
+  anniversaryDate: "",
+  birthdayDate: "",
+
+  loadData: () => {},
+  saveData: () => {},
+
+  addItem: (item) => {
+    const newItem: SaveItem = {
+      id: Date.now().toString(),
+      createdAt: new Date().toISOString(),
+      ...item,
+    };
+    set((state) => ({
+      items: [...state.items, newItem],
+    }));
   },
-) => {
-  return createStore<DataStore>()((set, get) => ({
-    ...initState,
 
-    loadData: () => {
-      // Disabled localStorage: Only use database for persistence
-    },
+  addItems: (newItems) => {
+    const startId = Date.now();
+    const itemsToAdd: SaveItem[] = newItems.map((item, index) => ({
+      id: (startId + index).toString(),
+      createdAt: new Date().toISOString(),
+      ...item,
+    }));
+    set((state) => ({
+      items: [...state.items, ...itemsToAdd],
+    }));
+  },
 
-    saveData: () => {
-      // Disabled localStorage: Only use database for persistence
-    },
+  updateItem: (updatedItem) => {
+    set((state) => ({
+      items: state.items.map((i) =>
+        i.id === updatedItem.id ? { ...i, ...updatedItem } : i,
+      ),
+    }));
+  },
 
-    addItem: (item) => {
-      const newItem: SaveItem = {
-        id: Date.now().toString(),
-        createdAt: new Date().toISOString(),
-        ...item,
-      };
-      set((state) => ({
-        items: [...state.items, newItem],
-      }));
-      get().saveData();
-    },
+  deleteItem: (itemId) => {
+    set((state) => ({
+      items: state.items.filter((i) => i.id !== itemId),
+    }));
+  },
 
-    addItems: (newItems) => {
-      const startId = Date.now();
-      const itemsToAdd: SaveItem[] = newItems.map((item, index) => ({
-        id: (startId + index).toString(),
-        createdAt: new Date().toISOString(),
-        ...item,
-      }));
-      set((state) => ({
-        items: [...state.items, ...itemsToAdd],
-      }));
-      get().saveData();
-    },
+  setAnniversaryDate: (date) => {
+    set({ anniversaryDate: date });
+  },
 
-    updateItem: (updatedItem) => {
-      set((state) => ({
-        items: state.items.map((i) =>
-          i.id === updatedItem.id ? { ...i, ...updatedItem } : i,
-        ),
-      }));
-      get().saveData();
-    },
+  setBirthdayDate: (date) => {
+    set({ birthdayDate: date });
+  },
 
-    deleteItem: (itemId) => {
-      set((state) => ({
-        items: state.items.filter((i) => i.id !== itemId),
-      }));
-      get().saveData();
-    },
-
-    setAnniversaryDate: (date) => {
-      set({ anniversaryDate: date });
-      get().saveData();
-    },
-
-    setBirthdayDate: (date) => {
-      set({ birthdayDate: date });
-      get().saveData();
-    },
-
-    getItemsByCategory: (category) => {
-      return get().items.filter((item) => item.category === category);
-    },
-  }));
-};
+  getItemsByCategory: (category) => {
+    return get().items.filter((item) => item.category === category);
+  },
+}));

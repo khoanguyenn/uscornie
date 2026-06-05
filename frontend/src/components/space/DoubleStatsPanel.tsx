@@ -1,5 +1,7 @@
+// biome-ignore-all lint/complexity/useLiteralKeys: TypeScript requires bracket notation for index signature properties
 "use client";
 
+import Image from "next/image";
 import GhibliIcon from "@/components/ui/GhibliIcon";
 
 interface UserStats {
@@ -24,22 +26,22 @@ interface DoubleStatsPanelProps {
   isMerging?: boolean;
 }
 
+const getStats = (userStats: UserInfo | null): UserStats => {
+  const categories = userStats?.stats?.categories || {};
+  return {
+    memories: categories["memories"] || 0,
+    wishlist: categories["wishlist"] || 0,
+    cafe: categories["cafe"] || 0,
+    restaurant: categories["restaurant"] || 0,
+  };
+};
+
 export default function DoubleStatsPanel({
   creatorInfo,
   acceptorInfo,
   showAcceptorWaiting = false,
   isMerging = false,
 }: DoubleStatsPanelProps) {
-  const getStats = (userStats: UserInfo | null): UserStats => {
-    const categories = userStats?.stats?.categories || {};
-    return {
-      memories: categories.memories || 0,
-      wishlist: categories.wishlist || 0,
-      cafe: categories.cafe || 0,
-      restaurant: categories.restaurant || 0,
-    };
-  };
-
   const aStats = getStats(creatorInfo);
   const bStats = getStats(acceptorInfo);
 
@@ -50,12 +52,15 @@ export default function DoubleStatsPanel({
         className="flex-1 w-full text-center p-6 bg-[#fdfbf7] rounded-2xl border-2 border-[#eae3d9]"
         id="creator-stats-panel"
       >
-        <div className="size-20 mx-auto rounded-full overflow-hidden bg-[#e8f4f8] border-4 border-white shadow-md flex items-center justify-center mb-4">
+        <div className="size-20 mx-auto rounded-full overflow-hidden bg-[#e8f4f8] border-4 border-white shadow-md flex items-center justify-center mb-4 relative">
           {creatorInfo?.picture ? (
-            <img
+            <Image
               src={creatorInfo.picture}
               alt="A Avatar"
-              className="size-full object-cover"
+              fill
+              unoptimized
+              sizes="80px"
+              className="object-cover"
             />
           ) : (
             <GhibliIcon type="totoro" size={48} />
@@ -94,12 +99,15 @@ export default function DoubleStatsPanel({
         className="flex-1 w-full text-center p-6 bg-[#fdfbf7] rounded-2xl border-2 border-[#eae3d9]"
         id="acceptor-stats-panel"
       >
-        <div className="size-20 mx-auto rounded-full overflow-hidden bg-[#e8f4f8] border-4 border-white shadow-md flex items-center justify-center mb-4">
+        <div className="size-20 mx-auto rounded-full overflow-hidden bg-[#e8f4f8] border-4 border-white shadow-md flex items-center justify-center mb-4 relative">
           {!showAcceptorWaiting && acceptorInfo?.picture ? (
-            <img
+            <Image
               src={acceptorInfo.picture}
               alt="B Avatar"
-              className="size-full object-cover"
+              fill
+              unoptimized
+              sizes="80px"
+              className="object-cover"
             />
           ) : !showAcceptorWaiting ? (
             <GhibliIcon type="calcifer" size={48} />

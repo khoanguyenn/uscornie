@@ -6,7 +6,7 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import GhibliIcon from "@/components/ui/GhibliIcon";
 import { EXCEL_GIFTS, OCCASIONS } from "@/lib/data/mock";
-import { useDataStore } from "@/lib/providers/data-store-provider";
+import { useDataStore } from "@/lib/stores/useDataStore";
 
 interface GiftSuggestion {
   title: string;
@@ -14,6 +14,12 @@ interface GiftSuggestion {
   desc?: string | undefined;
   image?: string | null | undefined;
 }
+
+const genders = [
+  { id: "female", label: "👧 Nữ" },
+  { id: "male", label: "👦 Nam" },
+  { id: "unisex", label: "🌈 Unisex" },
+];
 
 function GiftPageContentInner() {
   const searchParams = useSearchParams();
@@ -32,12 +38,6 @@ function GiftPageContentInner() {
   const [selOcc, setSelOcc] = useState<string | null>(null);
   const [selGender, setSelGender] = useState<string | null>(null);
   const [giftRes, setGiftRes] = useState<GiftSuggestion | null>(null);
-
-  const genders = [
-    { id: "female", label: "👧 Nữ" },
-    { id: "male", label: "👦 Nam" },
-    { id: "unisex", label: "🌈 Unisex" },
-  ];
 
   const swGM = (m: string) => {
     const params = new URLSearchParams(searchParams.toString());

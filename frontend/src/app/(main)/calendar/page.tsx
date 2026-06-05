@@ -4,7 +4,23 @@ import { useEffect, useMemo, useState } from "react";
 import GhibliIcon from "@/components/ui/GhibliIcon";
 import { Input } from "@/components/ui/Input";
 import { OCCASIONS } from "@/lib/data/mock";
-import { useDataStore } from "@/lib/providers/data-store-provider";
+import { useDataStore } from "@/lib/stores/useDataStore";
+
+const mn = [
+  "Tháng 1",
+  "Tháng 2",
+  "Tháng 3",
+  "Tháng 4",
+  "Tháng 5",
+  "Tháng 6",
+  "Tháng 7",
+  "Tháng 8",
+  "Tháng 9",
+  "Tháng 10",
+  "Tháng 11",
+  "Tháng 12",
+];
+const dn = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
 
 export default function Page() {
   const anniversaryDate = useDataStore((s) => s.anniversaryDate);
@@ -57,22 +73,6 @@ export default function Page() {
     if (days > 0) parts.push(`${days} ngày`);
     return parts.join(", ") || "0 ngày";
   }, [anniversaryDate]);
-
-  const mn = [
-    "Tháng 1",
-    "Tháng 2",
-    "Tháng 3",
-    "Tháng 4",
-    "Tháng 5",
-    "Tháng 6",
-    "Tháng 7",
-    "Tháng 8",
-    "Tháng 9",
-    "Tháng 10",
-    "Tháng 11",
-    "Tháng 12",
-  ];
-  const dn = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
 
   const specialDays = useMemo(() => {
     const list: { day: number; label: string }[] = [];

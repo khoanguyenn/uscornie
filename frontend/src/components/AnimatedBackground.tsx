@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CalciferCharacter from "@/components/characters/CalciferCharacter";
 import SootCharacter from "@/components/characters/SootCharacter";
 import TotoroCharacter from "@/components/characters/TotoroCharacter";
@@ -38,6 +38,21 @@ interface HeartData {
 }
 
 const colors = ["#f2a0a0", "#f5c0c0", "#e8b0b0", "#f0d0d0", "#e0a8a8"];
+
+function generateHearts(): HeartData[] {
+  const initialHearts: HeartData[] = [];
+  for (let i = 0; i < 6; i++) {
+    initialHearts.push({
+      id: i,
+      left: `${5 + Math.random() * 90}%`,
+      duration: `${10 + Math.random() * 8}s`,
+      delay: `${Math.random() * 10}s`,
+      size: 14 + Math.random() * 10,
+      color: colors[i % colors.length] || "#f2a0a0",
+    });
+  }
+  return initialHearts;
+}
 
 const flowerVariants = [
   {
@@ -79,22 +94,7 @@ const flowerVariants = [
 ];
 
 export default function AnimatedBackground() {
-  const [hearts, setHearts] = useState<HeartData[]>([]);
-
-  useEffect(() => {
-    const initialHearts: HeartData[] = [];
-    for (let i = 0; i < 6; i++) {
-      initialHearts.push({
-        id: i,
-        left: `${5 + Math.random() * 90}%`,
-        duration: `${10 + Math.random() * 8}s`,
-        delay: `${Math.random() * 10}s`,
-        size: 14 + Math.random() * 10,
-        color: colors[i % colors.length] || "#f2a0a0",
-      });
-    }
-    setHearts(initialHearts);
-  }, []);
+  const [hearts] = useState<HeartData[]>(() => generateHearts());
 
   return (
     <div className="fixed inset-0 -z-1 pointer-events-none">

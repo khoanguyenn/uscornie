@@ -1,6 +1,12 @@
 "use client";
 
-import { AnimatePresence, domAnimation, LazyMotion, m } from "framer-motion";
+import {
+  AnimatePresence,
+  domAnimation,
+  LazyMotion,
+  m,
+  useReducedMotion,
+} from "framer-motion";
 import { useEffect, useState } from "react";
 import DateSelector from "@/components/date/DateSelector";
 import PlanResultCard from "@/components/date/PlanResultCard";
@@ -32,6 +38,7 @@ interface Particle {
 }
 
 export default function Page() {
+  useReducedMotion();
   const [selDateSlots, setSelDateSlots] = useState<string[]>([]);
   const [selDateMoods, setSelDateMoods] = useState<string[]>([]);
   const [datePlan, setDatePlan] = useState<DatePlanBlock[] | null>(null);

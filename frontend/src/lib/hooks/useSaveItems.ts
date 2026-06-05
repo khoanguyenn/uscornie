@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { useAuthStore } from "@/lib/providers/auth-store-provider";
-import { useDataStore } from "@/lib/providers/data-store-provider";
 import { itemService } from "@/lib/services/itemService";
 import { spaceService } from "@/lib/services/spaceService";
+import { useAuthStore } from "@/lib/stores/useAuthStore";
+import { useDataStore } from "@/lib/stores/useDataStore";
 import type { SaveItem, Space } from "@/lib/types";
 
 export function useSaveItems(category: string) {

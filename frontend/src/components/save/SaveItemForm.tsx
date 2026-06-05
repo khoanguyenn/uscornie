@@ -9,7 +9,7 @@ import GhibliIcon from "@/components/ui/GhibliIcon";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { HINTS, SAVE_CATEGORIES, TAGS_BY_CATEGORY } from "@/lib/data/mock";
-import { useAuthStore } from "@/lib/providers/auth-store-provider";
+import { useAuthStore } from "@/lib/stores/useAuthStore";
 import type { SaveItem } from "@/lib/types";
 import { cn } from "@/lib/utils/cn";
 
