@@ -47,6 +47,21 @@ export default function MainLayout({
     };
   }, [showToast]);
 
+  useEffect(() => {
+    const initAuth = async () => {
+      try {
+        const data = await authService.refreshSession();
+        setToken(data.access_token);
+      } catch (_err) {
+        clearToken();
+      }
+    };
+
+    if (!isAuthenticated) {
+      initAuth();
+    }
+  }, [isAuthenticated, setToken, clearToken]);
+
   const handleLoginSuccess = useCallback(
     async (response: { credential: string }) => {
       try {
