@@ -538,14 +538,14 @@ def test_merge_items_transactional_atomicity_on_failure(db: Session):
             raise Exception("Mock DB Failure midway")
         return original_update(*args, **kwargs)
 
-    db.query = fail_query
+    setattr(db, "query", fail_query)  # noqa: B010
 
     service = SpaceService()
     with pytest.raises(Exception, match="Mock DB Failure midway"):
         service.join_space(db, guest, "atom-token")
 
     # Restore DB query
-    db.query = original_update
+    setattr(db, "query", original_update)  # noqa: B010
 
     # Assert that the item was NOT merged and remains in personal space (atomicity)
     db.refresh(item)

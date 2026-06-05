@@ -131,7 +131,7 @@ class SpaceService:
             .all()
         )
 
-        categories = dict(results)
+        categories = dict(results)  # type: ignore
 
         # Default standard categories to 0 if not present
         known_categories = ["memories", "wishlist", "cafe", "restaurant"]

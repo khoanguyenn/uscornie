@@ -148,6 +148,7 @@ def test_cancel_invite_success(db: Session):
 
     # Assert status changed to cancelled
     inv = db.query(Invitation).filter(Invitation.token == token).first()
+    assert inv is not None
     assert inv.status == "cancelled"
 
 
@@ -195,6 +196,7 @@ def test_cancel_invite_not_pending(db: Session):
 
     # Manually change invitation status to accepted
     inv = db.query(Invitation).filter(Invitation.token == token).first()
+    assert inv is not None
     inv.status = "accepted"
     db.commit()
 
@@ -228,4 +230,5 @@ def test_decline_invite_success(db: Session):
 
     # Assert status changed to declined
     inv = db.query(Invitation).filter(Invitation.token == token).first()
+    assert inv is not None
     assert inv.status == "declined"
