@@ -1,0 +1,9 @@
+{
+  "ignore": {
+    "rules": [
+      "react-doctor/require-reduced-motion",
+      "react-doctor/nextjs-missing-metadata"
+    ],
+    "files": ["package.json"]
+  }
+}

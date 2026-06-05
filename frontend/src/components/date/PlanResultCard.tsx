@@ -43,16 +43,16 @@ const getAnimationClass = (idx: number) => {
   return `animate-[fadeUp_0.35s_ease_${delay}_both]`;
 };
 
+const getMoodLabel = (id: string) => {
+  return DATE_MOODS.find((m) => m.id === id)?.label || "";
+};
+
 export default function PlanResultCard({
   plan,
   selectedMoods,
   onRegenerate,
   onReset,
 }: PlanResultCardProps) {
-  const getMoodLabel = (id: string) => {
-    return DATE_MOODS.find((m) => m.id === id)?.label || "";
-  };
-
   return (
     <div>
       <div className="card !p-7">

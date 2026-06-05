@@ -1,4 +1,4 @@
-import { createStore } from "zustand";
+import { create } from "zustand";
 
 export interface AuthState {
   token: string | null;
@@ -12,36 +12,13 @@ export interface AuthActions {
 
 export type AuthStore = AuthState & AuthActions;
 
-const getInitialToken = () => {
-  if (typeof window !== "undefined") {
-    return localStorage.getItem("uscornie_token") || null;
-  }
-  return null;
-};
-
-export const createAuthStore = (
-  initState: AuthState = {
-    token: getInitialToken(),
-    isAuthenticated: !!getInitialToken(),
+export const useAuthStore = create<AuthStore>()((set) => ({
+  token: null,
+  isAuthenticated: false,
+  setToken: (token) => {
+    set({ token, isAuthenticated: !!token });
   },
-) => {
-  return createStore<AuthStore>()((set) => ({
-    ...initState,
-    setToken: (token) => {
-      if (typeof window !== "undefined") {
-        if (token) {
-          localStorage.setItem("uscornie_token", token);
-        } else {
-          localStorage.removeItem("uscornie_token");
-        }
-      }
-      set({ token, isAuthenticated: !!token });
-    },
-    clearToken: () => {
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("uscornie_token");
-      }
-      set({ token: null, isAuthenticated: false });
-    },
-  }));
-};
+  clearToken: () => {
+    set({ token: null, isAuthenticated: false });
+  },
+}));

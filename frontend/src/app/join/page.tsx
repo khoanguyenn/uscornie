@@ -4,9 +4,9 @@ import { AnimatePresence, domAnimation, LazyMotion, m } from "framer-motion";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useState } from "react";
 import GhibliIcon from "@/components/ui/GhibliIcon";
-import { useAuthStore } from "@/lib/providers/auth-store-provider";
 import { authService } from "@/lib/services/authService";
 import { spaceService } from "@/lib/services/spaceService";
+import { useAuthStore } from "@/lib/stores/useAuthStore";
 
 interface GoogleCredentialResponse {
   credential: string;

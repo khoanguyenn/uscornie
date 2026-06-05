@@ -3,9 +3,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import GhibliIcon from "@/components/ui/GhibliIcon";
-import { useAuthStore } from "@/lib/providers/auth-store-provider";
-import { useDataStore } from "@/lib/providers/data-store-provider";
 import { spaceService } from "@/lib/services/spaceService";
+import { useAuthStore } from "@/lib/stores/useAuthStore";
+import { useDataStore } from "@/lib/stores/useDataStore";
 import type { Space } from "@/lib/types";
 import { cn } from "@/lib/utils/cn";
 
