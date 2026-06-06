@@ -1,0 +1,778 @@
+export const DATE_SLOTS = [
+  { id: "slot0", label: "Sớm tinh mơ", sub: "0h – 6h", emoji: "" },
+  { id: "slot1", label: "Chào ngày mới", sub: "5h – 9h", emoji: "" },
+  { id: "slot2", label: "Brunch", sub: "8h – 12h", emoji: "" },
+  { id: "slot3", label: "Nắng trưa", sub: "12h – 15h", emoji: "" },
+  { id: "slot4", label: "Chiều về", sub: "14h – 17h", emoji: "" },
+  { id: "slot5", label: "Chiều tối", sub: "17h – 20h", emoji: "" },
+  { id: "slot6", label: "Đêm xuống", sub: "20h – 0h", emoji: "" },
+];
+
+export const DATE_MOODS = [
+  { id: "nhonnhip", label: "Nhộn nhịp" },
+  { id: "langman", label: "Lãng mạn" },
+  { id: "khampha", label: "Khám phá" },
+  { id: "thugian", label: "Thư giãn" },
+  { id: "nghethuat", label: "Nghệ thuật" },
+  { id: "haihuoc", label: "Hài hước" },
+  { id: "sangchanh", label: "Sang chảnh" },
+  { id: "khac", label: "Khác" },
+];
+
+export const DATE_DB = {
+  slot0: {
+    nghethuat: [
+      { a: "Xem phim nghệ thuật kinh điển tại nhà", l: "Tại nhà" },
+      { a: "Chụp ảnh Cinematic dưới ánh đèn neon", l: "Các con hẻm Quận 5" },
+      { a: "Mua báo giấy/tạp chí sớm ở Bưu Điện", l: "Bưu điện TP, Q1" },
+      {
+        a: "Hẹn hò tiệm giặt sấy tự động",
+        l: "Các tiệm giặt 24/7 (Q.Bình Thạnh)",
+      },
+      { a: "Chụp ảnh flash ở hẻm nhỏ Sài Gòn", l: "Hẻm Hào Sĩ Phường (Q5)" },
+      { a: 'Săn ảnh "City Lights" tại Nhà hát lớn', l: "Đồng Khởi, Q1" },
+    ],
+    khampha: [
+      {
+        a: "Dạo bộ ngắm kiến trúc Pháp cổ khu trung tâm",
+        l: "Trục đường Lê Lợi, Đồng Khởi",
+      },
+      { a: "Dạo quanh các bức tường Graffiti", l: "Hẻm 15B Lê Thánh Tôn" },
+      { a: "Local: Đi mua bánh bao Thọ Phát", l: "Cửa hàng Q5" },
+      { a: "Lượn lờ chợ Bình Tây lúc rạng sáng", l: "Quận 6" },
+      {
+        a: "Chạy xe máy ra ngoại ô hóng gió sương",
+        l: "Hướng Củ Chi/Bình Chánh",
+      },
+      { a: "Cà phê võng ngoại ô", l: "Bình Chánh / Hóc Môn" },
+      { a: "Khám phá chợ đầu mối Bình Điền", l: "Quận 8" },
+      { a: "Khám phá Chợ hoa Hồ Thị Kỷ lúc 3h sáng", l: "Quận 10" },
+      { a: "Cùng nhau đón chuyến xe buýt đầu ngày", l: "Trạm Bến Thành" },
+    ],
+    thugian: [
+      { a: "Nghe đĩa than/Vinyl nhạc Trịnh", l: "Tại nhà" },
+      { a: "Đắp mặt nạ và nghe nhạc giao hưởng thính phòng", l: "Tại nhà" },
+      { a: "Premium: Spa 24/7 hạng sang tại phòng", l: "Khách sạn 5 sao" },
+      { a: "Home: Ráp Lego / Gunpla xuyên đêm", l: "Sàn nhà" },
+      { a: "Bật nhạc Lofi trên yên xe máy", l: "Khu Sala, Q2" },
+      { a: "Canh khoảnh khắc tòa nhà Bitexco tắt đèn", l: "Quận 1" },
+      { a: "Đi massage chân chân/gội đầu đêm", l: "Các spa mở 24/24" },
+      { a: "Chơi Bida (Billiards) xuyên đêm", l: "Các club Bida" },
+      { a: 'Đi dạo phố đi bộ Nguyễn Huệ "bao trọn gói"', l: "Quận 1" },
+      { a: "Đi ăn cháo sườn mở sớm hoặc xôi mặn", l: "Chợ Tân Định" },
+    ],
+    haihuoc: [
+      { a: "Đọc kịch bản/phân vai kịch 2 người", l: "Tại nhà" },
+      {
+        a: '"Đột nhập" siêu thị tiện lợi gom đồ giảm giá',
+        l: "Family Mart/GS25",
+      },
+      { a: "Phượt xe đạp công cộng xuyên bóng đêm", l: "Đường Phạm Văn Đồng" },
+      { a: '"Quẩy" xuyên đêm ở Cyber Game', l: "Các chuỗi net xịn (Q10, Q1)" },
+    ],
+    nhonnhip: [
+      { a: "Xem concert âm nhạc quốc tế qua màn hình chiếu", l: "Tại nhà" },
+      { a: "Xì xụp bánh canh cua đêm khuya", l: "Đường 3/2, Q10" },
+      { a: "Ăn cháo sườn/cháo trắng hột vịt muối", l: "Chợ Bà Chiểu / Ngã tư" },
+      { a: "Ăn khuya cơm tấm bãi rác / Cơm ma", l: "Q4 / Q5" },
+    ],
+    langman: [
+      { a: "Sáng tác một bài hát/làm thơ chung", l: "Tại nhà" },
+      { a: "Premium: Bao rạp chiếu phim First Class", l: "Rạp CGV cao cấp" },
+      { a: "Dạo bộ 1 vòng Hồ Con Rùa lúc vắng tanh", l: "Quận 3" },
+      { a: "Trú mưa rào dưới mái hiên nhà cổ (nếu có)", l: "Đường Đồng Khởi" },
+      { a: "Ngắm cầu Mống lúc rạng sáng", l: "Quận 1 - Quận 4" },
+      {
+        a: "Dạo xe máy hầm Thủ Thiêm ngắm thành phố ngủ",
+        l: "Đại lộ Võ Văn Kiệt",
+      },
+      {
+        a: "Ngắm bình minh trên Cầu Ba Son (Thủ Thiêm 2)",
+        l: "Quận 1 - Quận 2",
+      },
+    ],
+    sangchanh: [
+      {
+        a: "Premium: Thuê Private Yacht trên sông",
+        l: "Bến du thuyền Lan Anh",
+      },
+      {
+        a: "Premium: Staycation với bồn tắm view 360 độ",
+        l: "Park Hyatt / Reverie",
+      },
+    ],
+    khac: [
+      { a: "Home: Nấu mì Hảo Hảo lúc 2h sáng", l: "Bếp nhà bạn" },
+      { a: "Home: Ban công, bia lon và Guitar", l: "Ban công / Sân thượng" },
+      { a: "Nhâm nhi xôi cadé góc đường vắng", l: "Góc Trần Phú, Q5" },
+      { a: "Ngồi thiền/Yoga đôi trên thảm cỏ", l: "Landmark 81" },
+      { a: "Uống sữa đậu nành nóng, ăn bánh tiêu", l: "Vòng xoay ngã 6" },
+      {
+        a: '"Xuyên đêm" tại tiệm cà phê 24/7',
+        l: "Thức / Three O'clock / Đen Đá",
+      },
+      { a: "Ăn hủ tiếu gõ / Dimsum đêm Tân Sanh Hoạt", l: "Quận 5" },
+    ],
+  },
+  slot1: {
+    nghethuat: [
+      { a: "Phác họa kiến trúc Nhà hát Thành phố", l: "Công trường Lam Sơn" },
+      {
+        a: "Tham quan kiến trúc nghệ thuật Chùa Bà",
+        l: "Chùa Bà Thiên Hậu, Q5",
+      },
+      { a: "Chụp bộ ảnh áo dài/cổ phục", l: "Lăng Ông Bà Chiểu" },
+      {
+        a: "Tham nhận buổi ra mắt sách/giao lưu tác giả",
+        l: "Đường sách Nguyễn Văn Bình",
+      },
+      {
+        a: "Premium: Thuê Photo chụp bộ ảnh bình minh",
+        l: "Bảo tàng Thành phố",
+      },
+      { a: "Chụp ảnh máy film ở Ga tàu thủy", l: "Ga Bình An, Q2" },
+      {
+        a: "Cafe chung cư Tôn Thất Đạm ngắm nắng lên",
+        l: "Manki / Things Cafe",
+      },
+      { a: "Cafe sách Hải An / Phương Nam", l: "Quận 1 / Q3" },
+      { a: "Check-in kiến trúc Bưu điện Thành phố", l: "Quận 1" },
+      { a: "Đón nắng sớm tại Bảo tàng Mỹ Thuật", l: "Lê Thị Hồng Gấm, Q1" },
+    ],
+    khampha: [
+      {
+        a: "Khám phá Bảo tàng Mỹ thuật TP.HCM (Ca sớm)",
+        l: "Lê Thị Hồng Gấm, Q1",
+      },
+      { a: "Ghé xưởng làm gốm xem thợ mở lò", l: "Các xưởng gốm Q2, Q9" },
+      { a: "Khám phá nghệ thuật đền Hindu", l: "Đền Mariamman, Quận 1" },
+      { a: "Cafe sân bay sáng", l: "Cafe sân bay Gò Vấp" },
+      { a: "Uống cafe sương sáo dừa kiểu người Hoa", l: "Khu Chợ Lớn" },
+      { a: "Lượn lờ phố đồ cổ Lê Công Kiều", l: "Quận 1" },
+      { a: "Uống sâm lạnh, rau má đậu xanh", l: "Các xe đẩy vỉa hè" },
+      { a: '"Săn" đồ si', l: "Chợ đồ si" },
+      { a: "Đi phà Cát Lái ngắm sông sương sớm", l: "Quận 2" },
+      { a: "Ngồi Waterbus chuyến sớm nhất", l: "Bến Bạch Đằng" },
+      { a: "Ăn sáng bánh mì Hòa Mã (bánh mì chảo)", l: "Quận 3" },
+    ],
+    langman: [
+      { a: "Nghe nhạc Acoustic mộc buổi sáng", l: "Các quán cafe Acoustic" },
+      { a: "Vẽ màu nước phong cảnh công viên", l: "Công viên Tao Đàn" },
+      {
+        a: "Mua hoa lay ơn từ gánh hàng rong",
+        l: "Dọc đường Nam Kỳ Khởi Nghĩa",
+      },
+      { a: 'Chụp bộ ảnh "Sáng trong veo" ở khu Sala', l: "Quận 2" },
+      { a: "Dạo đường sách Nguyễn Văn Bình", l: "Quận 1" },
+    ],
+    thugian: [
+      { a: "Triển lãm tranh tại Hội Mỹ Thuật TP.HCM", l: "Pasteur, Quận 3" },
+      {
+        a: "Premium: Private Yoga với Huấn luyện viên",
+        l: "Tại nhà / Khách sạn",
+      },
+      { a: "Home: Ngâm bồn nước nóng buổi sáng", l: "Phòng tắm nhà" },
+      { a: "Cà phê sáng nhà thờ Đức Bà", l: "Nhà thờ Đức Bà" },
+      { a: "Ngắm máy bay cất cánh sát rạt mặt đất", l: "Các quán cafe Gò Vấp" },
+      { a: "Đi lễ sớm Chùa Ngọc Hoàng", l: "Quận 1" },
+      { a: "Trải nghiệm gội đầu dưỡng sinh sớm", l: "Các spa quận Phú Nhuận" },
+      { a: "Cà phê bệt Hàn Thuyên ngắm bồ câu", l: "Công viên 30/4" },
+      { a: "Đạp xe đạp sáng sớm", l: "Quận 2 - Trường Sa" },
+    ],
+    sangchanh: [
+      { a: "Premium: Trứng Caviar & Champagne sáng", l: "Mia Saigon" },
+      { a: "Premium: Chơi Golf sáng sớm", l: "Sân Tân Sơn Nhất" },
+      { a: "Thử bánh sừng trâu croissant mới nướng", l: "Thảo Điền, Q2" },
+      { a: "Ăn hủ tiếu Nam Vang nam thanh nữ tú", l: "Quỳnh / Nhân (Q1)" },
+    ],
+    khac: [
+      { a: "Home: Pha cafe phin và tưới cây", l: "Ban công nhà" },
+      { a: "Home: Mở nhạc dọn nhà cuối tuần", l: "Ở nhà" },
+      { a: "Săn ổ bánh mì chả lụa nóng hổi mới ra lò", l: "Lò bánh mì hẻm Q3" },
+      { a: "Húp xì xụp bún bò Huế hẻm nhỏ", l: "Bún bò hẻm Q10/Q3" },
+      { a: "Đi bơi buổi sáng vắng người", l: "Hồ bơi Yết Kiêu/Des Arts" },
+      { a: "Cùng làm hộp Bento ăn sáng picnic", l: "Công viên Tao Đàn" },
+      { a: "Đánh cầu lông thể dục sáng sớm", l: "Các sân Q10, Tân Bình" },
+      { a: "Ăn sáng bánh cuốn Tây Sơn/Nóng", l: "Các tiệm Q3, Phú Nhuận" },
+      { a: "Chạy bộ ở Công viên Hồ Bán Nguyệt", l: "Quận 7" },
+      { a: "Thăm Thảo Cầm Viên và chụp ảnh xinh", l: "Số 2 Nguyễn Bỉnh Khiêm" },
+      { a: 'Thử "Dimsum sáng" kiểu người Hoa chuẩn vị', l: "Tiến Phát (Q5)" },
+    ],
+    nhonnhip: [
+      { a: "Local: Mua xôi chợ chồm hổm", l: "Dưới sân chung cư" },
+      { a: "Ngắm hoa sáng", l: "Chợ Hồ Thị Kỷ" },
+      { a: 'Đi cà phê vợt "huyền thoại" Cheo Leo', l: "Quận 3" },
+    ],
+    haihuoc: [
+      { a: "Home: Tự đổ bánh xèo / bánh khọt", l: "Bếp nhà" },
+      { a: "Dắt chó (hoặc mượn chó) đi dạo", l: "Công viên Vinhomes" },
+      { a: "Tham gia lớp Thái Cực Quyền ké các cụ", l: "Công viên Lê Văn Tám" },
+    ],
+  },
+  slot2: {
+    haihuoc: [
+      { a: "Xem kịch thần thoại/thiếu nhi", l: "Sân khấu Idecaf" },
+      { a: 'Home: Thi "MasterChef" tại gia', l: "Bếp nhà" },
+      { a: "Chơi Bowling thể hiện tài năng", l: "Các khu vui chơi lớn" },
+      { a: "Bắn cung thư giãn", l: "Nhà Văn Hóa Thanh Niên" },
+      { a: "Trượt băng nghệ thuật (hoặc... té ếch)", l: "Vincom Landmark 81" },
+    ],
+    nghethuat: [
+      { a: "Xem triển lãm tranh đương đại", l: "Craig Thomas Gallery" },
+      { a: "Check-in hẻm 144 Pasteur xịn xò", l: "Quận 1" },
+      { a: "Khám phá Nghệ thuật đương đại Galerie Quynh", l: "Quận 1" },
+      { a: "Triển lãm văn hóa tại Viện Pháp (IDECAF)", l: "Quận 1" },
+      { a: "Khám phá Bảo tàng Áo Dài", l: "Quận 9" },
+      {
+        a: "Thăm xưởng chế tác nhạc cụ dân tộc",
+        l: "Các xưởng nhỏ ngoại thành",
+      },
+      { a: "Premium: Private Art Tour (Có giám tuyển)", l: "Các Gallery VIP" },
+    ],
+    thugian: [
+      {
+        a: "Workshop thêu tay nghệ thuật trên túi Tote",
+        l: "Các studio Q1, Q3",
+      },
+      {
+        a: "Premium: Onsen chuẩn Nhật VIP Room",
+        l: "Shio Spa / Các khu Onsen",
+      },
+      { a: "Home: Gọt trái cây xem Ghibli", l: "Phòng khách" },
+      { a: "Đi spa nặn mụn/chăm sóc da mặt", l: "Các spa uy tín" },
+      { a: "Cà phê giường nằm Chidori ngủ trưa", l: "Các chi nhánh Chidori" },
+      { a: "Ăn trưa Buffet Chay thanh tịnh", l: "Hum / Mãn Tự / D'Gemma" },
+      { a: "Xem phim rạp Mini / Couple Cinema", l: "Các quán HD Cinema" },
+    ],
+    khac: [
+      { a: "Khám phá nhiếp ảnh báo chí", l: "Bảo tàng Chứng tích Chiến tranh" },
+      { a: "Home: Xem album ảnh tuổi thơ", l: "Sofa phòng khách" },
+      { a: "Home: Mở Salon tại gia", l: "Giường / Sofa" },
+      { a: "Workshop làm ví da/móc khóa thủ công", l: "Các studio Q1, Q3" },
+      { a: "Lắp ráp Lego cặp đôi tại quán cafe", l: "Các quán cafe Q10" },
+      { a: "Thử tài làm bánh Pizza thủ công", l: "Pizza 4P's (có lớp)" },
+      { a: "Làm thảm len (Tufting Workshop)", l: "Thảo Điền (Q2)" },
+      { a: "Nghịch tuyết ở Snow Town", l: "Quận 2" },
+      { a: "Cà phê Workshop tự nặn đất sét", l: "Lạc Concept / Các tiệm Q3" },
+      { a: "Workshop làm gốm/cắm hoa/Làm nến thơm", l: "Thảo Điền (Q2)" },
+      { a: "Mua sắm đồ Decor nhà cửa", l: "Muji / Ikea-style stores" },
+      { a: "Cà phê Concept Hàn Quốc chụp hình sống ảo", l: "Oromia / Luia" },
+      {
+        a: "Đi siêu thị mua đồ chuẩn bị nấu ăn trưa",
+        l: "Go! / Emart / Lotte",
+      },
+    ],
+    khampha: [
+      { a: "Học thư pháp Việt / Hán tự", l: "Nhà văn hóa Thanh Niên" },
+      { a: "Trải nghiệm đổ màu Resin nghệ thuật", l: "Các xưởng thủ công Q2" },
+      { a: "Local: Ăn mì kéo người Hoa trong hẻm", l: "Quận 5 / Quận 11" },
+      { a: "Lớp thử nếm cà phê (Coffee cupping)", l: "Các xưởng rang cafe" },
+      { a: "Bảo tàng Phụ Nữ Nam Bộ", l: "Đường Võ Thị Sáu" },
+      { a: "Tham quan xưởng làm Chocolate", l: "Maison Marou" },
+      {
+        a: "Chơi leo núi trong nhà (Bouldering)",
+        l: "Push Climbing / Saigon Climbing",
+      },
+      { a: "Ném rìu xả stress", l: "Thảo Điền" },
+      {
+        a: 'Tìm "Hidden Cafe" trong chung cư cũ',
+        l: "Tôn Thất Đạm / Lý Tự Trọng",
+      },
+      { a: "Lạc lối ở Dinh Độc Lập", l: "Nam Kỳ Khởi Nghĩa" },
+      {
+        a: "Trải nghiệm xem bài Tarot / Thần số học",
+        l: "Các tiệm Cafe Tarot",
+      },
+    ],
+    sangchanh: [
+      { a: "Nghe hòa nhạc thính phòng (Suất sáng)", l: "Nhạc viện TP.HCM" },
+      { a: "Premium: Làm nước hoa Niche bespoke", l: "Các Lab Niche cao cấp" },
+      { a: "Premium: Lái mui trần lượn Thảo Điền", l: "Quận 2" },
+      { a: "Ghé tiệm may đo lấy số đo may áo/vest", l: "Các nhà may Q1" },
+      { a: "Đài quan sát Saigon Skydeck ban ngày", l: "Tòa nhà Bitexco" },
+      { a: "Trốn nắng ở hẻm Little Japan", l: "Thái Văn Lung, Q1" },
+    ],
+    langman: [
+      {
+        a: "Premium: Thử váy cưới / Vest cao cấp",
+        l: "Joli Poli / Chung Thanh Phong",
+      },
+      { a: "Săn tiểu thuyết tình cảm ở phố sách cũ", l: "Đường Trần Nhân Tôn" },
+      { a: "Ăn trưa Pizza 4P's siêu cấp", l: "Q1, Q3, Q7" },
+    ],
+    nhonnhip: [
+      { a: "Đua xe Go-kart hóa thân tay đua", l: "Vincom Mega Mall" },
+      { a: "Bắn súng sơn (Paintball)", l: "Quận 7" },
+      { a: "Lượn lờ Shopping Local Brand", l: "Chung cư 42 Nguyễn Huệ" },
+    ],
+  },
+  slot3: {
+    nghethuat: [
+      { a: "Xem phim độc lập (Indie Film)", l: "Rạp DCine / Cinestar" },
+      {
+        a: "Nghệ thuật cắm hoa Ikebana Nhật Bản",
+        l: "Các trung tâm văn hóa Nhật",
+      },
+      { a: "Thư viện IDECAF tĩnh lặng", l: "Viện trao đổi VH Pháp" },
+      {
+        a: "Chụp ảnh ở booth Hàn Quốc phong cách Y2K",
+        l: "Các tiệm photobooth",
+      },
+      { a: '"Trú ẩn" ở tiệm sách cũ đường Trần Nhân Tôn', l: "Quận 5" },
+    ],
+    haihuoc: [
+      { a: "Tham quan Bảo tàng Không gian 3D Artinus", l: "Quận 7" },
+      { a: "Quay tiktok", l: "Bất kỳ đâu" },
+      { a: "Home: Ship bún đậu mắm tôm", l: "Ở nhà" },
+      { a: "Chơi Bida lỗ (Pool)", l: "Các Club sang trọng" },
+      { a: "Chơi PS5 cá cược ở phòng game VIP", l: "Các quán PS5 Q10" },
+      { a: "Săn GDP ở chợ Nghĩa Hòa / Bàn Cờ", l: "Quận Tân Bình / Q3" },
+      { a: 'Boardgame Café "Sát phạt" nhau', l: "The Cube / Cashflow" },
+    ],
+    sangchanh: [
+      { a: "Nghệ thuật ẩm thực (Culinary Art)", l: "Các nhà hàng Fusion Q1" },
+      { a: "Premium: Chef's Table Teppanyaki", l: "Nhà hàng Nhật 5 sao" },
+      { a: "Premium: Spa hàng hiệu", l: "Valmont / Dior Spa" },
+      { a: "Premium: Mua sắm với Personal Shopper", l: "Union Square" },
+      { a: "Tráng miệng bánh ngọt kiểu Pháp", l: "The Dreamers Dessert" },
+      {
+        a: "Trải nghiệm Omakase Sushi xịn xò",
+        l: "Mộc/Kiyota Omakase (Q1/Bình Thạnh)",
+      },
+      { a: "Hồ bơi vô cực ngắm thành phố", l: "La Vela / Hotel Des Arts" },
+    ],
+    khac: [
+      { a: "Nghe Talkshow Văn hóa - Nghệ thuật", l: "Cà phê Thứ Bảy" },
+      { a: "Làm trang sức bạc chạm khắc", l: "Ddreamer Studio" },
+      { a: "Home: Nằm đọc Doraemon/Conan", l: "Sofa" },
+      { a: "Home: Thi pha chế nước giải nhiệt", l: "Bếp" },
+      {
+        a: 'Trải nghiệm "Ăn tối trong bóng tối"',
+        l: "Noir - Dining in the dark",
+      },
+      { a: "Bún chả Hà Nội phòng máy lạnh", l: "Các quán khu sân bay" },
+      { a: "Đi siêu thị sắm đồ gia dụng", l: "Muji / Các siêu thị lớn" },
+      { a: "Trải nghiệm Cafe bò sát/nhím kỳ lạ", l: "Pet Me Coffee" },
+      {
+        a: "Đổ màu Bearbrick (Gấu bụng phệ)",
+        l: "Tiệm tô tượng / Cafe workshop",
+      },
+      { a: "Workshop tự pha chế nước hoa", l: "Các studio Q1, Q3" },
+      { a: "Tự làm son môi handmade", l: "Các lab làm son (Q1)" },
+      { a: "Dạo công viên Cảnh Quan ven sông", l: "Landmark 81" },
+      {
+        a: "Ăn trưa cơm mâm chuẩn vị gia đình",
+        l: "Cục Gạch Quán / Secret Garden",
+      },
+      { a: "Café thú cưng (Chó Corgi / Mèo Anh)", l: "Yuna / Ken's House" },
+    ],
+    thugian: [
+      { a: "Điêu khắc nến thơm nghệ thuật", l: "Các studio Thảo Điền" },
+      {
+        a: "Đọc Graphic Novel / Truyện tranh nghệ thuật",
+        l: "Thư viện mở / Cafe sách",
+      },
+      { a: "Premium: Day-use Room nghỉ trưa", l: "Vinpearl Landmark 81" },
+      { a: "Home: Ngủ trưa trải chiếu dưới sàn", l: "Sàn nhà" },
+      {
+        a: "Trốn nóng ở quán cafe võng/giường nằm",
+        l: "Các quán Q10, Tân Bình",
+      },
+      { a: "Nằm dài gội đầu dưỡng sinh bằng thảo mộc", l: "Các spa gội đầu" },
+      { a: "Ăn trưa Buffet chay tịnh tâm", l: "Các nhà hàng chay" },
+      { a: "Đi Thư viện Khoa học Tổng hợp", l: "Lý Tự Trọng, Q1" },
+      {
+        a: "Chăm sóc nhan sắc Spa / Massage Couple",
+        l: "Golden Lotus / Mộc Hương",
+      },
+      {
+        a: 'Trải nghiệm làm "họa sĩ" - Workshop vẽ tranh',
+        l: "Tipsy Art / Các studio Q3",
+      },
+    ],
+    khampha: [
+      {
+        a: "Khám phá trang phục các dân tộc Nam Bộ",
+        l: "Bảo tàng Phụ Nữ Nam Bộ",
+      },
+      { a: "Premium: Thử vang (Wine Tasting) riêng", l: "Hầm rượu cao cấp Q1" },
+      { a: "Local: Cơm trưa văn phòng vỉa hè", l: "Các hẻm văn phòng" },
+      { a: "Mua vé đi bảo tàng Tranh 3D (Artinus)", l: "Quận 7" },
+      { a: "Giải mã Escape Room", l: "We Escape / Miss Terry" },
+      { a: "Dạo quanh chợ Bến Thành mua sắm", l: "Quận 1" },
+    ],
+    langman: [
+      { a: "Thưởng thức kem Gelato thủ công", l: "Roseice / Ralf's Artisan" },
+      { a: "Cafe view sông ở Làng du lịch Bình Quới", l: "Bình Thạnh" },
+      { a: "Trốn nóng ở Rạp phim giường nằm", l: "CGV L'amour / BHD Star" },
+    ],
+    nhonnhip: [
+      { a: "Hát Karaoke phòng VIP 2 người", l: "ICOOL / Nnice" },
+      {
+        a: "Thử làm Bartender / Pha chế Cocktail",
+        l: "Các lớp dạy pha chế ngắn",
+      },
+      { a: "Ăn trưa tại Foodcourt Takashimaya", l: "Quận 1" },
+    ],
+  },
+  slot4: {
+    nghethuat: [
+      { a: "Xem múa rối nước truyền thống", l: "Nhà hát Rồng Vàng" },
+      {
+        a: "Nghe Flamenco Live / Acoustic guitar",
+        l: "Quán cafe phong cách Tây Ban Nha",
+      },
+      { a: "Premium: Bao trọn tiệm hoa nhập khẩu", l: "Các Florist Q1, Q3" },
+      { a: "Săn ảnh tại bãi diều chân cầu Thủ Thiêm", l: "Quận 2" },
+      { a: "Xem phim tài liệu/indie độc lập", l: "Rạp DCine/CGV ArtHouse" },
+      {
+        a: "Tham gia sự kiện Popup / Chợ phiên",
+        l: "Các khu The New Playground / Q1",
+      },
+    ],
+    sangchanh: [
+      { a: 'Xem xiếc tre nghệ thuật "À Ố Show"', l: "Nhà hát Thành phố" },
+      { a: "Premium: Trà chiều trên du thuyền", l: "Saigon Princess / Ros" },
+      { a: "Premium: Chụp ảnh tạp chí thời trang", l: "Studio chuyên nghiệp" },
+      { a: "Thưởng thức Trà chiều kiến trúc Á Đông", l: "The Myst Dong Khoi" },
+      {
+        a: "Thưởng thức Trà chiều kiểu Anh (High Tea)",
+        l: "Park Hyatt / The Reverie",
+      },
+    ],
+    khampha: [
+      {
+        a: "Khám phá Gallery ẩn trong chung cư cổ",
+        l: "Chung cư Lý Tự Trọng / Tôn Thất Đạm",
+      },
+      {
+        a: "Biểu diễn ảo thuật / nghệ thuật đường phố",
+        l: "Phố đi bộ Nguyễn Huệ",
+      },
+      { a: "Lượn lờ chợ Bến Thành tìm mua vải", l: "Cửa nam chợ Bến Thành" },
+      { a: "Chèo SUP trên sông lúc bóng tà", l: "Rạch chiếc/Bình An" },
+      { a: "Tìm tiệm bánh truyền thống người Hoa", l: "Khu Hà Tôn Quyền, Q5" },
+      { a: "Ngồi cafe hẻm nhỏ nghe tiếng rao", l: "Hẻm Q3, Q1" },
+      {
+        a: "Ăn tối trên các tầng cao chung cư",
+        l: "Secret Garden / Mountain Retreat",
+      },
+      { a: "Ngắm tàu hỏa chạy ngang mặt", l: "Cà phê ray xe lửa Phú Nhuận" },
+      {
+        a: "Vi vu Xe buýt 2 tầng (Hop-on Hop-off)",
+        l: "Xuất phát ở Bưu Điện TP",
+      },
+    ],
+    nhonnhip: [
+      {
+        a: "Tham gia lớp múa đương đại (Contemporary)",
+        l: "Các trung tâm múa Q1, Q3",
+      },
+      { a: "Home: Gọt xoài chấm mắm ruốc", l: "Phòng khách" },
+      { a: "Lên lịch Foodtour Phan Xích Long", l: "Phú Nhuận" },
+      { a: "Lượn lờ chợ đêm Hạnh Thông Tây", l: "Gò Vấp" },
+      { a: "Ăn vặt bánh tráng trộn nướng Hồ Con Rùa", l: "Quận 3" },
+    ],
+    khac: [
+      { a: "Làm tranh Mosaic từ mảnh gốm vỡ", l: "Các xưởng Mosaic" },
+      { a: "Thăm không gian lưu niệm nghệ sĩ", l: "Nhà nghệ nhân / nhạc sĩ" },
+      { a: "Làm đề IELTS", l: "Tại nhà" },
+      { a: "Giải đề THPTQG", l: "Tại nhà" },
+      {
+        a: "Premium: Đánh bóng/làm trang sức kim cương",
+        l: "Jemmia / Các xưởng VIP",
+      },
+      { a: "Home: Tắm cho chó / mèo cưng", l: "Sân nhà / Phòng tắm" },
+      { a: "Làm gốm", l: "Các workshop làm gốm" },
+      { a: "Tô tượng ở ghế đá công viên", l: "Công viên Lê Văn Tám" },
+      { a: "Đi chợ lựa cây kiểng mang về trồng", l: "Đường Thành Thái, Q10" },
+      { a: "Ăn lẩu Thái cay xé lưỡi", l: "MK / Katinat / Các quán Q10" },
+      { a: "Dạo đường sách tối cuối tuần", l: "Nguyễn Văn Bình, Q1" },
+      {
+        a: 'Giải trí "tuổi thơ" bằng việc Tô Tượng',
+        l: "Công viên Lê Thị Riêng / Nhà sách",
+      },
+      { a: "Chèo SUP ngắm hoàng hôn sông Sài Gòn", l: "Thảo Điền / Quận 7" },
+      {
+        a: "Chụp ảnh Photobooth phong cách Hàn Quốc",
+        l: "Life Four Cuts / Photoism",
+      },
+    ],
+    thugian: [
+      { a: "Workshop làm sổ tay bọc da thủ công", l: "Các xưởng da thật" },
+      { a: "Local: Nước mía vỉa hè chém gió", l: "Dọc đường Trường Sa" },
+      { a: "Uống nước mía lau bờ sông bến Nhà Rồng", l: "Quận 4" },
+      { a: "Tô tranh số hóa tại quán cafe", l: "Các quán cafe art" },
+      {
+        a: "Ăn tối BBQ Nướng Hàn Quốc kiểu lều bạt",
+        l: "Các quán Q7, Thủ Đức",
+      },
+      { a: "Thả diều trên nóc hầm Thủ Thiêm", l: "Bờ sông Quận 2" },
+    ],
+    langman: [
+      { a: "Chụp ảnh Vintage with máy Film", l: "Các khu cư xá cũ (Thanh Đa)" },
+      {
+        a: "Premium: Private Event Khinh khí cầu",
+        l: "Nếu có dịp tại Thủ Thiêm",
+      },
+      { a: "Bus sông ngắm hoàng hôn", l: "Bến Bạch Đằng" },
+      { a: "Đi dạo công viên Lý Thải Tổ", l: "Công viên Lý Thái Tổ" },
+      { a: "Chơi Đu quay đứng khổng lồ", l: "Đầm Sen (Q11)" },
+      { a: "Nghe Acoustic sát bờ sông", l: "Các quán Q2/Bình Thạnh" },
+      { a: "Dạo Crescent Mall & Cầu Ánh Sao", l: "Quận 7" },
+      { a: "Săn hoàng hôn trên mặt sông", l: "Trạm Waterbus Bình An (Q2)" },
+    ],
+    haihuoc: [
+      { a: "Home: Tắm mưa trên sân thượng", l: "Sân thượng nhà" },
+      { a: "Home: Chơi Cờ cá ngựa phạt búng mũi", l: "Sàn nhà" },
+      { a: "Trải nghiệm bắn cung ngoài trời", l: "Sân bắn cung Q7" },
+      { a: "Săn GDP/Secondhand", l: "Chợ Hoàng Hoa Thám" },
+    ],
+  },
+  slot5: {
+    nghethuat: [
+      { a: "Xem kịch nói tâm lý xã hội", l: "Sân khấu Hoàng Thái Thanh" },
+      { a: "Nghe nhạc thính phòng (Symphony)", l: "Nhạc viện TP.HCM" },
+      { a: "Tham gia lớp học khiêu vũ / Waltz", l: "Các trung tâm Dance" },
+      {
+        a: "Triển lãm nghệ thuật ánh sáng tương tác",
+        l: "Các triển lãm mới Q1/Q2",
+      },
+      { a: "Tham gia sự kiện Popup / Chợ phiên", l: "The box market..." },
+      { a: "Xem kịch nói tâm lý/Hài kịch", l: "Idecaf / Thế Giới Trẻ" },
+    ],
+    haihuoc: [
+      { a: "Xem kịch ma / hài kịch thanh xuân", l: "Sân khấu Thế Giới Trẻ" },
+      { a: "Home: Đu trend Tiktok múa hát", l: "Phòng khách" },
+      { a: "Chơi Boardgame tâm lý (The Mind/Dixit)", l: "Boardgame Station" },
+      { a: 'Ăn lẩu Haidilao xem "múa mì"', l: "Vincom / Bitexco" },
+    ],
+    langman: [
+      { a: "Nghe Live Acoustic lúc hoàng hôn", l: "Chênh Vênh Rooftop / Khói" },
+      {
+        a: "Xem chiếu bóng ngoài trời (Outdoor Cinema)",
+        l: "Thảo Điền / Các sự kiện Popup",
+      },
+      {
+        a: "Premium: Bao rạp nghe Hòa nhạc thính phòng",
+        l: "Nhạc viện / Rạp nhỏ",
+      },
+      { a: "Premium: Surprise setup tại gia", l: "Nhà / Căn hộ riêng" },
+      { a: "Home: Bữa tối dưới nến (giả vờ cúp điện)", l: "Bàn ăn ở nhà" },
+      { a: "Chơi escape room", l: "Các khu vực escape room" },
+      { a: "Nấu ăn tối tại Homestay thuê theo giờ", l: "Airbnb / Homestay Q1" },
+      { a: "Chơi Đu quay đứng khổng lồ", l: "Đầm Sen (Q11)" },
+      { a: "Nghe Acoustic sát bờ sông", l: "Các quán Q2/Bình Thạnh" },
+      { a: "Dạo Crescent Mall & Cầu Ánh Sao", l: "Quận 7" },
+      {
+        a: "Fine Dining nhà hàng ven sông",
+        l: "The Deck Thảo Điền / Mia Saigon",
+      },
+    ],
+    sangchanh: [
+      {
+        a: "Ăn tối xem múa Chăm / Nhạc cụ dân tộc",
+        l: "Làng nướng / Nhà hàng Việt",
+      },
+      {
+        a: "Xem trình diễn thời trang quy mô nhỏ",
+        l: "Các sự kiện Fashion Week / Local Brand",
+      },
+      {
+        a: "Premium: Ăn tối nhà hàng xoay cao nhất",
+        l: "Oriental Pearl (LM81)",
+      },
+      { a: "Premium: Đặt bàn Chef's Table Michelin", l: "Ănăn Saigon / Akuna" },
+      { a: "Premium: Thưởng thức Cigar & Rượu mạnh", l: "VIP Cigar Lounge" },
+      { a: "Ăn tối trên du thuyền mini cá nhân", l: "Khu Thảo Điền/Bình An" },
+      { a: "Xem hoàng hôn from đài quan sát kính", l: "Landmark 81 Skyview" },
+      {
+        a: "Ăn tối vi vu trên Tàu nhà hàng sông Sài Gòn",
+        l: "Tàu Indochina Queen / Elisa",
+      },
+    ],
+    khampha: [
+      {
+        a: "Dự Opening Night of triển lãm tranh",
+        l: "Craig Thomas Gallery / The Factory",
+      },
+      { a: "Khám phá hẻm ẩm thực Lê Văn Sỹ", l: "Quận 3" },
+      {
+        a: "Ăn tối trên the tầng cao chung cư",
+        l: "Secret Garden / Mountain Retreat",
+      },
+      { a: "Khám phá thánh địa ăn vặt hẻm 200 Xóm Chiếu", l: "Quận 4" },
+      { a: "Dạo khu Chợ Lớn ngắm lồng đèn", l: "Khu Lương Nhữ Học Q5" },
+    ],
+    khac: [
+      { a: "Bàn luận the hoạt động chính trị", l: "Các quán cafe" },
+      { a: "Home: Siêu thị giảm giá & lẩu lười", l: "Coopmart / Ở nhà" },
+      { a: "Local: Ăn chè khoai dẻo ghế đá", l: "Công viên xóm" },
+      {
+        a: "Thưởng thức Omakase trong phòng kín",
+        l: "Sushi Rei / Các tiệm VIP",
+      },
+      { a: "Đi dạo dưới giàn hoa giấy khổng lồ", l: "Đường Nguyễn Văn Hưởng" },
+      {
+        a: "Nghe Talkshow về tâm lý học/Tình yêu",
+        l: "Cà phê sách / Workshop",
+      },
+      { a: "Mua chung một món đồ đôi ý nghĩa", l: "Tiệm bạc / Tiệm da" },
+      { a: "Ăn lẩu Thái cay xé lưỡi", l: "MK / Katinat / Các quán Q10" },
+      { a: "Dạo đường sách tối cuối tuần", l: "Nguyễn Văn Bình, Q1" },
+      { a: "Dạo bộ Cầu Ánh Sao - Hồ Bán Nguyệt", l: "Quận 7" },
+      { a: "Chơi game / Gắp thú ở khu Arcade", l: "Timezone / Gigamall" },
+    ],
+    nhonnhip: [
+      { a: "Dạo phố xem nhảy Cover / Breakdance", l: "Phố đi bộ Nguyễn Huệ" },
+      { a: "Local: Quán ốc hẻm bình dân", l: "Ốc Mập/Ốc Đào núp hẻm" },
+      { a: "Cùng càn quét nồi lẩu bò chung cư", l: "Chung cư Ấn Quang/Q4" },
+      { a: "Lên lịch Foodtour Phan Xích Long", l: "Phú Nhuận" },
+      { a: "Lượn lờ chợ đêm Hạnh Thông Tây", l: "Gò Vấp" },
+      { a: "Cafe ở phố đi bộ Nguyễn Huệ", l: "Quận 1" },
+      { a: 'Càn quét hẻm ốc "thần thánh"', l: "Ốc Oanh / Ốc Vũ Quận 4" },
+    ],
+    thugian: [
+      { a: "Ngồi bờ kè hóng gió, uống trà dâu", l: "Bờ kè Trường Sa" },
+      { a: "Đi bộ dọc bến công viên Bạch Đằng", l: "Dọc bờ sông Q1" },
+      {
+        a: "Ăn tối BBQ Nướng Hàn Quốc kiểu lều bạt",
+        l: "Các quán Q7, Thủ Đức",
+      },
+    ],
+  },
+  slot6: {
+    nghethuat: [
+      {
+        a: "Thưởng thức nhạc xưa tại Phòng trà",
+        l: "Phòng trà Đồng Dao / Không Tên",
+      },
+      {
+        a: "Tham gia buổi khiêu vũ xã hội (Social Dance)",
+        l: "Các club Salsa / Bachata",
+      },
+      {
+        a: "Nghe nhạc Jazz/Blue trong phòng tối",
+        l: "Sax n' Art / Các Jazz Club",
+      },
+      {
+        a: "Nghe Lofi, đọc cho nhau nghe một bài thơ",
+        l: "Ở nhà/Quán cafe 24h",
+      },
+      { a: '"Chìm đắm" trong nhạc Jazz', l: "Sax n' Art Jazz Club" },
+    ],
+    nhonnhip: [
+      {
+        a: "Cháy hết mình tại Live Rock/Indie",
+        l: "Yoko Cafe / Rock Fan Club",
+      },
+      {
+        a: "Drag Show nghệ thuật hóa trang and hát nhép",
+        l: "Các Bar khu Bùi Viện / Thảo Điền",
+      },
+      {
+        a: "Premium: Night Club Thượng lưu VIP Table",
+        l: "Khu vực VIP the Club",
+      },
+      { a: "Đi dạo vòng xoay hồ Con Rùa", l: "Quận 3" },
+      { a: "Đi nghe nhạc Rock/Indie Live", l: "Thi Fi / Yoko Cafe" },
+      { a: 'Lên đồ "đi quẩy" phố Tây Bùi Viện', l: "Quận 1" },
+    ],
+    sangchanh: [
+      { a: "Lắng đọng cùng nhạc Jazz", l: "Sax n' Art Jazz Club" },
+      { a: "Premium: Đêm tại Penthouse 360 view", l: "Penthouse Airbnb xịn" },
+      { a: "Premium: Private Limo City Tour Night", l: "Khắp Sài Gòn" },
+      { a: "Mua nến thơm mùi hương kỷ niệm chung", l: "Các tiệm nến Q1/Q3" },
+      { a: "Thưởng thức vang and phô mai ở Wine Bar", l: "Các Wine Bar Q2/Q1" },
+      { a: "Đi bar hidden nhẹ nhàng", l: "Nhâm nhi / To The Moon" },
+      {
+        a: "Thưởng rượu tại Hidden/Speakeasy Bar",
+        l: "Rabbit Hole / The Iron Bank",
+      },
+      {
+        a: "Ngắm toàn cảnh thành phố from Rooftop Bar",
+        l: "Blank Lounge / Chill Sky Bar",
+      },
+    ],
+    haihuoc: [
+      {
+        a: "Xem Hài độc thoại (Stand-up Comedy)",
+        l: "Saigon International Comedy",
+      },
+      { a: "Xem Kịch ứng tác (Improv Comedy)", l: "Các sân khấu kịch nhỏ" },
+      { a: "Chốt kèo ở phố Tây ăn Shawarma/Kebab", l: "Bùi Viện, Q1" },
+      {
+        a: "Cười vỡ bụng with Hài Độc Thoại (Stand-up Comedy)",
+        l: "Saigon Comedy / Nụ Cười Mới",
+      },
+    ],
+    thugian: [
+      {
+        a: "Nhạc Live R&B / Soul tại Hidden Bar",
+        l: "Vừng Acoustic / Các quán hidden",
+      },
+      { a: "Đêm nhạc chữa lành (Sound Healing Live)", l: "Các studio thiền" },
+      { a: "Home: Rạp chiếu phim mini trên tường", l: "Ở nhà" },
+      {
+        a: "Lại xe máy vòng quanh the đại lộ vắng",
+        l: "Võ Văn Kiệt / Phạm Văn Đồng",
+      },
+      {
+        a: "Nhâm nhi Craft Beer (Bia thủ công)",
+        l: "Pasteur Street / Heart of Darkness",
+      },
+      {
+        a: "Kết thúc ngày bằng chè mâm/xôi chè Bùi Thị Xuân",
+        l: "Quận 1 / Sư Vạn Hạnh",
+      },
+    ],
+    khampha: [
+      {
+        a: "Nghệ thuật pha chế (Mixology) tại Speakeasy",
+        l: "Các quán cocktail nghệ thuật",
+      },
+      { a: "Premium: Barhopping Top 50 Asia's Bars", l: "Các quán Bar Top Q1" },
+      { a: "Local: Ăn hột vịt lộn xả xui góc đường", l: "Ngã tư / lề đường" },
+      { a: "Lái xe ra vùng ven ngắm trời đêm", l: "Hướng Cần Giờ/Củ Chi" },
+      { a: 'Bói Tarot về "Soulmate" ở Pub', l: "Các pub có Tarot reader" },
+      { a: "Xem bói Tarot đêm", l: "Các hội quán/quán cafe Q3" },
+      { a: 'Ăn chè đêm "ma" / Chè cột điện', l: "Châu Giang (Q5)" },
+    ],
+    langman: [
+      {
+        a: "Premium: Thuê band nhạc Acoustic tại nhà",
+        l: "Sân vườn / Ban công",
+      },
+      { a: "Cocktail & Deep talk tại Hidden Bar", l: "The Alley / Stir" },
+      {
+        a: "Xem phim điện ảnh ngoài trời/bãi biển",
+        l: "Các sự kiện chiếu bóng ngoài trời",
+      },
+      { a: "Ôm nhau trên Cầu Thủ Thiêm 2", l: "Cầu Ba Son" },
+      { a: "Đêm Acoustic, yêu cầu bài hát định tình", l: "Các quán Acoustic" },
+      {
+        a: "Cà phê view ngắm tòa nhà Landmark 81",
+        l: "Các quán ở cầu Sài Gòn",
+      },
+      { a: "Nghe nhạc Acoustic phòng trà", l: "Vừng Acoustic / Đồng Dao" },
+    ],
+    khac: [
+      { a: "Home: Spa chậu ngâm chân & Show 2D1N", l: "Giường / Sofa" },
+      {
+        a: '"We\'re Not Really Strangers" ở quán vắng',
+        l: "Quán cafe yên tĩnh",
+      },
+      {
+        a: 'Chơi "Nhìn mắt không chớp" ở nhà thờ',
+        l: "Khu vực Nhà thờ Đức Bà",
+      },
+      { a: "Ngồi công viên hầm, kể ước mơ 5 năm tới", l: "Nóc hầm Thủ Thiêm" },
+      { a: "Đi dạo bờ sông, kể bí mật hồi bé", l: "Phú Mỹ Hưng, Q7" },
+      { a: "Dạo xe đạp đôi quanh khu vắng vẻ", l: "Phú Mỹ Hưng" },
+      { a: "Ăn chè sầu / sâm bổ lượng khuya", l: "Các quán dọc Q5, Q10" },
+      { a: "Ăn Dimsum/Mì kéo khuya", l: "Tân Sanh Hoạt / Các tiệm Q11" },
+      { a: "Dạo dọc kênh Nhiêu Lộc - Thị Nghè", l: "Bình Thạnh / Phú Nhuận" },
+      { a: "Dạo xe máy vòng quanh nhà thờ Đức Bà", l: "Công xã Paris" },
+    ],
+  },
+};
