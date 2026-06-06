@@ -1,47 +1,24 @@
-import { createStore } from "zustand";
+import { create } from "zustand";
+import { combine } from "zustand/middleware";
 
-export interface AuthState {
-  token: string | null;
-  isAuthenticated: boolean;
-}
-
-export interface AuthActions {
-  setToken: (token: string | null) => void;
-  clearToken: () => void;
-}
-
-export type AuthStore = AuthState & AuthActions;
-
-const getInitialToken = () => {
-  if (typeof window !== "undefined") {
-    return localStorage.getItem("uscornie_token") || null;
-  }
-  return null;
-};
-
-export const createAuthStore = (
-  initState: AuthState = {
-    token: getInitialToken(),
-    isAuthenticated: !!getInitialToken(),
-  },
-) => {
-  return createStore<AuthStore>()((set) => ({
-    ...initState,
-    setToken: (token) => {
-      if (typeof window !== "undefined") {
-        if (token) {
-          localStorage.setItem("uscornie_token", token);
-        } else {
-          localStorage.removeItem("uscornie_token");
-        }
-      }
-      set({ token, isAuthenticated: !!token });
+export const useAuthStore = create(
+  combine(
+    {
+      token: null as string | null,
+      isAuthenticated: false,
     },
-    clearToken: () => {
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("uscornie_token");
-      }
-      set({ token: null, isAuthenticated: false });
-    },
-  }));
-};
+    (set) => ({
+      actions: {
+        setToken: (token: string | null) => {
+          set({ token, isAuthenticated: !!token });
+        },
+        clearToken: () => {
+          set({ token: null, isAuthenticated: false });
+        },
+      },
+    }),
+  ),
+);
+
+export const useAuthActions = () => useAuthStore((s) => s.actions);
+export type AuthStore = ReturnType<typeof useAuthStore.getState>;

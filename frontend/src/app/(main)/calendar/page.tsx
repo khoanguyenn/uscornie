@@ -1,17 +1,33 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { CalendarViewCard } from "@/components/calendar/CalendarViewCard";
+import { DateConfigCard } from "@/components/calendar/DateConfigCard";
+import { DaysTogetherCard } from "@/components/calendar/DaysTogetherCard";
 import GhibliIcon from "@/components/ui/GhibliIcon";
-import { Input } from "@/components/ui/Input";
 import { OCCASIONS } from "@/lib/data/mock";
-import { useDataStore } from "@/lib/providers/data-store-provider";
+import { useDataActions, useDataStore } from "@/lib/stores/useDataStore";
+
+const mn = [
+  "Tháng 1",
+  "Tháng 2",
+  "Tháng 3",
+  "Tháng 4",
+  "Tháng 5",
+  "Tháng 6",
+  "Tháng 7",
+  "Tháng 8",
+  "Tháng 9",
+  "Tháng 10",
+  "Tháng 11",
+  "Tháng 12",
+];
+const dn = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
 
 export default function Page() {
   const anniversaryDate = useDataStore((s) => s.anniversaryDate);
   const birthdayDate = useDataStore((s) => s.birthdayDate);
-  const loadData = useDataStore((s) => s.loadData);
-  const setAnniversaryDate = useDataStore((s) => s.setAnniversaryDate);
-  const setBirthdayDate = useDataStore((s) => s.setBirthdayDate);
+  const { loadData, setAnniversaryDate, setBirthdayDate } = useDataActions();
 
   const [mounted, setMounted] = useState(false);
   const [calDate, setCalDate] = useState(() => new Date());
@@ -57,22 +73,6 @@ export default function Page() {
     if (days > 0) parts.push(`${days} ngày`);
     return parts.join(", ") || "0 ngày";
   }, [anniversaryDate]);
-
-  const mn = [
-    "Tháng 1",
-    "Tháng 2",
-    "Tháng 3",
-    "Tháng 4",
-    "Tháng 5",
-    "Tháng 6",
-    "Tháng 7",
-    "Tháng 8",
-    "Tháng 9",
-    "Tháng 10",
-    "Tháng 11",
-    "Tháng 12",
-  ];
-  const dn = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
 
   const specialDays = useMemo(() => {
     const list: { day: number; label: string }[] = [];
@@ -163,111 +163,24 @@ export default function Page() {
         Ngày bên nhau
       </h2>
 
-      <div className="bg-gradient-to-br from-petal to-blush rounded-[20px] p-9 text-center mb-6 shadow-[0_4px_20px_rgba(242,196,196,0.3)] relative overflow-hidden">
-        <div className="absolute size-10 opacity-18 pointer-events-none top-3 left-4 animate-[charBob_4s_ease-in-out_infinite]">
-          <GhibliIcon type="calcifer" size={40} />
-        </div>
-        <div className="absolute size-10 opacity-18 pointer-events-none bottom-3 right-4 animate-[charBob_3.5s_ease-in-out_infinite_1s]">
-          <GhibliIcon type="soot" size={40} />
-        </div>
-        <div className="font-pangolin text-[3.2rem] md:text-[4.5rem] text-ink leading-none">
-          {daysTogether !== null ? daysTogether : "?"}
-        </div>
-        <div className="text-[1.1rem] font-semibold text-ink-light mt-1">
-          ngày bên nhau
-        </div>
-        {detailTime && (
-          <div className="text-[0.85rem] text-ink-light mt-2 opacity-80">
-            {detailTime}
-          </div>
-        )}
-      </div>
+      <DaysTogetherCard daysTogether={daysTogether} detailTime={detailTime} />
 
-      <div className="card">
-        <Input
-          id="birthday-input"
-          label="Ngày sinh nhật"
-          type="date"
-          className="max-w-[220px]"
-          value={birthdayDate}
-          onChange={(e) => setBirthdayDate(e.target.value)}
-          aria-label="Ngày sinh nhật"
-        />
-        <Input
-          id="anniversary-input"
-          label="Ngày anniversary"
-          type="date"
-          className="max-w-[220px]"
-          value={anniversaryDate}
-          onChange={(e) => setAnniversaryDate(e.target.value)}
-          aria-label="Ngày kỷ niệm"
-        />
-      </div>
+      <DateConfigCard
+        birthdayDate={birthdayDate}
+        anniversaryDate={anniversaryDate}
+        onBirthdayChange={setBirthdayDate}
+        onAnniversaryChange={setAnniversaryDate}
+      />
 
-      <div className="card">
-        <div className="flex items-center justify-center gap-5 mb-3">
-          <button
-            onClick={prevMonth}
-            type="button"
-            aria-label="Tháng trước"
-            className="bg-transparent border-2 border-earth rounded-full size-9 text-[1rem] cursor-pointer text-ink flex items-center justify-center transition-all duration-300 font-bold hover:bg-earth hover:text-white"
-          >
-            &lt;
-          </button>
-          <span className="font-pangolin text-[1.35rem] min-w-[180px] text-center">
-            {mn[calDate.getMonth()]} {calDate.getFullYear()}
-          </span>
-          <button
-            onClick={nextMonth}
-            type="button"
-            aria-label="Tháng sau"
-            className="bg-transparent border-2 border-earth rounded-full size-9 text-[1rem] cursor-pointer text-ink flex items-center justify-center transition-all duration-300 font-bold hover:bg-earth hover:text-white"
-          >
-            &gt;
-          </button>
-        </div>
-        <div className="grid grid-cols-7 gap-1 mt-5">
-          {dn.map((d) => (
-            <div
-              key={d}
-              className="font-bold text-[0.75rem] text-ink-light py-2 text-center"
-            >
-              {d}
-            </div>
-          ))}
-          {calendarData.map((d) => (
-            <div
-              key={d.id}
-              className={`text-center py-2 px-1 text-[0.85rem] rounded-[10px] cursor-default font-medium transition-all duration-200 relative ${
-                d.class === "today"
-                  ? "bg-grass text-white font-bold"
-                  : d.class === "special"
-                    ? "bg-blush text-ink font-bold group"
-                    : d.class === "empty"
-                      ? "invisible"
-                      : ""
-              }`}
-            >
-              {d.day}
-              {d.tooltip && (
-                <span className="invisible group-hover:visible group-hover:opacity-100 absolute bottom-[110%] left-1/2 -translate-x-1/2 bg-ink text-cream text-[0.72rem] py-1 px-2.5 rounded-lg whitespace-nowrap z-50 opacity-0 transition-opacity duration-200">
-                  {d.tooltip}
-                </span>
-              )}
-            </div>
-          ))}
-        </div>
-        <div className="mt-4">
-          {specialDays.map((s) => (
-            <span
-              key={s.label}
-              className="inline-flex items-center gap-1.5 text-[0.8rem] font-semibold py-1 px-3 bg-petal rounded-[20px] m-[3px] text-ink-light"
-            >
-              {s.day}/{calDate.getMonth() + 1}: {s.label}
-            </span>
-          ))}
-        </div>
-      </div>
+      <CalendarViewCard
+        calDate={calDate}
+        onPrevMonth={prevMonth}
+        onNextMonth={nextMonth}
+        mn={mn}
+        dn={dn}
+        calendarData={calendarData}
+        specialDays={specialDays}
+      />
     </div>
   );
 }
