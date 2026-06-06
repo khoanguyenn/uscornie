@@ -6,7 +6,7 @@ import { Suspense, useCallback, useEffect, useState } from "react";
 import GhibliIcon from "@/components/ui/GhibliIcon";
 import { authService } from "@/lib/services/authService";
 import { spaceService } from "@/lib/services/spaceService";
-import { useAuthStore } from "@/lib/stores/useAuthStore";
+import { useAuthActions } from "@/lib/stores/useAuthStore";
 
 interface GoogleCredentialResponse {
   credential: string;
@@ -38,7 +38,7 @@ function JoinPageContent() {
   const { push } = useRouter();
   const searchParams = useSearchParams();
   const { get } = searchParams;
-  const setToken = useAuthStore((s) => s.setToken);
+  const { setToken } = useAuthActions();
 
   const [status, setStatus] = useState("welcome"); // welcome | loading | success | error
   const [_spaceId, setSpaceId] = useState<string | null>(null);

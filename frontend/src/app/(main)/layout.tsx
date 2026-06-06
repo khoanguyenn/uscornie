@@ -7,7 +7,7 @@ import GoogleSignInButton from "@/components/GoogleSignInButton";
 import NavBar from "@/components/NavBar";
 import GhibliIcon from "@/components/ui/GhibliIcon";
 import { authService } from "@/lib/services/authService";
-import { useAuthStore } from "@/lib/stores/useAuthStore";
+import { useAuthActions, useAuthStore } from "@/lib/stores/useAuthStore";
 import { cn } from "@/lib/utils/cn";
 
 const AnimatedBackground = dynamic(
@@ -24,8 +24,7 @@ export default function MainLayout({
 }) {
   const { push } = useRouter();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const setToken = useAuthStore((s) => s.setToken);
-  const clearToken = useAuthStore((s) => s.clearToken);
+  const { setToken, clearToken } = useAuthActions();
 
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
@@ -75,7 +74,12 @@ export default function MainLayout({
     [setToken, triggerError],
   );
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await authService.logout();
+    } catch (_err) {
+      // If logout API fails, proceed to clear local storage/state anyway
+    }
     clearToken();
     window.location.reload();
   };

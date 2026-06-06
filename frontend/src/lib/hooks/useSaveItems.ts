@@ -3,18 +3,20 @@ import { useMemo } from "react";
 import { itemService } from "@/lib/services/itemService";
 import { spaceService } from "@/lib/services/spaceService";
 import { useAuthStore } from "@/lib/stores/useAuthStore";
-import { useDataStore } from "@/lib/stores/useDataStore";
+import { useDataActions, useDataStore } from "@/lib/stores/useDataStore";
 import type { SaveItem, Space } from "@/lib/types";
 
 export function useSaveItems(category: string) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
-  // Local Zustand store actions & state for offline fallback
-  const loadData = useDataStore((s) => s.loadData);
-  const localItems = useDataStore((s) => s.items);
-  const addLocalItem = useDataStore((s) => s.addItem);
-  const updateLocalItem = useDataStore((s) => s.updateItem);
-  const deleteLocalItem = useDataStore((s) => s.deleteItem);
+  // Zustand store actions & state for offline fallback
+  const storeItems = useDataStore((s) => s.items);
+  const {
+    loadData,
+    addItem: addStoreItem,
+    updateItem: updateStoreItem,
+    deleteItem: deleteStoreItem,
+  } = useDataActions();
 
   // Fetch list of user spaces when authenticated
   const { data: spaces = [], isLoading: isSpacesLoading } = useQuery<Space[]>({
@@ -69,7 +71,7 @@ export function useSaveItems(category: string) {
   });
 
   // Unified items list
-  const currentItems = isAuthenticated ? serverItems : localItems;
+  const currentItems = isAuthenticated ? serverItems : storeItems;
 
   // Items filtered by category
   const categoryItems = useMemo(
@@ -85,7 +87,7 @@ export function useSaveItems(category: string) {
     if (isAuthenticated && activeSpace) {
       await addItemMutation.mutateAsync(payload);
     } else {
-      addLocalItem(payload);
+      addStoreItem(payload);
     }
   };
 
@@ -93,7 +95,7 @@ export function useSaveItems(category: string) {
     if (isAuthenticated && activeSpace) {
       await updateItemMutation.mutateAsync({ id, ...item });
     } else {
-      updateLocalItem({ id, ...item });
+      updateStoreItem({ id, ...item });
     }
   };
 
@@ -101,7 +103,7 @@ export function useSaveItems(category: string) {
     if (isAuthenticated && activeSpace) {
       await deleteItemMutation.mutateAsync(id);
     } else {
-      deleteLocalItem(id);
+      deleteStoreItem(id);
     }
   };
 

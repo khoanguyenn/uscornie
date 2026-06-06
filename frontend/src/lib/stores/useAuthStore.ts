@@ -1,24 +1,24 @@
 import { create } from "zustand";
+import { combine } from "zustand/middleware";
 
-export interface AuthState {
-  token: string | null;
-  isAuthenticated: boolean;
-}
+export const useAuthStore = create(
+  combine(
+    {
+      token: null as string | null,
+      isAuthenticated: false,
+    },
+    (set) => ({
+      actions: {
+        setToken: (token: string | null) => {
+          set({ token, isAuthenticated: !!token });
+        },
+        clearToken: () => {
+          set({ token: null, isAuthenticated: false });
+        },
+      },
+    }),
+  ),
+);
 
-export interface AuthActions {
-  setToken: (token: string | null) => void;
-  clearToken: () => void;
-}
-
-export type AuthStore = AuthState & AuthActions;
-
-export const useAuthStore = create<AuthStore>()((set) => ({
-  token: null,
-  isAuthenticated: false,
-  setToken: (token) => {
-    set({ token, isAuthenticated: !!token });
-  },
-  clearToken: () => {
-    set({ token: null, isAuthenticated: false });
-  },
-}));
+export const useAuthActions = () => useAuthStore((s) => s.actions);
+export type AuthStore = ReturnType<typeof useAuthStore.getState>;

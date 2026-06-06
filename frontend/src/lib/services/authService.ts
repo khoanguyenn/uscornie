@@ -9,4 +9,8 @@ export const authService = {
     const res = await api.post("/auth/refresh");
     return res.data;
   },
+  async logout() {
+    const res = await api.post("/auth/logout");
+    return res.data;
+  },
 };

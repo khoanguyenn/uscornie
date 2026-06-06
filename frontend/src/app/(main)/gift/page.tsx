@@ -6,7 +6,7 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import GhibliIcon from "@/components/ui/GhibliIcon";
 import { EXCEL_GIFTS, OCCASIONS } from "@/lib/data/mock";
-import { useDataStore } from "@/lib/stores/useDataStore";
+import { useDataActions, useDataStore } from "@/lib/stores/useDataStore";
 
 const genders = [
   { id: "female", label: "👧 Nữ" },
@@ -26,7 +26,7 @@ function GiftPageContentInner() {
   const { get } = searchParams;
   const { push } = useRouter();
   const pathname = usePathname();
-  const loadData = useDataStore((s) => s.loadData);
+  const { loadData } = useDataActions();
   const items = useDataStore((s) => s.items);
 
   useEffect(() => {

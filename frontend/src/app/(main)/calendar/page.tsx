@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import GhibliIcon from "@/components/ui/GhibliIcon";
 import { Input } from "@/components/ui/Input";
 import { OCCASIONS } from "@/lib/data/mock";
-import { useDataStore } from "@/lib/stores/useDataStore";
+import { useDataActions, useDataStore } from "@/lib/stores/useDataStore";
 
 const mn = [
   "Tháng 1",
@@ -25,9 +25,7 @@ const dn = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
 export default function Page() {
   const anniversaryDate = useDataStore((s) => s.anniversaryDate);
   const birthdayDate = useDataStore((s) => s.birthdayDate);
-  const loadData = useDataStore((s) => s.loadData);
-  const setAnniversaryDate = useDataStore((s) => s.setAnniversaryDate);
-  const setBirthdayDate = useDataStore((s) => s.setBirthdayDate);
+  const { loadData, setAnniversaryDate, setBirthdayDate } = useDataActions();
 
   const [mounted, setMounted] = useState(false);
   const [calDate, setCalDate] = useState(() => new Date());

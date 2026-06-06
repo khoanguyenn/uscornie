@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import GhibliIcon from "@/components/ui/GhibliIcon";
 import { spaceService } from "@/lib/services/spaceService";
 import { useAuthStore } from "@/lib/stores/useAuthStore";
-import { useDataStore } from "@/lib/stores/useDataStore";
+import { useDataActions, useDataStore } from "@/lib/stores/useDataStore";
 import type { Space } from "@/lib/types";
 import { cn } from "@/lib/utils/cn";
 
@@ -14,7 +14,7 @@ export default function Page() {
 
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
-  const loadData = useDataStore((s) => s.loadData);
+  const { loadData } = useDataActions();
   const items = useDataStore((s) => s.items);
   const anniversaryDate = useDataStore((s) => s.anniversaryDate);
 
