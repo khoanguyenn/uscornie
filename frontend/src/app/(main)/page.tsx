@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import GhibliIcon from "@/components/ui/GhibliIcon";
+import { useSaveItems } from "@/lib/hooks/useSaveItems";
 import { spaceService } from "@/lib/services/spaceService";
 import { useAuthStore } from "@/lib/stores/useAuthStore";
 import { useDataActions, useDataStore } from "@/lib/stores/useDataStore";
@@ -15,7 +16,7 @@ export default function Page() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   const { loadData } = useDataActions();
-  const items = useDataStore((s) => s.items);
+  const { allItems: items } = useSaveItems();
   const anniversaryDate = useDataStore((s) => s.anniversaryDate);
 
   const [inviteLink, setInviteLink] = useState("");

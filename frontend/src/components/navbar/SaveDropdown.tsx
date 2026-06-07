@@ -23,8 +23,7 @@ export const SaveDropdown = memo(
     ddItemActive,
   }: SaveDropdownProps) => {
     const searchParams = useSearchParams();
-    const { get } = searchParams;
-    const currentCat = get ? get.call(searchParams, "cat") : null;
+    const currentCat = searchParams.get("cat");
 
     return (
       <div

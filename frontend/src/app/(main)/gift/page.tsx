@@ -7,7 +7,8 @@ import { GiftRandomMode } from "@/components/gift/GiftRandomMode";
 import { GiftWishlistMode } from "@/components/gift/GiftWishlistMode";
 import GhibliIcon from "@/components/ui/GhibliIcon";
 import { EXCEL_GIFTS } from "@/lib/data/mock";
-import { useDataActions, useDataStore } from "@/lib/stores/useDataStore";
+import { useSaveItems } from "@/lib/hooks/useSaveItems";
+import { useDataActions } from "@/lib/stores/useDataStore";
 
 const genders = [
   { id: "female", label: "👧 Nữ" },
@@ -17,18 +18,17 @@ const genders = [
 
 function GiftPageContentInner() {
   const searchParams = useSearchParams();
-  const { get } = searchParams;
   const { push } = useRouter();
   const pathname = usePathname();
   const { loadData } = useDataActions();
-  const items = useDataStore((s) => s.items);
+  const { allItems: items } = useSaveItems();
 
   useEffect(() => {
     document.title = "Gift Planner - Uscornie";
     loadData();
   }, [loadData]);
 
-  const giftMode = (get ? get.call(searchParams, "mode") : null) || "random";
+  const giftMode = searchParams.get("mode") || "random";
   const [selOcc, setSelOcc] = useState<string | null>(null);
   const [selGender, setSelGender] = useState<string | null>(null);
   const [giftRes, setGiftRes] = useState<GiftSuggestion | null>(null);

@@ -37,7 +37,6 @@ interface GoogleWindow {
 function JoinPageContent() {
   const { push } = useRouter();
   const searchParams = useSearchParams();
-  const { get } = searchParams;
   const { setToken } = useAuthActions();
 
   const [status, setStatus] = useState("welcome"); // welcome | loading | success | error
@@ -45,7 +44,7 @@ function JoinPageContent() {
 
   const handleCredentialResponse = useCallback(
     async (res: GoogleCredentialResponse) => {
-      const inviteToken = get ? get.call(searchParams, "token") : null;
+      const inviteToken = searchParams.get("token");
       if (!inviteToken) {
         setStatus("error");
         return;
@@ -54,7 +53,7 @@ function JoinPageContent() {
       setStatus("loading");
       try {
         const authData = await authService.loginWithGoogle(res.credential);
-        setToken(authData.token);
+        setToken(authData.access_token);
 
         const space = await spaceService.joinSpace(inviteToken);
         setSpaceId(space.id);
@@ -63,7 +62,7 @@ function JoinPageContent() {
         setStatus("error");
       }
     },
-    [searchParams, get, setToken],
+    [searchParams, setToken],
   );
 
   useEffect(() => {

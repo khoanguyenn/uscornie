@@ -24,7 +24,10 @@ export type SaveItemFormValues = z.infer<typeof saveItemSchema>;
 interface SaveItemFormProps {
   category: string;
   editingItem: SaveItem | null;
-  onSubmit: (values: SaveItemFormValues, image: string | null) => void;
+  onSubmit: (
+    values: SaveItemFormValues,
+    image: string | null,
+  ) => Promise<void> | void;
   onCancel: () => void;
 }
 
@@ -123,14 +126,18 @@ export default function SaveItemForm({
     reader.readAsDataURL(file);
   };
 
-  const handleFormSubmit = (values: SaveItemFormValues) => {
-    onSubmit(values, imagePreview);
-    reset({
-      title: "",
-      desc: "",
-      tag: "",
-    });
-    setImagePreview(null);
+  const handleFormSubmit = async (values: SaveItemFormValues) => {
+    try {
+      await onSubmit(values, imagePreview);
+      reset({
+        title: "",
+        desc: "",
+        tag: "",
+      });
+      setImagePreview(null);
+    } catch (_error) {
+      // Form values are kept intact for user retry
+    }
   };
 
   return (

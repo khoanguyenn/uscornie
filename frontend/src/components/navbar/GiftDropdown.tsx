@@ -22,8 +22,7 @@ export const GiftDropdown = memo(
     ddItemActive,
   }: GiftDropdownProps) => {
     const searchParams = useSearchParams();
-    const { get } = searchParams;
-    const currentMode = get ? get.call(searchParams, "mode") : null;
+    const currentMode = searchParams.get("mode");
 
     return (
       <div
