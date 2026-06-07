@@ -16,8 +16,8 @@ interface CalendarViewCardProps {
   calDate: Date;
   onPrevMonth: () => void;
   onNextMonth: () => void;
-  mn: string[];
-  dn: string[];
+  monthNames: string[];
+  dayNames: string[];
   calendarData: CalendarDay[];
   specialDays: SpecialDay[];
 }
@@ -26,8 +26,8 @@ export function CalendarViewCard({
   calDate,
   onPrevMonth,
   onNextMonth,
-  mn,
-  dn,
+  monthNames,
+  dayNames,
   calendarData,
   specialDays,
 }: CalendarViewCardProps) {
@@ -43,7 +43,7 @@ export function CalendarViewCard({
           &lt;
         </button>
         <span className="font-pangolin text-[1.35rem] min-w-[180px] text-center">
-          {mn[calDate.getMonth()]} {calDate.getFullYear()}
+          {monthNames[calDate.getMonth()]} {calDate.getFullYear()}
         </span>
         <button
           onClick={onNextMonth}
@@ -55,7 +55,7 @@ export function CalendarViewCard({
         </button>
       </div>
       <div className="grid grid-cols-7 gap-1 mt-5">
-        {dn.map((d) => (
+        {dayNames.map((d) => (
           <div
             key={d}
             className="font-bold text-[0.75rem] text-ink-light py-2 text-center"

@@ -8,7 +8,7 @@ import GhibliIcon from "@/components/ui/GhibliIcon";
 import { OCCASIONS } from "@/lib/data/mock";
 import { useDataActions, useDataStore } from "@/lib/stores/useDataStore";
 
-const mn = [
+const monthNames = [
   "Tháng 1",
   "Tháng 2",
   "Tháng 3",
@@ -22,7 +22,7 @@ const mn = [
   "Tháng 11",
   "Tháng 12",
 ];
-const dn = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
+const dayNames = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
 
 export default function Page() {
   const anniversaryDate = useDataStore((s) => s.anniversaryDate);
@@ -176,8 +176,8 @@ export default function Page() {
         calDate={calDate}
         onPrevMonth={prevMonth}
         onNextMonth={nextMonth}
-        mn={mn}
-        dn={dn}
+        monthNames={monthNames}
+        dayNames={dayNames}
         calendarData={calendarData}
         specialDays={specialDays}
       />

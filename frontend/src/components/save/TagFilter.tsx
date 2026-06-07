@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import type { SaveItem } from "@/lib/types";
 import { cn } from "@/lib/utils/cn";
 
@@ -14,15 +15,25 @@ export default function TagFilter({
   allItems,
   onSelectTag,
 }: TagFilterProps) {
+  // Count occurrences of each preset tag in all items
+  const tagCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const tag of presetTags) {
+      counts[tag] = 0;
+    }
+    for (const item of allItems) {
+      const tag = item.tag || "";
+      const currentVal = counts[tag];
+      if (currentVal !== undefined) {
+        counts[tag] = currentVal + 1;
+      }
+    }
+    return counts;
+  }, [presetTags, allItems]);
+
   // Return early if there are no items or preset tags to filter by
   if (allItems.length === 0 || presetTags.length === 0) {
     return null;
-  }
-
-  // Count occurrences of each preset tag in all items
-  const tagCounts: Record<string, number> = {};
-  for (const tag of presetTags) {
-    tagCounts[tag] = allItems.filter((i) => (i.tag || "") === tag).length;
   }
 
   return (

@@ -6,7 +6,7 @@ import { useAuthStore } from "@/lib/stores/useAuthStore";
 import { useDataActions, useDataStore } from "@/lib/stores/useDataStore";
 import type { SaveItem, Space } from "@/lib/types";
 
-export function useSaveItems(category: string) {
+export function useSaveItems(category?: string) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   // Zustand store actions & state for offline fallback
@@ -75,15 +75,24 @@ export function useSaveItems(category: string) {
 
   // Items filtered by category
   const categoryItems = useMemo(
-    () => currentItems.filter((i) => i.category === category),
+    () =>
+      category
+        ? currentItems.filter((i) => i.category === category)
+        : currentItems,
     [currentItems, category],
   );
 
   // Unified action methods
   const addItem = async (
-    item: Omit<SaveItem, "id" | "createdAt" | "category">,
+    item: Omit<SaveItem, "id" | "createdAt" | "category"> & {
+      category?: string;
+    },
   ) => {
-    const payload = { ...item, category };
+    const itemCategory = item.category || category;
+    if (!itemCategory) {
+      throw new Error("Category is required to add an item.");
+    }
+    const payload = { ...item, category: itemCategory };
     if (isAuthenticated && activeSpace) {
       await addItemMutation.mutateAsync(payload);
     } else {
