@@ -1,4 +1,0 @@
-component: frontend
-kind: added
-body: add build-time environment variable validation in next.config.ts
-time: 2026-06-01T22:36:57.966354+07:00

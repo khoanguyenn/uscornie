@@ -1,4 +1,0 @@
-component: frontend
-kind: changed
-body: Refactor frontend to fix authentication access token issue, standardize URL search params retrieval, align state with architecture guidelines, and optimize performance.
-time: 2026-06-07T16:27:32+07:00
