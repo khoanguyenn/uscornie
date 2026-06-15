@@ -1,4 +1,0 @@
-component: frontend
-kind: changed
-body: Split long frontend files (mock data, Ghibli SVG icons, NavBar dropdowns, and page sub-components) into modular files.
-time: 2026-06-06T18:11:45.438427+07:00
