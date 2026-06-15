@@ -1,4 +1,4 @@
-"""Module for schemas.py."""
+"""Pydantic schemas validating space requests and structuring space API responses."""
 
 from datetime import datetime
 
@@ -6,13 +6,13 @@ from pydantic import BaseModel, ConfigDict
 
 
 class JoinSpaceRequest(BaseModel):
-    """JoinSpaceRequest."""
+    """Schema validating the request payload containing the invite token to join a space."""
 
     invite_token: str
 
 
 class SpaceResponse(BaseModel):
-    """SpaceResponse."""
+    """Schema structuring the response details representing a space."""
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -23,13 +23,13 @@ class SpaceResponse(BaseModel):
 
 
 class JoinSpaceResponse(BaseModel):
-    """JoinSpaceResponse."""
+    """Schema structuring the response containing the joined space ID."""
 
     space_id: str
 
 
 class SpaceStatsResponse(BaseModel):
-    """SpaceStatsResponse."""
+    """Schema structuring space statistics details including total items and category groupings."""
 
     total: int
     categories: dict[str, int]

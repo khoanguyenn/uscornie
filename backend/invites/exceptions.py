@@ -1,10 +1,10 @@
-"""Module for exceptions.py."""
+"""Custom exceptions raised during invitation lifecycle operations."""
 
 from kit.exceptions import AppError
 
 
 class InvalidInviteTokenError(AppError):
-    """InvalidInviteTokenError."""
+    """Exception raised when an invitation token is invalid, expired, or non-existent."""
 
     status_code: int = 400
     error_code: str = "INVALID_INVITATION"
@@ -12,7 +12,7 @@ class InvalidInviteTokenError(AppError):
 
 
 class PersonalSpaceInviteError(AppError):
-    """PersonalSpaceInviteError."""
+    """Exception raised when attempting to create an invitation link for a personal space."""
 
     status_code: int = 400
     error_code: str = "PERSONAL_SPACE_INVITE_FORBIDDEN"
@@ -20,7 +20,7 @@ class PersonalSpaceInviteError(AppError):
 
 
 class InviteRateLimitExceededError(AppError):
-    """InviteRateLimitExceededError."""
+    """Exception raised when a user exceeds the hourly invitation rate limit."""
 
     status_code: int = 429
     error_code: str = "INVITE_RATE_LIMIT_EXCEEDED"
@@ -28,7 +28,7 @@ class InviteRateLimitExceededError(AppError):
 
 
 class InvitationNotPendingError(AppError):
-    """InvitationNotPendingError."""
+    """Exception raised when attempting to cancel or decline an invitation that is not in pending status."""
 
     status_code: int = 400
     error_code: str = "INVITATION_NOT_PENDING"
@@ -36,7 +36,7 @@ class InvitationNotPendingError(AppError):
 
 
 class InvitationPermissionDeniedError(AppError):
-    """InvitationPermissionDeniedError."""
+    """Exception raised when a user attempts to cancel an invitation they did not create."""
 
     status_code: int = 403
     error_code: str = "INVITATION_PERMISSION_DENIED"

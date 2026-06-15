@@ -1,4 +1,4 @@
-"""Module for exceptions.py."""
+"""Base exception classes and structural errors for the application."""
 
 import logging
 
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 # Base exception for all application errors
 class AppError(Exception):
-    """AppError."""
+    """Base exception class for all custom application errors, enabling standard HTTP responses."""
 
     status_code: int = 400
     error_code: str = "BAD_REQUEST"
@@ -31,7 +31,7 @@ class AppError(Exception):
 
 
 class ErrorDetail(BaseModel):
-    """ErrorDetail."""
+    """Detailed metadata representing a specific validation error location and description."""
 
     loc: list[str] | None = None
     msg: str
@@ -39,7 +39,7 @@ class ErrorDetail(BaseModel):
 
 
 class ErrorResponse(BaseModel):
-    """ErrorResponse."""
+    """Standard structural model representing error responses sent to API clients."""
 
     success: bool = False
     error_code: str
@@ -48,7 +48,15 @@ class ErrorResponse(BaseModel):
 
 
 def register_exception_handlers(app: FastAPI) -> None:
-    """register_exception_handlers."""
+    """Register universal and specific exception handlers onto the FastAPI application.
+
+    This binds handlers for custom AppError exceptions, standard Starlette HTTPExceptions,
+    FastAPI request validation errors (RequestValidationError), and unhandled generic Exceptions
+    to enforce uniform ErrorResponse payloads across all endpoints.
+
+    Args:
+        app (FastAPI): The target FastAPI application instance.
+    """
 
     @app.exception_handler(AppError)
     async def app_exception_handler(request: Request, exc: AppError):

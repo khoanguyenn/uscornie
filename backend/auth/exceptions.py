@@ -1,10 +1,10 @@
-"""Module for exceptions.py."""
+"""Custom API exceptions raised during authentication and session validation."""
 
 from kit.exceptions import AppError
 
 
 class CredentialsError(AppError):
-    """CredentialsError."""
+    """Exception raised when JWT access token signature, structure, or claims validation fails."""
 
     status_code: int = 401
     error_code: str = "UNAUTHORIZED"
@@ -12,7 +12,7 @@ class CredentialsError(AppError):
 
 
 class GoogleAuthError(AppError):
-    """GoogleAuthError."""
+    """Exception raised when ID token verification against Google OAuth endpoints fails."""
 
     status_code: int = 400
     error_code: str = "GOOGLE_AUTH_FAILED"
@@ -20,7 +20,7 @@ class GoogleAuthError(AppError):
 
 
 class SessionExpiredError(AppError):
-    """SessionExpiredError."""
+    """Exception raised when a session refresh token has expired."""
 
     status_code: int = 401
     error_code: str = "SESSION_EXPIRED"
@@ -28,7 +28,7 @@ class SessionExpiredError(AppError):
 
 
 class SessionInvalidError(AppError):
-    """SessionInvalidError."""
+    """Exception raised when a session refresh token cannot be found or has been explicitly deactivated."""
 
     status_code: int = 401
     error_code: str = "SESSION_INVALID"
@@ -36,7 +36,7 @@ class SessionInvalidError(AppError):
 
 
 class SessionReusedError(AppError):
-    """SessionReusedError."""
+    """Exception raised when a rotated session refresh token is reused, indicating a potential replay attack."""
 
     status_code: int = 401
     error_code: str = "SESSION_REUSED"

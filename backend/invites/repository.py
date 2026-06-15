@@ -1,4 +1,4 @@
-"""Module for repository.py."""
+"""Data access layer managing database operations for invitations."""
 
 from datetime import UTC, datetime, timedelta
 
@@ -9,10 +9,21 @@ from models import Invitation
 
 
 class InvitationRepository:
-    """InvitationRepository."""
+    """Repository class coordinating database operations for invitations."""
 
     def get_active_by_token(self, db: Session, token: str) -> Invitation | None:
-        """get_active_by_token."""
+        """Retrieve an active (pending, non-expired, unused) invitation by its token.
+
+        An invitation is active if it is pending, has not been used, and was created
+        within the last 48 hours.
+
+        Args:
+            db (Session): The database session.
+            token (str): The unique secret invite token.
+
+        Returns:
+            Invitation | None: The matching active Invitation, or None.
+        """
         min_created_at = datetime.now(UTC) - timedelta(hours=48)
         return (
             db.query(Invitation)
@@ -26,13 +37,32 @@ class InvitationRepository:
         )
 
     def get_by_token(self, db: Session, token: str) -> Invitation | None:
-        """get_by_token."""
+        """Retrieve any invitation record by its token, regardless of its current status.
+
+        Args:
+            db (Session): The database session.
+            token (str): The unique secret invite token.
+
+        Returns:
+            Invitation | None: The matching Invitation, or None.
+        """
         return db.query(Invitation).filter(Invitation.token == token).first()
 
     def count_recent_by_inviter(
         self, db: Session, inviter_id: str, hours: int = 1
     ) -> int:
-        """count_recent_by_inviter."""
+        """Count the number of invitations created by a user within a rolling hourly window.
+
+        Used for rate-limiting invitation creation.
+
+        Args:
+            db (Session): The database session.
+            inviter_id (str): The ID of the inviting user.
+            hours (int, optional): The duration of the rolling window in hours. Defaults to 1.
+
+        Returns:
+            int: The total count of invitations created within the specified timeframe.
+        """
         since = datetime.now(UTC) - timedelta(hours=hours)
         return (
             db.query(func.count(Invitation.id))
@@ -47,7 +77,17 @@ class InvitationRepository:
     def create(
         self, db: Session, token: str, space_id: str, inviter_id: str
     ) -> Invitation:
-        """create."""
+        """Create, persist, and return a new pending invitation.
+
+        Args:
+            db (Session): The database session.
+            token (str): The unique secret invite token.
+            space_id (str): The unique ID of the target shared space.
+            inviter_id (str): The user ID of the inviter.
+
+        Returns:
+            Invitation: The newly created Invitation object.
+        """
         invitation = Invitation(
             token=token, space_id=space_id, inviter_id=inviter_id, status="pending"
         )

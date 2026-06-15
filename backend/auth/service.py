@@ -1,4 +1,4 @@
-"""Module for service.py."""
+"""Business logic service layer for authentication operations."""
 
 import logging
 import os
@@ -44,7 +44,7 @@ def _is_expired(expires_at: datetime) -> bool:
 
 
 class AuthService:
-    """AuthService."""
+    """Service class managing OAuth verification, token generation, and active session validation."""
 
     def __init__(
         self,
@@ -59,14 +59,29 @@ class AuthService:
         self.session_repo = session_repo or SessionRepository()
 
     def create_token(self, user_id: str) -> str:
-        """create_token."""
+        """Create a signed JWT access token for a user with standard expiration claims.
+
+        Args:
+            user_id (str): The unique ID of the user.
+
+        Returns:
+            str: The encoded JWT access token string.
+        """
         expires_delta = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         expire = datetime.now(UTC) + expires_delta
         to_encode = {"exp": expire, "sub": str(user_id)}
         return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
     def verify_google_token(self, token: str, clock_skew_in_seconds: int = 10):
-        """verify_google_token."""
+        """Verify a Google OAuth ID token against Google API endpoints and return user profile details.
+
+        Args:
+            token (str): The Google ID token credential.
+            clock_skew_in_seconds (int, optional): Tolerable system clock drift. Defaults to 10.
+
+        Returns:
+            dict | None: The decoded token payload dictionary on success, or None on failure.
+        """
         try:
             return id_token.verify_oauth2_token(
                 token, requests.Request(), GOOGLE_CLIENT_ID, clock_skew_in_seconds
@@ -78,7 +93,20 @@ class AuthService:
     def authenticate_google(
         self, db: Session, credential: str, device_info: dict, ip_address: str | None
     ) -> tuple[str, UserSession]:
-        """authenticate_google."""
+        """Authenticate a user using their Google ID token, creating profile and default space if new.
+
+        Args:
+            db (Session): The database session.
+            credential (str): The Google ID token credential.
+            device_info (dict): Extracted browser/device metadata of the client.
+            ip_address (str | None): The client's IP address.
+
+        Returns:
+            tuple[str, UserSession]: A tuple of the access token string and the new UserSession object.
+
+        Raises:
+            GoogleAuthError: If the Google token verification fails.
+        """
         id_info = self.verify_google_token(credential, clock_skew_in_seconds=10)
         if not id_info:
             raise GoogleAuthError()
@@ -110,6 +138,20 @@ class AuthService:
         return access_token, session
 
     def _validate_and_get_session(self, db: Session, refresh_token: str) -> UserSession:
+        """Validate the refresh token against active sessions, checking for expiration and reuse.
+
+        Args:
+            db (Session): The database session.
+            refresh_token (str): The session ID (refresh token).
+
+        Returns:
+            UserSession: The active UserSession record.
+
+        Raises:
+            SessionInvalidError: If the session is missing, or is inactive without rotation lineage.
+            SessionReusedError: If the session was already rotated, indicating potential replay attack.
+            SessionExpiredError: If the session expiration time has passed.
+        """
         session = self.session_repo.get_session_by_id(db, refresh_token)
 
         # 1. Check if session exists in DB
@@ -135,6 +177,16 @@ class AuthService:
     def _rotate_session(
         self, db: Session, session: UserSession, ip_address: str | None
     ) -> UserSession:
+        """Mark the current session as rotated and generate a new linked active session.
+
+        Args:
+            db (Session): The database session.
+            session (UserSession): The current active session to be rotated.
+            ip_address (str | None): The new client IP address.
+
+        Returns:
+            UserSession: The newly created child UserSession.
+        """
         # Mark current session as rotated (inactive)
         session.is_active = False
         db.commit()
@@ -151,14 +203,36 @@ class AuthService:
     def refresh_token_rotation(
         self, db: Session, refresh_token: str, ip_address: str | None
     ) -> tuple[str, UserSession]:
-        """refresh_token_rotation."""
+        """Verify the refresh token and perform token rotation, returning a new access token and session.
+
+        Args:
+            db (Session): The database session.
+            refresh_token (str): The session ID (refresh token).
+            ip_address (str | None): The client IP address.
+
+        Returns:
+            tuple[str, UserSession]: A tuple containing the new access token and the new rotated UserSession.
+
+        Raises:
+            SessionInvalidError: If the token is invalid or inactive.
+            SessionReusedError: If token reuse is detected.
+            SessionExpiredError: If the session has expired.
+        """
         session = self._validate_and_get_session(db, refresh_token)
         new_session = self._rotate_session(db, session, ip_address)
         access_token = self.create_token(session.user_id)
         return access_token, new_session
 
     def get_user_by_id(self, db: Session, user_id: str) -> User | None:
-        """get_user_by_id."""
+        """Retrieve a user record from the database by user ID.
+
+        Args:
+            db (Session): The database session.
+            user_id (str): The unique ID of the user.
+
+        Returns:
+            User | None: The matching User object if found, otherwise None.
+        """
         return self.user_repo.get_by_id(db, user_id)
 
 
@@ -166,7 +240,7 @@ async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
     db: Annotated[Session, Depends(get_db)],
 ) -> User:
-    """get_current_user."""
+    """FastAPI dependency to extract and authenticate the current user from the Authorization header."""
     credentials_exception = CredentialsError(
         message="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},

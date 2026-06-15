@@ -1,4 +1,4 @@
-"""Module for model.py."""
+"""Database models representing saved items."""
 
 from datetime import datetime
 
@@ -9,7 +9,7 @@ from kit.database import Base, generate_uuid, utcnow
 
 
 class Item(Base):
-    """Item."""
+    """Model representing a saved bookmark or entry (memories, wishlist, cafe, restaurant, etc.) inside a space."""
 
     __tablename__ = "items"
     id: Mapped[str] = mapped_column(String, primary_key=True, default=generate_uuid)

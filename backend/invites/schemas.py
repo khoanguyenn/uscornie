@@ -1,30 +1,30 @@
-"""Module for schemas.py."""
+"""Pydantic schemas validating invitation requests and structuring invitation responses."""
 
 from pydantic import BaseModel
 
 
 class InviteResponse(BaseModel):
-    """InviteResponse."""
+    """Schema structuring the response containing the generated invitation token and URL."""
 
     invite_token: str
     url: str
 
 
 class UpdateInviteStatusRequest(BaseModel):
-    """UpdateInviteStatusRequest."""
+    """Schema validating the request payload to update an invitation's status."""
 
     status: str  # "cancelled" or "declined"
 
 
 class SpaceStatsSummary(BaseModel):
-    """SpaceStatsSummary."""
+    """Schema representing statistical counts of items grouped by category within a space."""
 
     total: int
     categories: dict[str, int]
 
 
 class CreatorResponse(BaseModel):
-    """CreatorResponse."""
+    """Schema defining profile and statistics of the user who created the invitation."""
 
     full_name: str | None = None
     picture: str | None = None
@@ -32,7 +32,7 @@ class CreatorResponse(BaseModel):
 
 
 class AcceptorResponse(BaseModel):
-    """AcceptorResponse."""
+    """Schema defining profile and statistics of the user who accepted the invitation."""
 
     full_name: str | None = None
     picture: str | None = None
@@ -40,7 +40,7 @@ class AcceptorResponse(BaseModel):
 
 
 class InviteStatusResponse(BaseModel):
-    """InviteStatusResponse."""
+    """Schema defining invitation status details, including inviter and acceptor metadata."""
 
     status: str
     creator: CreatorResponse

@@ -1,4 +1,4 @@
-"""Module for main.py."""
+"""Application entry point and routing config initialization."""
 
 import os
 
@@ -46,5 +46,9 @@ app.include_router(items_router, tags=["Items"])
 
 @app.get("/")
 async def root():
-    """root."""
+    """Welcome root endpoint returning API health status.
+
+    Returns:
+        dict: A welcome message indicating the API is running.
+    """
     return {"message": "Welcome to Uscornie API"}

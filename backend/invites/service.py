@@ -1,4 +1,4 @@
-"""Module for service.py."""
+"""Business logic service layer managing invitation lifetimes."""
 
 import secrets
 
@@ -18,7 +18,7 @@ from spaces.repository import SpaceMemberRepository, SpaceRepository
 
 
 class InviteService:
-    """InviteService."""
+    """Service class coordinating the creation, cancellation, and response handling of invites."""
 
     def __init__(
         self,
@@ -31,7 +31,26 @@ class InviteService:
         self.space_member_repo = space_member_repo or SpaceMemberRepository()
 
     def create_invite(self, db: Session, current_user: User, space_id: str) -> str:
-        """create_invite."""
+        """Create a new invitation token for a shared space, verifying inviter eligibility.
+
+        Ensures that the inviter is not already in another shared space, is a member
+        of the target space, that the target space is indeed a shared space, and
+        enforces a rate limit of 3 invitations per hour.
+
+        Args:
+            db (Session): The database session.
+            current_user (User): The user attempting to create the invite.
+            space_id (str): The unique ID of the target shared space.
+
+        Returns:
+            str: The randomly generated url-safe invitation token.
+
+        Raises:
+            AlreadyJoinedSpaceError: If the inviter belongs to another shared space.
+            NotSpaceMemberError: If the inviter is not a member of the target space.
+            PersonalSpaceInviteError: If the target space is a personal space.
+            InviteRateLimitExceededError: If the user exceeded 3 creations in the last hour.
+        """
         # Check if user is already in a shared space other than the target space
         if self.space_member_repo.is_in_other_shared_space(
             db, current_user.id, space_id
@@ -63,7 +82,18 @@ class InviteService:
         return token
 
     def cancel_invite(self, db: Session, current_user: User, token: str) -> None:
-        """cancel_invite."""
+        """Cancel a pending invitation, ensuring only the original inviter can do so.
+
+        Args:
+            db (Session): The database session.
+            current_user (User): The user attempting to cancel the invitation.
+            token (str): The unique secret invite token to cancel.
+
+        Raises:
+            InvalidInviteTokenError: If the token is invalid or non-existent.
+            InvitationPermissionDeniedError: If the caller is not the original inviter.
+            InvitationNotPendingError: If the invitation status is not pending.
+        """
         inv = self.invite_repo.get_by_token(db, token)
         if not inv:
             raise InvalidInviteTokenError()
@@ -78,7 +108,17 @@ class InviteService:
         db.commit()
 
     def decline_invite(self, db: Session, current_user: User, token: str) -> None:
-        """decline_invite."""
+        """Decline a pending invitation, updating its status to declined.
+
+        Args:
+            db (Session): The database session.
+            current_user (User): The guest user declining the invitation.
+            token (str): The unique secret invite token to decline.
+
+        Raises:
+            AlreadyJoinedSpaceError: If the guest user is already in a shared space.
+            InvalidInviteTokenError: If the token is invalid, expired, or already used.
+        """
         # Check B (current_user) eligibility
         if self.space_member_repo.is_in_shared_space(db, current_user.id):
             raise AlreadyJoinedSpaceError()

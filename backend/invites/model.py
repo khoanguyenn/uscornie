@@ -1,4 +1,4 @@
-"""Module for model.py."""
+"""Database models representing space invitations."""
 
 from datetime import datetime
 from typing import TYPE_CHECKING
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 class Invitation(Base):
-    """Invitation."""
+    """Model representing an invitation token issued by a space administrator to a guest user."""
 
     __tablename__ = "invitations"
     id: Mapped[str] = mapped_column(String, primary_key=True, default=generate_uuid)

@@ -50,7 +50,7 @@ select = [
     "PTH",    # flake8-use-pathlib
     "T20",    # flake8-print (forbid print in production)
     "C90",    # flake8-mccabe (complexity)
-    "D1",     # enforce docstrings presence
+    "D",      # pydocstyle checks
 ]
 ignore = [
     "E501",   # Line length (handled by ruff format)
@@ -62,6 +62,11 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "**/tests/**/*.py" = ["D"]
+"**/endpoints.py" = ["D"]
+"**/migrations/**/*.py" = ["D"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
 
 [tool.ruff.lint.mccabe]
 max-complexity = 5

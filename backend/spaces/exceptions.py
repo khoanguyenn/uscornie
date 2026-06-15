@@ -1,10 +1,10 @@
-"""Module for exceptions.py."""
+"""Custom exceptions raised during space and membership management."""
 
 from kit.exceptions import AppError
 
 
 class SpaceAlreadyOwnedError(AppError):
-    """SpaceAlreadyOwnedError."""
+    """Exception raised when a user attempts to create a shared space but already owns one as admin."""
 
     status_code: int = 400
     error_code: str = "SPACE_ALREADY_OWNED"
@@ -12,7 +12,7 @@ class SpaceAlreadyOwnedError(AppError):
 
 
 class NotSpaceMemberError(AppError):
-    """NotSpaceMemberError."""
+    """Exception raised when a user attempts to access space resources without being a member."""
 
     status_code: int = 403
     error_code: str = "FORBIDDEN"
@@ -20,7 +20,7 @@ class NotSpaceMemberError(AppError):
 
 
 class AlreadyJoinedSpaceError(AppError):
-    """AlreadyJoinedSpaceError."""
+    """Exception raised when a user attempts to join a shared space but is already a member of another shared space."""
 
     status_code: int = 400
     error_code: str = "ALREADY_JOINED_ANOTHER_SPACE"
@@ -28,7 +28,7 @@ class AlreadyJoinedSpaceError(AppError):
 
 
 class SpaceFullError(AppError):
-    """SpaceFullError."""
+    """Exception raised when a user attempts to join a shared space that has reached its maximum member limit (2)."""
 
     status_code: int = 400
     error_code: str = "SPACE_FULL"

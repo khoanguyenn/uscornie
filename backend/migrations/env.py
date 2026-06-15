@@ -1,4 +1,4 @@
-"""Module for env.py."""
+"""Alembic migrations environment configuration script."""
 
 import os
 from logging.config import fileConfig

@@ -1,4 +1,4 @@
-"""Module for service.py."""
+"""Business logic service layer managing item operations."""
 
 from sqlalchemy.orm import Session
 
@@ -10,7 +10,7 @@ from spaces.repository import SpaceMemberRepository
 
 
 class ItemService:
-    """ItemService."""
+    """Service class coordinating item retrieval, creation, updates, and deletion with RBAC checks."""
 
     def __init__(
         self,
@@ -21,12 +21,34 @@ class ItemService:
         self.space_member_repo = space_member_repo or SpaceMemberRepository()
 
     def _verify_space_membership(self, db: Session, space_id: str, user_id: str):
+        """Verify if a user is a member of the specified space.
+
+        Args:
+            db (Session): The database session.
+            space_id (str): The unique ID of the space.
+            user_id (str): The unique ID of the user.
+
+        Raises:
+            NotSpaceMemberError: If the user is not a member of the space.
+        """
         member = self.space_member_repo.get_member(db, space_id, user_id)
         if not member:
             raise NotSpaceMemberError()
 
     def get_items(self, db: Session, space_id: str, current_user: User) -> list[Item]:
-        """get_items."""
+        """Retrieve all items within a space, ensuring the requestor is an authorized space member.
+
+        Args:
+            db (Session): The database session.
+            space_id (str): The unique ID of the space.
+            current_user (User): The user requesting the items.
+
+        Returns:
+            list[Item]: A list of saved Item records.
+
+        Raises:
+            NotSpaceMemberError: If the user is not a member of the space.
+        """
         self._verify_space_membership(db, space_id, current_user.id)
         return self.item_repo.get_by_space(db, space_id)
 
@@ -40,7 +62,23 @@ class ItemService:
         desc: str | None = None,
         tag: str | None = None,
     ) -> Item:
-        """create_item."""
+        """Create an item within a space, validating user membership and payload inputs.
+
+        Args:
+            db (Session): The database session.
+            space_id (str): The unique ID of the target space.
+            current_user (User): The user creating the item.
+            category (str): The category under which the item is stored.
+            title (str): The title of the item.
+            desc (str | None, optional): An optional description. Defaults to None.
+            tag (str | None, optional): An optional classification tag. Defaults to None.
+
+        Returns:
+            Item: The newly created Item object.
+
+        Raises:
+            NotSpaceMemberError: If the user is not a member of the space.
+        """
         self._verify_space_membership(db, space_id, current_user.id)
         return self.item_repo.create(
             db,
@@ -61,7 +99,24 @@ class ItemService:
         desc: str | None = None,
         tag: str | None = None,
     ) -> Item:
-        """update_item."""
+        """Update an existing item inside a space, checking membership and resource ownership.
+
+        Args:
+            db (Session): The database session.
+            space_id (str): The unique ID of the space containing the item.
+            item_id (str): The unique ID of the item.
+            current_user (User): The user performing the update.
+            title (str | None, optional): Updated title. Defaults to None.
+            desc (str | None, optional): Updated description. Defaults to None.
+            tag (str | None, optional): Updated tag. Defaults to None.
+
+        Returns:
+            Item: The updated Item object.
+
+        Raises:
+            NotSpaceMemberError: If the user is not a member of the space.
+            ItemNotFoundError: If the item does not exist or belongs to another space.
+        """
         self._verify_space_membership(db, space_id, current_user.id)
         item = self.item_repo.get_by_id(db, item_id)
         if not item or item.space_id != space_id:
@@ -80,7 +135,18 @@ class ItemService:
     def delete_item(
         self, db: Session, space_id: str, item_id: str, current_user: User
     ) -> None:
-        """delete_item."""
+        """Delete an item from a space, validating membership and authorization limits.
+
+        Args:
+            db (Session): The database session.
+            space_id (str): The unique ID of the space.
+            item_id (str): The unique ID of the item.
+            current_user (User): The user deleting the item.
+
+        Raises:
+            NotSpaceMemberError: If the user is not a member of the space.
+            ItemNotFoundError: If the item does not exist or belongs to another space.
+        """
         self._verify_space_membership(db, space_id, current_user.id)
         item = self.item_repo.get_by_id(db, item_id)
         if not item or item.space_id != space_id:
