@@ -33,10 +33,10 @@ export default function DoubleStatsPanel({
   const getStats = (userStats: UserInfo | null): UserStats => {
     const categories = userStats?.stats?.categories || {};
     return {
-      memories: categories.memories || 0,
-      wishlist: categories.wishlist || 0,
-      cafe: categories.cafe || 0,
-      restaurant: categories.restaurant || 0,
+      memories: categories["memories"] || 0,
+      wishlist: categories["wishlist"] || 0,
+      cafe: categories["cafe"] || 0,
+      restaurant: categories["restaurant"] || 0,
     };
   };
 
