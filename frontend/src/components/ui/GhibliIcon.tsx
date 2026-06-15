@@ -13,7 +13,7 @@ import {
   SootIcon,
   SparkleIcon,
   TotoroIcon,
-} from "./GhibliSVGIcons";
+} from "./icons";
 
 interface GhibliIconProps {
   type: string;

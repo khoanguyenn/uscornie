@@ -1,4 +1,0 @@
-component: test
-kind: added
-body: implement parallel E2E testing framework, authenticated CRUD items flows, and multi-user collaboration validation using Playwright and Testcontainers Docker Compose
-time: 2026-06-03T22:38:00.000000+07:00

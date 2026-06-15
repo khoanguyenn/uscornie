@@ -9,7 +9,7 @@ import GhibliIcon from "@/components/ui/GhibliIcon";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { HINTS, SAVE_CATEGORIES, TAGS_BY_CATEGORY } from "@/lib/data/mock";
-import { useAuthStore } from "@/lib/providers/auth-store-provider";
+import { useAuthStore } from "@/lib/stores/useAuthStore";
 import type { SaveItem } from "@/lib/types";
 import { cn } from "@/lib/utils/cn";
 
@@ -24,7 +24,10 @@ export type SaveItemFormValues = z.infer<typeof saveItemSchema>;
 interface SaveItemFormProps {
   category: string;
   editingItem: SaveItem | null;
-  onSubmit: (values: SaveItemFormValues, image: string | null) => void;
+  onSubmit: (
+    values: SaveItemFormValues,
+    image: string | null,
+  ) => Promise<void> | void;
   onCancel: () => void;
 }
 
@@ -123,14 +126,18 @@ export default function SaveItemForm({
     reader.readAsDataURL(file);
   };
 
-  const handleFormSubmit = (values: SaveItemFormValues) => {
-    onSubmit(values, imagePreview);
-    reset({
-      title: "",
-      desc: "",
-      tag: "",
-    });
-    setImagePreview(null);
+  const handleFormSubmit = async (values: SaveItemFormValues) => {
+    try {
+      await onSubmit(values, imagePreview);
+      reset({
+        title: "",
+        desc: "",
+        tag: "",
+      });
+      setImagePreview(null);
+    } catch (_error) {
+      // Form values are kept intact for user retry
+    }
   };
 
   return (

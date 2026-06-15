@@ -1,14 +1,21 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import AnimatedBackground from "@/components/AnimatedBackground";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
 import NavBar from "@/components/NavBar";
 import GhibliIcon from "@/components/ui/GhibliIcon";
-import { useAuthStore } from "@/lib/providers/auth-store-provider";
 import { authService } from "@/lib/services/authService";
+import { useAuthActions, useAuthStore } from "@/lib/stores/useAuthStore";
 import { cn } from "@/lib/utils/cn";
+
+const AnimatedBackground = dynamic(
+  () => import("@/components/AnimatedBackground"),
+  {
+    ssr: false,
+  },
+);
 
 export default function MainLayout({
   children,
@@ -17,8 +24,7 @@ export default function MainLayout({
 }) {
   const { push } = useRouter();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const setToken = useAuthStore((s) => s.setToken);
-  const clearToken = useAuthStore((s) => s.clearToken);
+  const { setToken, clearToken } = useAuthActions();
 
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
@@ -40,6 +46,21 @@ export default function MainLayout({
     };
   }, [showToast]);
 
+  useEffect(() => {
+    const initAuth = async () => {
+      try {
+        const data = await authService.refreshSession();
+        setToken(data.access_token);
+      } catch (_err) {
+        clearToken();
+      }
+    };
+
+    if (!isAuthenticated) {
+      initAuth();
+    }
+  }, [isAuthenticated, setToken, clearToken]);
+
   const handleLoginSuccess = useCallback(
     async (response: { credential: string }) => {
       try {
@@ -53,7 +74,12 @@ export default function MainLayout({
     [setToken, triggerError],
   );
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await authService.logout();
+    } catch (_err) {
+      // If logout API fails, proceed to clear local storage/state anyway
+    }
     clearToken();
     window.location.reload();
   };

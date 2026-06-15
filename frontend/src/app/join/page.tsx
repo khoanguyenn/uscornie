@@ -1,16 +1,17 @@
 "use client";
 
-import { AnimatePresence, domAnimation, LazyMotion, m } from "framer-motion";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect } from "react";
+import { AnimatePresence, domAnimation, LazyMotion, m } from "framer-motion";
 import AnimatedBackground from "@/components/AnimatedBackground";
 import DoubleStatsPanel from "@/components/space/DoubleStatsPanel";
 import GhibliIcon from "@/components/ui/GhibliIcon";
 import GhibliScenery from "@/components/ui/GhibliScenery";
-import { useAuthStore } from "@/lib/providers/auth-store-provider";
 import { authService } from "@/lib/services/authService";
 import { spaceService } from "@/lib/services/spaceService";
+import { useAuthStore, useAuthActions } from "@/lib/stores/useAuthStore";
 import { cn } from "@/lib/utils/cn";
+import { create } from "zustand";
 
 interface GoogleCredentialResponse {
   credential: string;
@@ -37,8 +38,6 @@ interface GoogleWindow {
   };
   _googleInitializedJoin?: boolean;
 }
-
-import { create } from "zustand";
 
 interface JoinState {
   status: string; // welcome | loading | success | error | declined | merging
@@ -115,7 +114,7 @@ const useJoinStore = create<JoinState>((set, get) => ({
     set({ status: "loading" });
     try {
       const authData = await authService.loginWithGoogle(credential);
-      setToken(authData.token);
+      setToken(authData.access_token);
 
       const mySpaces = await spaceService.fetchMySpaces();
       const personal = mySpaces.find((s: any) => s.type === "personal");
@@ -125,8 +124,8 @@ const useJoinStore = create<JoinState>((set, get) => ({
       }
       set({
         acceptorInfo: {
-          full_name: authData.user?.full_name || "Bạn (Người nhận)",
-          picture: authData.user?.picture,
+          full_name: "Bạn (Người nhận)",
+          picture: null,
           stats: bStats,
         },
         status: "welcome",
@@ -140,8 +139,7 @@ const useJoinStore = create<JoinState>((set, get) => ({
 function JoinPageContent() {
   const { push } = useRouter();
   const searchParams = useSearchParams();
-  const { get } = searchParams;
-  const setToken = useAuthStore((s) => s.setToken);
+  const { setToken } = useAuthActions();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const token = useAuthStore((s) => s.token);
 
@@ -158,9 +156,7 @@ function JoinPageContent() {
     (s) => s.handleCredentialResponse,
   );
 
-  const inviteToken = get
-    ? get.call(searchParams, "token") || get.call(searchParams, "invite_token")
-    : null;
+  const inviteToken = searchParams.get("token") || searchParams.get("invite_token");
 
   const handleCredentialResponse = useCallback(
     async (res: GoogleCredentialResponse) => {

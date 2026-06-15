@@ -37,6 +37,12 @@ export default function RootLayout({
           src="https://accounts.google.com/gsi/client"
           strategy="lazyOnload"
         />
+        {process.env.NODE_ENV === "development" && (
+          <script
+            src="https://unpkg.com/react-scan/dist/auto.global.js"
+            async
+          />
+        )}
       </head>
       <body className="min-h-full flex flex-col">
         <Providers>{children}</Providers>

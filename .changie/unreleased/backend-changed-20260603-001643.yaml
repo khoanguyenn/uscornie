@@ -1,4 +1,0 @@
-component: backend
-kind: changed
-body: Upgrade user agent parsing to user-agents library, store device info as JSON, and recover client IP via Cloudflare Tunnel headers
-time: 2026-06-03T00:16:43.620386+07:00
