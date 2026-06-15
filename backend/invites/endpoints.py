@@ -47,7 +47,7 @@ async def update_invite(
 
 
 @router.get("/invites/{token}/status", response_model=InviteStatusResponse)
-async def get_invite_status(  # noqa: C901
+async def get_invite_status(
     token: str,
     db: Annotated[Session, Depends(get_db)],
 ):
@@ -59,47 +59,10 @@ async def get_invite_status(  # noqa: C901
         raise InvalidInviteTokenError()
 
     space_service = SpaceService()
-
-    creator = db.query(User).filter(User.id == inv.inviter_id).first()
-    creator_stats = None
-    if creator:
-        personal_member = space_service.space_member_repo.get_personal_space_member(
-            db, creator.id
-        )
-        if personal_member:
-            creator_stats = space_service.get_space_stats(db, personal_member.space_id)
-
-    creator_data = {
-        "full_name": creator.full_name if creator else None,
-        "picture": creator.picture if creator else None,
-        "stats": creator_stats,
-    }
-
-    # Find acceptor if accepted
-    acceptor_data = None
-    acceptor_member = (
-        db.query(SpaceMember)
-        .filter(SpaceMember.space_id == inv.space_id, SpaceMember.role == "member")
-        .first()
+    creator_data = space_service.get_member_profile_with_stats(db, inv.inviter_id)
+    acceptor_data = space_service.get_space_acceptor_profile_with_stats(
+        db, inv.space_id
     )
-    if acceptor_member:
-        acceptor = db.query(User).filter(User.id == acceptor_member.user_id).first()
-        if acceptor:
-            personal_member_b = (
-                space_service.space_member_repo.get_personal_space_member(
-                    db, acceptor.id
-                )
-            )
-            acceptor_stats = None
-            if personal_member_b:
-                acceptor_stats = space_service.get_space_stats(
-                    db, personal_member_b.space_id
-                )
-            acceptor_data = {
-                "full_name": acceptor.full_name,
-                "picture": acceptor.picture,
-                "stats": acceptor_stats,
-            }
 
     return {
         "status": inv.status,

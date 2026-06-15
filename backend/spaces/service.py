@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 from invites.exceptions import InvalidInviteTokenError
 from invites.repository import InvitationRepository
-from models import Space, User
+from models import Invitation, Space, SpaceMember, User
 from spaces.exceptions import (
     AlreadyJoinedSpaceError,
     NotSpaceMemberError,
@@ -46,10 +46,72 @@ class SpaceService:
         space_ids = [m.space_id for m in memberships]
         return self.space_repo.get_by_ids(db, space_ids)
 
-    def join_space(self, db: Session, current_user: User, invite_token: str) -> str:  # noqa: C901
+    def get_member_profile_with_stats(self, db: Session, user_id: str) -> dict:
+        creator = db.query(User).filter(User.id == user_id).first()
+        if not creator:
+            return {"full_name": None, "picture": None, "stats": None}
+
+        creator_stats = None
+        personal_member = self.space_member_repo.get_personal_space_member(
+            db, creator.id
+        )
+        if personal_member:
+            creator_stats = self.get_space_stats(db, personal_member.space_id)
+
+        return {
+            "full_name": creator.full_name,
+            "picture": creator.picture,
+            "stats": creator_stats,
+        }
+
+    def get_space_acceptor_profile_with_stats(
+        self, db: Session, space_id: str
+    ) -> dict | None:
+        acceptor_member = (
+            db.query(SpaceMember)
+            .filter(SpaceMember.space_id == space_id, SpaceMember.role == "member")
+            .first()
+        )
+        if not acceptor_member:
+            return None
+
+        return self.get_member_profile_with_stats(db, acceptor_member.user_id)
+
+    def _check_join_eligibility(
+        self, db: Session, inv: Invitation, current_user: User
+    ) -> None:
+        if self.space_member_repo.is_in_shared_space(db, current_user.id):
+            raise AlreadyJoinedSpaceError()
+
+        if self.space_member_repo.is_in_other_shared_space(
+            db, inv.inviter_id, inv.space_id
+        ):
+            raise AlreadyJoinedSpaceError()
+
+        member_count = self.space_member_repo.count_members(db, inv.space_id)
+        if member_count >= 2:
+            raise SpaceFullError()
+
+    def _merge_personal_items(
+        self, db: Session, inviter_id: str, guest_id: str, shared_space_id: str
+    ) -> None:
+        from models import Item
+
+        personal_host = self.space_member_repo.get_personal_space_member(db, inviter_id)
+        personal_guest = self.space_member_repo.get_personal_space_member(db, guest_id)
+
+        if personal_host:
+            db.query(Item).filter(Item.space_id == personal_host.space_id).update(
+                {"space_id": shared_space_id}, synchronize_session="fetch"
+            )
+        if personal_guest:
+            db.query(Item).filter(Item.space_id == personal_guest.space_id).update(
+                {"space_id": shared_space_id}, synchronize_session="fetch"
+            )
+
+    def join_space(self, db: Session, current_user: User, invite_token: str) -> str:
         inv = self.invite_repo.get_active_by_token(db, invite_token)
         if not inv:
-            # Check double-click prevention / session recovery: B might already be a member of this accepted invite's space
             past_inv = self.invite_repo.get_by_token(db, invite_token)
             if past_inv and past_inv.status == "accepted":
                 existing_member = self.space_member_repo.get_member(
@@ -59,52 +121,20 @@ class SpaceService:
                     return past_inv.space_id
             raise InvalidInviteTokenError()
 
-        # Check 1: Already a member of THIS space?
         existing_member = self.space_member_repo.get_member(
             db, inv.space_id, current_user.id
         )
         if existing_member:
             return inv.space_id
 
-        # Check 2: Guest B is not already in any shared space
-        if self.space_member_repo.is_in_shared_space(db, current_user.id):
-            raise AlreadyJoinedSpaceError()
-
-        # Check 2: Inviter A is not already in any OTHER active shared space
-        if self.space_member_repo.is_in_other_shared_space(
-            db, inv.inviter_id, inv.space_id
-        ):
-            raise AlreadyJoinedSpaceError()
-
-        # Check 3: Limit to 2 members total in a space
-        member_count = self.space_member_repo.count_members(db, inv.space_id)
-        if member_count >= 2:
-            raise SpaceFullError()
+        self._check_join_eligibility(db, inv, current_user)
 
         self.space_member_repo.create(
             db, space_id=inv.space_id, user_id=current_user.id, role="member"
         )
 
-        # Merge Items from personal spaces to shared space
-        from models import Item
+        self._merge_personal_items(db, inv.inviter_id, current_user.id, inv.space_id)
 
-        personal_host = self.space_member_repo.get_personal_space_member(
-            db, inv.inviter_id
-        )
-        personal_guest = self.space_member_repo.get_personal_space_member(
-            db, current_user.id
-        )
-
-        if personal_host:
-            db.query(Item).filter(Item.space_id == personal_host.space_id).update(
-                {"space_id": inv.space_id}, synchronize_session="fetch"
-            )
-        if personal_guest:
-            db.query(Item).filter(Item.space_id == personal_guest.space_id).update(
-                {"space_id": inv.space_id}, synchronize_session="fetch"
-            )
-
-        # Mark invitation as used & accepted
         inv.is_used = True
         inv.status = "accepted"
         db.commit()
