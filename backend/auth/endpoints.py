@@ -26,7 +26,7 @@ async def auth_google(
     response: Response,
     db: Annotated[Session, Depends(get_db)],
 ):
-    """auth_google."""
+    """Authenticate user using Google OAuth and initialize session."""
     service = AuthService()
     ua = request.headers.get("user-agent", "Unknown Device")
     device_info = parse_user_agent(ua)
@@ -54,7 +54,7 @@ async def auth_refresh(
     db: Annotated[Session, Depends(get_db)],
     refresh_token: Annotated[str | None, Cookie()] = None,
 ):
-    """auth_refresh."""
+    """Rotate session refresh token to issue a new access token."""
     from auth.exceptions import SessionInvalidError
 
     if not refresh_token:
@@ -84,7 +84,7 @@ async def auth_logout(
     db: Annotated[Session, Depends(get_db)],
     refresh_token: Annotated[str | None, Cookie()] = None,
 ):
-    """auth_logout."""
+    """Deactivate active refresh token session and clear cookies."""
     if refresh_token:
         service = AuthService()
         service.session_repo.deactivate_session(db, refresh_token)
@@ -104,7 +104,7 @@ async def get_active_sessions(
     db: Annotated[Session, Depends(get_db)],
     refresh_token: Annotated[str | None, Cookie()] = None,
 ):
-    """get_active_sessions."""
+    """Retrieve all active login sessions for the current user."""
     service = AuthService()
     sessions = service.session_repo.get_active_sessions_by_user(db, current_user.id)
 
@@ -126,7 +126,7 @@ async def revoke_session(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ):
-    """revoke_session."""
+    """Revoke a specific active login session by its ID."""
     from auth.exceptions import SessionInvalidError
 
     service = AuthService()
