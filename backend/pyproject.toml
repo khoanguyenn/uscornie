@@ -50,11 +50,18 @@ select = [
     "PTH",    # flake8-use-pathlib
     "T20",    # flake8-print (forbid print in production)
     "C90",    # flake8-mccabe (complexity)
+    "D1",     # enforce docstrings presence
 ]
 ignore = [
     "E501",   # Line length (handled by ruff format)
     "RET504", # Allow unnecessary assignment before return statement
+    "D104",   # Missing docstring in public package
+    "D105",   # Missing docstring in magic method
+    "D107",   # Missing docstring in __init__
 ]
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**/*.py" = ["D"]
 
 [tool.ruff.lint.mccabe]
 max-complexity = 5

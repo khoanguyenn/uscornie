@@ -1,3 +1,5 @@
+"""Module for database.py."""
+
 import datetime
 import os
 import uuid
@@ -16,14 +18,17 @@ Base = declarative_base()
 
 
 def generate_uuid():
+    """generate_uuid."""
     return str(uuid.uuid4())
 
 
 def utcnow():
+    """utcnow."""
     return datetime.datetime.now(datetime.UTC)
 
 
 def get_db():
+    """get_db."""
     db = SessionLocal()
     try:
         yield db

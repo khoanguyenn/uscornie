@@ -1,3 +1,5 @@
+"""Module for service.py."""
+
 import logging
 import os
 from datetime import UTC, datetime, timedelta
@@ -42,6 +44,8 @@ def _is_expired(expires_at: datetime) -> bool:
 
 
 class AuthService:
+    """AuthService."""
+
     def __init__(
         self,
         user_repo: UserRepository | None = None,
@@ -55,12 +59,14 @@ class AuthService:
         self.session_repo = session_repo or SessionRepository()
 
     def create_token(self, user_id: str) -> str:
+        """create_token."""
         expires_delta = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         expire = datetime.now(UTC) + expires_delta
         to_encode = {"exp": expire, "sub": str(user_id)}
         return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
     def verify_google_token(self, token: str, clock_skew_in_seconds: int = 10):
+        """verify_google_token."""
         try:
             return id_token.verify_oauth2_token(
                 token, requests.Request(), GOOGLE_CLIENT_ID, clock_skew_in_seconds
@@ -72,6 +78,7 @@ class AuthService:
     def authenticate_google(
         self, db: Session, credential: str, device_info: dict, ip_address: str | None
     ) -> tuple[str, UserSession]:
+        """authenticate_google."""
         id_info = self.verify_google_token(credential, clock_skew_in_seconds=10)
         if not id_info:
             raise GoogleAuthError()
@@ -144,12 +151,14 @@ class AuthService:
     def refresh_token_rotation(
         self, db: Session, refresh_token: str, ip_address: str | None
     ) -> tuple[str, UserSession]:
+        """refresh_token_rotation."""
         session = self._validate_and_get_session(db, refresh_token)
         new_session = self._rotate_session(db, session, ip_address)
         access_token = self.create_token(session.user_id)
         return access_token, new_session
 
     def get_user_by_id(self, db: Session, user_id: str) -> User | None:
+        """get_user_by_id."""
         return self.user_repo.get_by_id(db, user_id)
 
 
@@ -157,6 +166,7 @@ async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
     db: Annotated[Session, Depends(get_db)],
 ) -> User:
+    """get_current_user."""
     credentials_exception = CredentialsError(
         message="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},

@@ -11,6 +11,12 @@ from spaces.service import SpaceService
 
 
 def test_create_space_success(db: Session):
+    """
+    Verify create space success flow.
+    Setup: Create 1 user in the database
+    Action: Create a shared space for the user
+    Assert: Verify the space member record is created for this user as admin
+    """
     # Setup: Create 1 user in the database
     user = User(email="test_user@example.com", full_name="Test User")
     db.add(user)
@@ -33,6 +39,11 @@ def test_create_space_success(db: Session):
 
 
 def test_create_space_already_owned_error(db: Session):
+    """
+    Verify create space already owned error flow.
+    Setup: Create 1 user and their first shared space (with them as admin)
+    Action: Action & Assert: Attempting to create another shared space should throw SpaceAlreadyOwnedError
+    """
     # Setup: Create 1 user and their first shared space (with them as admin)
     user = User(email="test_user@example.com", full_name="Test User")
     db.add(user)
@@ -53,6 +64,12 @@ def test_create_space_already_owned_error(db: Session):
 
 
 def test_get_my_spaces(db: Session):
+    """
+    Verify get my spaces flow.
+    Setup: Create a user
+    Action: Get spaces for this user
+    Assert: Verify both spaces are retrieved
+    """
     # Setup: Create a user
     user = User(email="test_user@example.com", full_name="Test User")
     db.add(user)
@@ -81,6 +98,12 @@ def test_get_my_spaces(db: Session):
 
 
 def test_join_space_success(db: Session):
+    """
+    Verify join space success flow.
+    Setup: Create host user, guest user, shared space, and invitation
+    Action: Guest joins the space using the invitation token
+    Assert: Verify invitation is marked as used
+    """
     # Setup: Create host user, guest user, shared space, and invitation
     host = User(email="host@example.com", full_name="Host User")
     guest = User(email="guest@example.com", full_name="Guest User")
@@ -123,6 +146,12 @@ def test_join_space_success(db: Session):
 
 
 def test_join_space_already_member(db: Session):
+    """
+    Verify join space already member flow.
+    Setup: Create a user who is already a member of the space
+    Action: Join space again
+    Assert: Returns the space_id and doesn't duplicate the member row
+    """
     # Setup: Create a user who is already a member of the space
     user = User(email="user@example.com", full_name="User")
     db.add(user)
@@ -157,6 +186,11 @@ def test_join_space_already_member(db: Session):
 
 
 def test_join_space_already_joined_another_member(db: Session):
+    """
+    Verify join space already joined another member flow.
+    Setup: User is already a member of Shared Space 1
+    Action: Action & Assert: Attempting to join space2 should fail with AlreadyJoinedSpaceError
+    """
     # Setup: User is already a member of Shared Space 1
     user = User(email="user@example.com", full_name="User")
     admin = User(email="admin@example.com", full_name="Admin")
@@ -186,6 +220,11 @@ def test_join_space_already_joined_another_member(db: Session):
 
 
 def test_join_space_full_error(db: Session):
+    """
+    Verify join space full error flow.
+    Setup: Create a shared space that already has 2 members
+    Action: Action & Assert: Attempting to join space with 2 members should raise SpaceFullError
+    """
     # Setup: Create a shared space that already has 2 members
     user1 = User(email="user1@example.com", full_name="User 1")
     user2 = User(email="user2@example.com", full_name="User 2")
@@ -215,6 +254,10 @@ def test_join_space_full_error(db: Session):
 
 
 def test_join_space_already_in_shared_space(db: Session):
+    """
+    Verify join space already in shared space flow.
+    Setup: Setup
+    """
     # Setup
     host = User(email="host@example.com", full_name="Host")
     guest = User(email="guest@example.com", full_name="Guest")
@@ -245,6 +288,10 @@ def test_join_space_already_in_shared_space(db: Session):
 
 
 def test_join_space_inviter_already_in_another_space(db: Session):
+    """
+    Verify join space inviter already in another space flow.
+    Setup: Setup
+    """
     # Setup
     host = User(email="host@example.com", full_name="Host")
     guest = User(email="guest@example.com", full_name="Guest")
@@ -276,6 +323,11 @@ def test_join_space_inviter_already_in_another_space(db: Session):
 
 
 def test_join_space_merging_items(db: Session):
+    """
+    Verify join space merging items flow.
+    Setup: Setup
+    Assert: Assert items are merged to shared space
+    """
     from models import Item
 
     # Setup
@@ -325,6 +377,11 @@ def test_join_space_merging_items(db: Session):
 
 
 def test_space_stats(db: Session):
+    """
+    Verify space stats flow.
+    Setup: Setup
+    Assert: Assert dynamic counts and total
+    """
     from models import Item
 
     # Setup
@@ -350,6 +407,10 @@ def test_space_stats(db: Session):
 
 
 def test_join_space_simultaneous_cross_invitation(db: Session):
+    """
+    Verify join space simultaneous cross invitation flow.
+    Setup: User A invites User B, and User B invites User A
+    """
     # Setup: User A invites User B, and User B invites User A
     user_a = User(email="a@example.com", full_name="A")
     user_b = User(email="b@example.com", full_name="B")
@@ -384,6 +445,10 @@ def test_join_space_simultaneous_cross_invitation(db: Session):
 
 
 def test_join_space_double_click_prevention(db: Session):
+    """
+    Verify join space double click prevention flow.
+    Setup: Setup
+    """
     # Setup
     host = User(email="host@example.com", full_name="Host")
     guest = User(email="guest@example.com", full_name="Guest")
@@ -424,6 +489,10 @@ def test_join_space_double_click_prevention(db: Session):
 
 
 def test_get_space_stats_unauthorized_access(db: Session):
+    """
+    Verify get space stats unauthorized access flow.
+    Setup: Setup
+    """
     # Setup
     user_a = User(email="a@example.com", full_name="A")
     user_b = User(email="b@example.com", full_name="B")
@@ -447,6 +516,10 @@ def test_get_space_stats_unauthorized_access(db: Session):
 
 
 def test_accept_cancelled_or_expired_token(db: Session):
+    """
+    Verify accept cancelled or expired token flow.
+    Setup: Setup
+    """
     # Setup
     host = User(email="host@example.com", full_name="Host")
     guest = User(email="guest@example.com", full_name="Guest")
@@ -497,6 +570,11 @@ def test_accept_cancelled_or_expired_token(db: Session):
 
 
 def test_merge_items_transactional_atomicity_on_failure(db: Session):
+    """
+    Verify merge items transactional atomicity on failure flow.
+    Setup: Setup
+    Assert: Assert that the item was NOT merged and remains in personal space (atomicity)
+    """
     from models import Item
 
     # Setup
@@ -553,6 +631,10 @@ def test_merge_items_transactional_atomicity_on_failure(db: Session):
 
 
 def test_recreate_shared_space_after_leaving(db: Session):
+    """
+    Verify recreate shared space after leaving flow.
+    Setup: Setup
+    """
     # Setup
     user = User(email="user@example.com", full_name="User")
     db.add(user)

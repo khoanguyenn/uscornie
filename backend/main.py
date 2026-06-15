@@ -1,3 +1,5 @@
+"""Module for main.py."""
+
 import os
 
 from fastapi import FastAPI
@@ -44,4 +46,5 @@ app.include_router(items_router, tags=["Items"])
 
 @app.get("/")
 async def root():
+    """root."""
     return {"message": "Welcome to Uscornie API"}

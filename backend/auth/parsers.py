@@ -1,7 +1,10 @@
+"""Module for parsers.py."""
+
 from user_agents import parse
 
 
 def parse_user_agent(ua: str) -> dict:
+    """parse_user_agent."""
     if not ua:
         ua = ""
 

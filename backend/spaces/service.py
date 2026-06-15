@@ -1,3 +1,5 @@
+"""Service layer for managing spaces and space memberships."""
+
 from sqlalchemy.orm import Session
 
 from invites.exceptions import InvalidInviteTokenError
@@ -13,6 +15,8 @@ from spaces.repository import SpaceMemberRepository, SpaceRepository
 
 
 class SpaceService:
+    """Service class coordinating space operations, stats, invitations, and joins."""
+
     def __init__(
         self,
         space_repo: SpaceRepository | None = None,
@@ -24,6 +28,7 @@ class SpaceService:
         self.invite_repo = invite_repo or InvitationRepository()
 
     def create_space(self, db: Session, current_user: User) -> Space:
+        """Create a new shared space for the current user."""
         # Limit: User can only own ONE SHARED space
         existing_shared = self.space_member_repo.get_admin_shared_space_member(
             db, current_user.id
@@ -42,11 +47,13 @@ class SpaceService:
         return space
 
     def get_my_spaces(self, db: Session, current_user: User) -> list[Space]:
+        """Retrieve all spaces that the current user belongs to."""
         memberships = self.space_member_repo.get_memberships(db, current_user.id)
         space_ids = [m.space_id for m in memberships]
         return self.space_repo.get_by_ids(db, space_ids)
 
     def get_member_profile_with_stats(self, db: Session, user_id: str) -> dict:
+        """Retrieve a user's profile information along with their personal space stats."""
         creator = db.query(User).filter(User.id == user_id).first()
         if not creator:
             return {"full_name": None, "picture": None, "stats": None}
@@ -67,6 +74,7 @@ class SpaceService:
     def get_space_acceptor_profile_with_stats(
         self, db: Session, space_id: str
     ) -> dict | None:
+        """Retrieve the profile and stats of the user who accepted the space invitation."""
         acceptor_member = (
             db.query(SpaceMember)
             .filter(SpaceMember.space_id == space_id, SpaceMember.role == "member")
@@ -80,6 +88,7 @@ class SpaceService:
     def _check_join_eligibility(
         self, db: Session, inv: Invitation, current_user: User
     ) -> None:
+        """Check if the user is eligible to join the shared space."""
         if self.space_member_repo.is_in_shared_space(db, current_user.id):
             raise AlreadyJoinedSpaceError()
 
@@ -95,6 +104,7 @@ class SpaceService:
     def _merge_personal_items(
         self, db: Session, inviter_id: str, guest_id: str, shared_space_id: str
     ) -> None:
+        """Merge items from personal spaces of inviter and guest into the shared space."""
         from models import Item
 
         personal_host = self.space_member_repo.get_personal_space_member(db, inviter_id)
@@ -110,6 +120,7 @@ class SpaceService:
             )
 
     def join_space(self, db: Session, current_user: User, invite_token: str) -> str:
+        """Process joining a shared space using an invitation token."""
         inv = self.invite_repo.get_active_by_token(db, invite_token)
         if not inv:
             past_inv = self.invite_repo.get_by_token(db, invite_token)
@@ -144,6 +155,7 @@ class SpaceService:
     def get_space_stats(
         self, db: Session, space_id: str, current_user: User | None = None
     ) -> dict:
+        """Retrieve items counts grouped by category for a given space."""
         if current_user:
             member = self.space_member_repo.get_member(db, space_id, current_user.id)
             if not member:

@@ -1,3 +1,5 @@
+"""API endpoints for managing space invitations."""
+
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
@@ -26,6 +28,7 @@ async def create_invite(
     member: Annotated[SpaceMember, Depends(require_space_member)],
     db: Annotated[Session, Depends(get_db)],
 ):
+    """Create a new invitation token for a space."""
     service = InviteService()
     token = service.create_invite(db, current_user, space_id)
     return {"invite_token": token, "url": f"/join?invite_token={token}"}
@@ -38,6 +41,7 @@ async def update_invite(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ):
+    """Update the status of an invitation (cancel or decline)."""
     service = InviteService()
     if request.status == "cancelled":
         service.cancel_invite(db, current_user, token)
@@ -51,6 +55,7 @@ async def get_invite_status(
     token: str,
     db: Annotated[Session, Depends(get_db)],
 ):
+    """Retrieve invitation status along with creator and acceptor stats."""
     from spaces.service import SpaceService
 
     inv_repo = InvitationRepository()

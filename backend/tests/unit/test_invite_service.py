@@ -8,6 +8,12 @@ from spaces.exceptions import NotSpaceMemberError
 
 
 def test_create_invite_success(db: Session):
+    """
+    Verify create invite success flow.
+    Setup: Create user and a shared space where they are admin
+    Action: Create invitation
+    Assert: Verify token and invitation database record
+    """
     # Setup: Create user and a shared space where they are admin
     user = User(email="admin@example.com", full_name="Admin User")
     db.add(user)
@@ -37,6 +43,11 @@ def test_create_invite_success(db: Session):
 
 
 def test_create_invite_not_member_error(db: Session):
+    """
+    Verify create invite not member error flow.
+    Setup: Create user and a shared space, but user is NOT a member of it
+    Action: Action & Assert: Attempt to invite should raise NotSpaceMemberError
+    """
     # Setup: Create user and a shared space, but user is NOT a member of it
     user = User(email="stranger@example.com", full_name="Stranger")
     db.add(user)
@@ -53,6 +64,11 @@ def test_create_invite_not_member_error(db: Session):
 
 
 def test_create_invite_personal_space_error(db: Session):
+    """
+    Verify create invite personal space error flow.
+    Setup: Create user and their personal space where they are admin
+    Action: Action & Assert: Inviting to personal space should raise PersonalSpaceInviteError
+    """
     # Setup: Create user and their personal space where they are admin
     user = User(email="owner@example.com", full_name="Owner User")
     db.add(user)
@@ -73,6 +89,10 @@ def test_create_invite_personal_space_error(db: Session):
 
 
 def test_create_invite_rate_limit(db: Session):
+    """
+    Verify create invite rate limit flow.
+    Setup: Setup
+    """
     # Setup
     user = User(email="admin@example.com", full_name="Admin User")
     db.add(user)
@@ -101,6 +121,10 @@ def test_create_invite_rate_limit(db: Session):
 
 
 def test_create_invite_already_in_shared_space(db: Session):
+    """
+    Verify create invite already in shared space flow.
+    Setup: Setup
+    """
     # Setup
     user = User(email="admin@example.com", full_name="Admin User")
     owner = User(email="owner@example.com", full_name="Owner User")
@@ -127,6 +151,11 @@ def test_create_invite_already_in_shared_space(db: Session):
 
 
 def test_cancel_invite_success(db: Session):
+    """
+    Verify cancel invite success flow.
+    Setup: Setup
+    Assert: Assert status changed to cancelled
+    """
     # Setup
     user = User(email="admin@example.com", full_name="Admin")
     db.add(user)
@@ -153,6 +182,10 @@ def test_cancel_invite_success(db: Session):
 
 
 def test_cancel_invite_not_owner(db: Session):
+    """
+    Verify cancel invite not owner flow.
+    Setup: Setup
+    """
     # Setup
     user_a = User(email="a@example.com", full_name="A")
     user_b = User(email="b@example.com", full_name="B")
@@ -178,6 +211,10 @@ def test_cancel_invite_not_owner(db: Session):
 
 
 def test_cancel_invite_not_pending(db: Session):
+    """
+    Verify cancel invite not pending flow.
+    Setup: Setup
+    """
     # Setup
     user = User(email="a@example.com", full_name="A")
     db.add(user)
@@ -208,6 +245,11 @@ def test_cancel_invite_not_pending(db: Session):
 
 
 def test_decline_invite_success(db: Session):
+    """
+    Verify decline invite success flow.
+    Setup: Setup
+    Assert: Assert status changed to declined
+    """
     # Setup
     user_a = User(email="a@example.com", full_name="A")
     user_b = User(email="b@example.com", full_name="B")

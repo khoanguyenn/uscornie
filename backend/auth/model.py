@@ -1,3 +1,5 @@
+"""Module for model.py."""
+
 from datetime import datetime
 
 from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, String
@@ -7,6 +9,8 @@ from kit.database import Base, generate_uuid, utcnow
 
 
 class User(Base):
+    """User."""
+
     __tablename__ = "users"
     id: Mapped[str] = mapped_column(String, primary_key=True, default=generate_uuid)
     email: Mapped[str] = mapped_column(String, unique=True, index=True)

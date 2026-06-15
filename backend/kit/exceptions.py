@@ -1,3 +1,5 @@
+"""Module for exceptions.py."""
+
 import logging
 
 from fastapi import FastAPI, Request, status
@@ -11,6 +13,8 @@ logger = logging.getLogger(__name__)
 
 # Base exception for all application errors
 class AppError(Exception):
+    """AppError."""
+
     status_code: int = 400
     error_code: str = "BAD_REQUEST"
     message: str = "Đã xảy ra lỗi ứng dụng."
@@ -27,12 +31,16 @@ class AppError(Exception):
 
 
 class ErrorDetail(BaseModel):
+    """ErrorDetail."""
+
     loc: list[str] | None = None
     msg: str
     type: str
 
 
 class ErrorResponse(BaseModel):
+    """ErrorResponse."""
+
     success: bool = False
     error_code: str
     message: str
@@ -40,6 +48,8 @@ class ErrorResponse(BaseModel):
 
 
 def register_exception_handlers(app: FastAPI) -> None:
+    """register_exception_handlers."""
+
     @app.exception_handler(AppError)
     async def app_exception_handler(request: Request, exc: AppError):
         return JSONResponse(

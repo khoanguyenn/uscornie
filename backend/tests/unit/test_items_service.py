@@ -8,6 +8,10 @@ from spaces.exceptions import NotSpaceMemberError
 
 
 def test_personal_space_crud(db: Session):
+    """
+    Verify personal space crud flow.
+    Setup: Setup users and personal space
+    """
     # Setup users and personal space
     user = User(email="alice@example.com", full_name="Alice")
     db.add(user)
@@ -61,6 +65,10 @@ def test_personal_space_crud(db: Session):
 
 
 def test_shared_space_crud_and_cross_user_sync(db: Session):
+    """
+    Verify shared space crud and cross user sync flow.
+    Setup: Setup shared space with 2 members
+    """
     # Setup shared space with 2 members
     user_a = User(email="user_a@example.com", full_name="User A")
     user_b = User(email="user_b@example.com", full_name="User B")
@@ -109,6 +117,10 @@ def test_shared_space_crud_and_cross_user_sync(db: Session):
 
 
 def test_unauthorized_personal_space_access(db: Session):
+    """
+    Verify unauthorized personal space access flow.
+    Execute standard test flow for test_unauthorized_personal_space_access.
+    """
     # Alice has her personal space
     alice = User(email="alice@example.com", full_name="Alice")
     bob = User(email="bob@example.com", full_name="Bob")
@@ -156,6 +168,10 @@ def test_unauthorized_personal_space_access(db: Session):
 
 
 def test_unauthorized_shared_space_access(db: Session):
+    """
+    Verify unauthorized shared space access flow.
+    Execute standard test flow for test_unauthorized_shared_space_access.
+    """
     # Space shared by A and B. C is an outsider.
     user_a = User(email="a@example.com", full_name="User A")
     user_b = User(email="b@example.com", full_name="User B")
@@ -186,6 +202,10 @@ def test_unauthorized_shared_space_access(db: Session):
 
 
 def test_item_not_found(db: Session):
+    """
+    Verify item not found flow.
+    Execute standard test flow for test_item_not_found.
+    """
     user = User(email="alice@example.com", full_name="Alice")
     db.add(user)
     db.commit()

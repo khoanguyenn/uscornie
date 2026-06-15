@@ -1,3 +1,5 @@
+"""Module for env.py."""
+
 import os
 from logging.config import fileConfig
 

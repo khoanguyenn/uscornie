@@ -1,3 +1,5 @@
+"""Module for endpoints.py."""
+
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
@@ -22,6 +24,7 @@ async def create_space(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ):
+    """create_space."""
     service = SpaceService()
     space = service.create_space(db, current_user)
     return space
@@ -32,6 +35,7 @@ async def get_my_spaces(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ):
+    """get_my_spaces."""
     service = SpaceService()
     return service.get_my_spaces(db, current_user)
 
@@ -42,6 +46,7 @@ async def join_space(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ):
+    """join_space."""
     service = SpaceService()
     space_id = service.join_space(db, current_user, request.invite_token)
     return {"space_id": space_id}
@@ -53,5 +58,6 @@ async def get_space_stats(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ):
+    """get_space_stats."""
     service = SpaceService()
     return service.get_space_stats(db, space_id, current_user=current_user)

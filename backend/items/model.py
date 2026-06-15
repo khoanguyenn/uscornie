@@ -1,3 +1,5 @@
+"""Module for model.py."""
+
 from datetime import datetime
 
 from sqlalchemy import DateTime, ForeignKey, String
@@ -7,6 +9,8 @@ from kit.database import Base, generate_uuid, utcnow
 
 
 class Item(Base):
+    """Item."""
+
     __tablename__ = "items"
     id: Mapped[str] = mapped_column(String, primary_key=True, default=generate_uuid)
     space_id: Mapped[str] = mapped_column(String, ForeignKey("spaces.id"))

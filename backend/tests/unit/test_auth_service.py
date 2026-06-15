@@ -2,6 +2,10 @@ from auth.service import AuthService
 
 
 def test_create_token_returns_encoded_jwt():
+    """
+    Verify create token returns encoded jwt flow.
+    Execute standard test flow for test_create_token_returns_encoded_jwt.
+    """
     service = AuthService()
     token = service.create_token("user-123")
 
@@ -10,6 +14,10 @@ def test_create_token_returns_encoded_jwt():
 
 
 def test_get_ip_address_fallbacks():
+    """
+    Verify get ip address fallbacks flow.
+    Execute standard test flow for test_get_ip_address_fallbacks.
+    """
     from unittest.mock import MagicMock
 
     from fastapi import Request

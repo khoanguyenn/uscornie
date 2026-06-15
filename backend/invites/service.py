@@ -1,3 +1,5 @@
+"""Module for service.py."""
+
 import secrets
 
 from sqlalchemy.orm import Session
@@ -16,6 +18,8 @@ from spaces.repository import SpaceMemberRepository, SpaceRepository
 
 
 class InviteService:
+    """InviteService."""
+
     def __init__(
         self,
         invite_repo: InvitationRepository | None = None,
@@ -27,6 +31,7 @@ class InviteService:
         self.space_member_repo = space_member_repo or SpaceMemberRepository()
 
     def create_invite(self, db: Session, current_user: User, space_id: str) -> str:
+        """create_invite."""
         # Check if user is already in a shared space other than the target space
         if self.space_member_repo.is_in_other_shared_space(
             db, current_user.id, space_id
@@ -58,6 +63,7 @@ class InviteService:
         return token
 
     def cancel_invite(self, db: Session, current_user: User, token: str) -> None:
+        """cancel_invite."""
         inv = self.invite_repo.get_by_token(db, token)
         if not inv:
             raise InvalidInviteTokenError()
@@ -72,6 +78,7 @@ class InviteService:
         db.commit()
 
     def decline_invite(self, db: Session, current_user: User, token: str) -> None:
+        """decline_invite."""
         # Check B (current_user) eligibility
         if self.space_member_repo.is_in_shared_space(db, current_user.id):
             raise AlreadyJoinedSpaceError()

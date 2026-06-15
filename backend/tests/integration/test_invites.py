@@ -6,6 +6,11 @@ from models import Invitation, Space, SpaceMember, User
 
 
 def test_get_invite_status_success(client: TestClient, db: Session):
+    """
+    Verify get invite status success flow.
+    Setup: Setup User and Shared Space
+    Action: Call status endpoint
+    """
     # Setup User and Shared Space
     host = User(email="host@example.com", full_name="Host")
     db.add(host)
@@ -36,6 +41,10 @@ def test_get_invite_status_success(client: TestClient, db: Session):
 
 
 def test_patch_invite_cancel_success(client: TestClient, db: Session):
+    """
+    Verify patch invite cancel success flow.
+    Setup: Setup
+    """
     # Setup
     host = User(email="host@example.com", full_name="Host")
     db.add(host)
@@ -67,6 +76,10 @@ def test_patch_invite_cancel_success(client: TestClient, db: Session):
 
 
 def test_patch_invite_decline_success(client: TestClient, db: Session):
+    """
+    Verify patch invite decline success flow.
+    Setup: Setup
+    """
     # Setup
     host = User(email="host@example.com", full_name="Host")
     guest = User(email="guest@example.com", full_name="Guest")
@@ -99,6 +112,10 @@ def test_patch_invite_decline_success(client: TestClient, db: Session):
 
 
 def test_get_space_stats_success(client: TestClient, db: Session):
+    """
+    Verify get space stats success flow.
+    Setup: Setup
+    """
     from models import Item
 
     # Setup

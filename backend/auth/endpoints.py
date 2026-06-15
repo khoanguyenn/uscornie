@@ -1,3 +1,5 @@
+"""Module for endpoints.py."""
+
 from typing import Annotated
 
 from fastapi import APIRouter, Cookie, Depends, Request, Response
@@ -24,6 +26,7 @@ async def auth_google(
     response: Response,
     db: Annotated[Session, Depends(get_db)],
 ):
+    """auth_google."""
     service = AuthService()
     ua = request.headers.get("user-agent", "Unknown Device")
     device_info = parse_user_agent(ua)
@@ -51,6 +54,7 @@ async def auth_refresh(
     db: Annotated[Session, Depends(get_db)],
     refresh_token: Annotated[str | None, Cookie()] = None,
 ):
+    """auth_refresh."""
     from auth.exceptions import SessionInvalidError
 
     if not refresh_token:
@@ -80,6 +84,7 @@ async def auth_logout(
     db: Annotated[Session, Depends(get_db)],
     refresh_token: Annotated[str | None, Cookie()] = None,
 ):
+    """auth_logout."""
     if refresh_token:
         service = AuthService()
         service.session_repo.deactivate_session(db, refresh_token)
@@ -99,6 +104,7 @@ async def get_active_sessions(
     db: Annotated[Session, Depends(get_db)],
     refresh_token: Annotated[str | None, Cookie()] = None,
 ):
+    """get_active_sessions."""
     service = AuthService()
     sessions = service.session_repo.get_active_sessions_by_user(db, current_user.id)
 
@@ -120,6 +126,7 @@ async def revoke_session(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ):
+    """revoke_session."""
     from auth.exceptions import SessionInvalidError
 
     service = AuthService()

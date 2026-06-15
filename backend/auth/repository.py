@@ -1,3 +1,5 @@
+"""Module for repository.py."""
+
 from datetime import UTC, datetime, timedelta
 
 from sqlalchemy.orm import Session
@@ -6,10 +8,14 @@ from models import User, UserSession
 
 
 class UserRepository:
+    """UserRepository."""
+
     def get_by_id(self, db: Session, user_id: str) -> User | None:
+        """get_by_id."""
         return db.query(User).filter(User.id == user_id).first()
 
     def get_by_email(self, db: Session, email: str) -> User | None:
+        """get_by_email."""
         return db.query(User).filter(User.email == email).first()
 
     def create(
@@ -19,6 +25,7 @@ class UserRepository:
         full_name: str | None = None,
         picture: str | None = None,
     ) -> User:
+        """create."""
         user = User(
             email=email,
             full_name=full_name,
@@ -31,12 +38,16 @@ class UserRepository:
 
 
 class SessionRepository:
+    """SessionRepository."""
+
     def get_session_by_id(self, db: Session, session_id: str) -> UserSession | None:
+        """get_session_by_id."""
         return db.query(UserSession).filter(UserSession.id == session_id).first()
 
     def get_active_sessions_by_user(
         self, db: Session, user_id: str
     ) -> list[UserSession]:
+        """get_active_sessions_by_user."""
         return (
             db.query(UserSession)
             .filter(
@@ -56,6 +67,7 @@ class SessionRepository:
         expires_in_days: int = 30,
         parent_id: str | None = None,
     ) -> UserSession:
+        """create_session."""
         expires_at = datetime.now(UTC) + timedelta(days=expires_in_days)
         session = UserSession(
             user_id=user_id,
@@ -70,12 +82,14 @@ class SessionRepository:
         return session
 
     def is_session_rotated(self, db: Session, session_id: str) -> bool:
+        """is_session_rotated."""
         return (
             db.query(UserSession).filter(UserSession.parent_id == session_id).first()
             is not None
         )
 
     def deactivate_session(self, db: Session, session_id: str) -> None:
+        """deactivate_session."""
 
         session = self.get_session_by_id(db, session_id)
         if session:
@@ -83,6 +97,7 @@ class SessionRepository:
             db.commit()
 
     def deactivate_all_user_sessions(self, db: Session, user_id: str) -> None:
+        """deactivate_all_user_sessions."""
         db.query(UserSession).filter(
             UserSession.user_id == user_id, UserSession.is_active
         ).update({"is_active": False}, synchronize_session=False)
@@ -91,6 +106,7 @@ class SessionRepository:
     def update_session_activity(
         self, db: Session, session_id: str, ip_address: str | None
     ) -> None:
+        """update_session_activity."""
         session = self.get_session_by_id(db, session_id)
         if session:
             session.last_active_at = datetime.now(UTC)

@@ -1,7 +1,10 @@
+"""Module for http.py."""
+
 from fastapi import Request
 
 
 def get_ip_address(request: Request) -> str | None:
+    """get_ip_address."""
     cf_ip = request.headers.get("cf-connecting-ip")
     if cf_ip:
         return cf_ip

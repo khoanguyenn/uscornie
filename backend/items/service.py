@@ -1,3 +1,5 @@
+"""Module for service.py."""
+
 from sqlalchemy.orm import Session
 
 from items.exceptions import ItemNotFoundError
@@ -8,6 +10,8 @@ from spaces.repository import SpaceMemberRepository
 
 
 class ItemService:
+    """ItemService."""
+
     def __init__(
         self,
         item_repo: ItemRepository | None = None,
@@ -22,6 +26,7 @@ class ItemService:
             raise NotSpaceMemberError()
 
     def get_items(self, db: Session, space_id: str, current_user: User) -> list[Item]:
+        """get_items."""
         self._verify_space_membership(db, space_id, current_user.id)
         return self.item_repo.get_by_space(db, space_id)
 
@@ -35,6 +40,7 @@ class ItemService:
         desc: str | None = None,
         tag: str | None = None,
     ) -> Item:
+        """create_item."""
         self._verify_space_membership(db, space_id, current_user.id)
         return self.item_repo.create(
             db,
@@ -55,6 +61,7 @@ class ItemService:
         desc: str | None = None,
         tag: str | None = None,
     ) -> Item:
+        """update_item."""
         self._verify_space_membership(db, space_id, current_user.id)
         item = self.item_repo.get_by_id(db, item_id)
         if not item or item.space_id != space_id:
@@ -73,6 +80,7 @@ class ItemService:
     def delete_item(
         self, db: Session, space_id: str, item_id: str, current_user: User
     ) -> None:
+        """delete_item."""
         self._verify_space_membership(db, space_id, current_user.id)
         item = self.item_repo.get_by_id(db, item_id)
         if not item or item.space_id != space_id:
