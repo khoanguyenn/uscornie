@@ -7,7 +7,7 @@ import GhibliIcon from "@/components/ui/GhibliIcon";
 import { useSaveItems } from "@/lib/hooks/useSaveItems";
 import { spaceService } from "@/lib/services/spaceService";
 import { useAuthStore } from "@/lib/stores/useAuthStore";
-import { useDataActions, useDataStore } from "@/lib/stores/useDataStore";
+import { useDataStore } from "@/lib/stores/useDataStore";
 import type { Space } from "@/lib/types";
 import { cn } from "@/lib/utils/cn";
 
@@ -16,7 +16,6 @@ export default function Page() {
 
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
-  const { loadData } = useDataActions();
   const { allItems: items } = useSaveItems();
   const anniversaryDate = useDataStore((s) => s.anniversaryDate);
 
@@ -31,8 +30,7 @@ export default function Page() {
   useEffect(() => {
     setMounted(true);
     document.title = "Home - Uscornie";
-    loadData();
-  }, [loadData]);
+  }, []);
 
   // Fetch user spaces from API
   const { data: spaces = [], isLoading } = useQuery<Space[]>({

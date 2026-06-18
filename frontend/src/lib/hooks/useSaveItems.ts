@@ -12,7 +12,6 @@ export function useSaveItems(category?: string) {
   // Zustand store actions & state for offline fallback
   const storeItems = useDataStore((s) => s.items);
   const {
-    loadData,
     addItem: addStoreItem,
     updateItem: updateStoreItem,
     deleteItem: deleteStoreItem,
@@ -134,6 +133,5 @@ export function useSaveItems(category?: string) {
     updateItem,
     deleteItem,
     isLoading,
-    loadData,
   };
 }

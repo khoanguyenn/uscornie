@@ -8,7 +8,6 @@ import { GiftWishlistMode } from "@/components/gift/GiftWishlistMode";
 import GhibliIcon from "@/components/ui/GhibliIcon";
 import { EXCEL_GIFTS } from "@/lib/data/mock";
 import { useSaveItems } from "@/lib/hooks/useSaveItems";
-import { useDataActions } from "@/lib/stores/useDataStore";
 
 const genders = [
   { id: "female", label: "👧 Nữ" },
@@ -20,13 +19,12 @@ function GiftPageContentInner() {
   const searchParams = useSearchParams();
   const { push } = useRouter();
   const pathname = usePathname();
-  const { loadData } = useDataActions();
+
   const { allItems: items } = useSaveItems();
 
   useEffect(() => {
     document.title = "Gift Planner - Uscornie";
-    loadData();
-  }, [loadData]);
+  }, []);
 
   const giftMode = searchParams.get("mode") || "random";
   const [selOcc, setSelOcc] = useState<string | null>(null);

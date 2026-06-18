@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
 import NavBar from "@/components/NavBar";
 import GhibliIcon from "@/components/ui/GhibliIcon";
-import { authService } from "@/lib/services/authService";
+import api from "@/lib/api";
 import { useAuthActions, useAuthStore } from "@/lib/stores/useAuthStore";
 import { cn } from "@/lib/utils/cn";
 
@@ -49,8 +49,8 @@ export default function MainLayout({
   useEffect(() => {
     const initAuth = async () => {
       try {
-        const data = await authService.refreshSession();
-        setToken(data.access_token);
+        const res = await api.post("/auth/refresh");
+        setToken(res.data.access_token);
       } catch (_err) {
         clearToken();
       }
@@ -64,8 +64,10 @@ export default function MainLayout({
   const handleLoginSuccess = useCallback(
     async (response: { credential: string }) => {
       try {
-        const data = await authService.loginWithGoogle(response.credential);
-        setToken(data.access_token);
+        const res = await api.post("/auth/google", {
+          credential: response.credential,
+        });
+        setToken(res.data.access_token);
         window.location.reload();
       } catch (_err) {
         triggerError("Đăng nhập thất bại. Vui lòng thử lại!");
@@ -76,7 +78,7 @@ export default function MainLayout({
 
   const logout = async () => {
     try {
-      await authService.logout();
+      await api.post("/auth/logout");
     } catch (_err) {
       // If logout API fails, proceed to clear local storage/state anyway
     }

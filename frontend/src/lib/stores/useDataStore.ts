@@ -11,9 +11,6 @@ export const useDataStore = create(
     },
     (set, get) => ({
       actions: {
-        loadData: () => {},
-        saveData: () => {},
-
         addItem: (item: Omit<SaveItem, "id" | "createdAt">) => {
           const newItem: SaveItem = {
             id: Date.now().toString(),

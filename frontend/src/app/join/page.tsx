@@ -7,7 +7,7 @@ import AnimatedBackground from "@/components/AnimatedBackground";
 import DoubleStatsPanel from "@/components/space/DoubleStatsPanel";
 import GhibliIcon from "@/components/ui/GhibliIcon";
 import GhibliScenery from "@/components/ui/GhibliScenery";
-import { authService } from "@/lib/services/authService";
+import api from "@/lib/api";
 import { spaceService } from "@/lib/services/spaceService";
 import { useAuthStore, useAuthActions } from "@/lib/stores/useAuthStore";
 import { cn } from "@/lib/utils/cn";
@@ -113,7 +113,8 @@ const useJoinStore = create<JoinState>((set, get) => ({
   handleCredentialResponse: async (credential, _inviteToken, setToken) => {
     set({ status: "loading" });
     try {
-      const authData = await authService.loginWithGoogle(credential);
+      const res = await api.post("/auth/google", { credential });
+      const authData = res.data;
       setToken(authData.access_token);
 
       const mySpaces = await spaceService.fetchMySpaces();
@@ -156,7 +157,8 @@ function JoinPageContent() {
     (s) => s.handleCredentialResponse,
   );
 
-  const inviteToken = searchParams.get("token") || searchParams.get("invite_token");
+  const inviteToken =
+    searchParams.get("token") || searchParams.get("invite_token");
 
   const handleCredentialResponse = useCallback(
     async (res: GoogleCredentialResponse) => {
