@@ -43,5 +43,5 @@ argoCD: false
 # -- Cilium Network Policy configurations (Least Privilege)
 ciliumNetworkPolicy:
   # -- Enables CiliumNetworkPolicy template for backend network isolation
-  enabled: false
+  enabled: true
 

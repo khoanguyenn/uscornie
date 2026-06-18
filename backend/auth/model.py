@@ -1,3 +1,5 @@
+"""Database models representing users and authentication sessions."""
+
 from datetime import datetime
 
 from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, String
@@ -7,6 +9,8 @@ from kit.database import Base, generate_uuid, utcnow
 
 
 class User(Base):
+    """Model representing a registered user in the application."""
+
     __tablename__ = "users"
     id: Mapped[str] = mapped_column(String, primary_key=True, default=generate_uuid)
     email: Mapped[str] = mapped_column(String, unique=True, index=True)
@@ -16,10 +20,11 @@ class User(Base):
 
 
 class UserSession(Base):
-    """User login session supporting token rotation.
+    """Model representing an active user login session, supporting refresh token rotation.
 
-    parent_id tracks token rotation lineage. Reusing a rotated session
-    triggers immediate revocation of all active sessions (Family Revocation).
+    To defend against replay attacks, sessions utilize family token rotation.
+    If an old (rotated/inactive) session token is reused, the session lineage is traced via `parent_id`
+    to identify the breach and trigger family revocation (deactivating all sessions belonging to the user).
     """
 
     __tablename__ = "user_sessions"

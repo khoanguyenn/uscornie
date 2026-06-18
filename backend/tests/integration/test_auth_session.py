@@ -14,6 +14,11 @@ from models import Space, SpaceMember, User, UserSession
 def test_api_google_login_creates_session_in_db(
     mock_verify, client: TestClient, db: Session
 ):
+    """
+    Verify api google login creates session in db flow.
+    Action: Call endpoint with custom User-Agent
+    Assert: Verify user exists and default personal space was created
+    """
     mock_verify.return_value = {
         "email": "test_e2e@example.com",
         "name": "E2E Test User",
@@ -124,6 +129,10 @@ def test_api_google_login_user_agent_variations(
     cf_ip,
     expected_ip,
 ):
+    """
+    Verify api google login user agent variations flow.
+    Execute standard test flow for test_api_google_login_user_agent_variations.
+    """
     # Dynamic email for unique users per test parameters
     email = f"ua_test_{expected_browser.lower().replace(' ', '_')}@example.com"
     mock_verify.return_value = {
@@ -156,6 +165,12 @@ def test_api_google_login_user_agent_variations(
 
 
 def test_api_refresh_token_rotation_success(client: TestClient, db: Session):
+    """
+    Verify api refresh token rotation success flow.
+    Setup: Create user and an active session
+    Action: Refresh using the session ID as cookie
+    Assert: Verify old session is inactive and has child
+    """
     # Setup: Create user and an active session
     user = User(email="rotate@example.com", full_name="Rotate User")
     db.add(user)
@@ -190,6 +205,10 @@ def test_api_refresh_token_rotation_success(client: TestClient, db: Session):
 
 
 def test_api_refresh_token_expired(client: TestClient, db: Session):
+    """
+    Verify api refresh token expired flow.
+    Setup: Create user and an expired session
+    """
     # Setup: Create user and an expired session
     user = User(email="expired@example.com", full_name="Expired User")
     db.add(user)
@@ -217,6 +236,11 @@ def test_api_refresh_token_expired(client: TestClient, db: Session):
 
 
 def test_api_replay_attack_revokes_all_user_sessions(client: TestClient, db: Session):
+    """
+    Verify api replay attack revokes all user sessions flow.
+    Setup: Create user with multiple active sessions
+    Assert: Verify both active sessions B and C are now revoked (is_active = False)
+    """
     # Setup: Create user with multiple active sessions
     user = User(email="replay@example.com", full_name="Replay User")
     db.add(user)
@@ -260,6 +284,10 @@ def test_api_replay_attack_revokes_all_user_sessions(client: TestClient, db: Ses
 
 
 def test_api_logout_invalidates_current_session(client: TestClient, db: Session):
+    """
+    Verify api logout invalidates current session flow.
+    Assert: Verify cookie is deleted/cleared
+    """
     user = User(email="logout@example.com", full_name="Logout User")
     db.add(user)
     db.commit()
@@ -285,6 +313,10 @@ def test_api_logout_invalidates_current_session(client: TestClient, db: Session)
 
 
 def test_api_get_sessions_list(client: TestClient, db: Session):
+    """
+    Verify api get sessions list flow.
+    Execute standard test flow for test_api_get_sessions_list.
+    """
     user = User(email="sessions@example.com", full_name="Sessions User")
     db.add(user)
     db.commit()
@@ -321,6 +353,10 @@ def test_api_get_sessions_list(client: TestClient, db: Session):
 
 
 def test_api_revoke_specific_device_session(client: TestClient, db: Session):
+    """
+    Verify api revoke specific device session flow.
+    Execute standard test flow for test_api_revoke_specific_device_session.
+    """
     user = User(email="revoke@example.com", full_name="Revoke User")
     db.add(user)
     db.commit()
@@ -352,6 +388,11 @@ def test_api_revoke_specific_device_session(client: TestClient, db: Session):
 
 
 def test_api_rbac_space_access(client: TestClient, db: Session):
+    """
+    Verify api rbac space access flow.
+    Setup: Setup User A (owner) and User B (outsider)
+    Action: Action 2: Make User B a member of Space A and try again (should succeed 200)
+    """
     # Setup User A (owner) and User B (outsider)
     user_a = User(email="usera@example.com", full_name="User A")
     user_b = User(email="userb@example.com", full_name="User B")

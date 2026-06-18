@@ -1,3 +1,5 @@
+"""Module for endpoints.py."""
+
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
@@ -18,6 +20,7 @@ async def get_items(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ):
+    """Retrieve all saved items inside the specified space."""
     service = ItemService()
     return service.get_items(db, space_id, current_user)
 
@@ -33,6 +36,7 @@ async def create_item(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ):
+    """Create and save a new item within a space."""
     service = ItemService()
     return service.create_item(
         db,
@@ -53,6 +57,7 @@ async def update_item(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ):
+    """Update details of a specific item within a space."""
     service = ItemService()
     return service.update_item(
         db,
@@ -74,6 +79,7 @@ async def delete_item(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ):
+    """Delete a specific item from a space."""
     service = ItemService()
     service.delete_item(
         db, space_id=space_id, item_id=item_id, current_user=current_user

@@ -1,7 +1,17 @@
+"""Utility functions for parsing request headers and metadata."""
+
 from user_agents import parse
 
 
 def parse_user_agent(ua: str) -> dict:
+    """Parse a raw User-Agent string to extract structured browser, OS, and device information.
+
+    Args:
+        ua (str): The raw User-Agent header string from the client request.
+
+    Returns:
+        dict: A structured dictionary containing browser, OS, device, and client type flags.
+    """
     if not ua:
         ua = ""
 

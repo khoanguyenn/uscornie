@@ -27,7 +27,7 @@ const dayNames = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
 export default function Page() {
   const anniversaryDate = useDataStore((s) => s.anniversaryDate);
   const birthdayDate = useDataStore((s) => s.birthdayDate);
-  const { loadData, setAnniversaryDate, setBirthdayDate } = useDataActions();
+  const { setAnniversaryDate, setBirthdayDate } = useDataActions();
 
   const [mounted, setMounted] = useState(false);
   const [calDate, setCalDate] = useState(() => new Date());
@@ -35,8 +35,7 @@ export default function Page() {
   useEffect(() => {
     setMounted(true);
     document.title = "Calendar - Uscornie";
-    loadData();
-  }, [loadData]);
+  }, []);
 
   const daysTogether = useMemo(() => {
     if (!anniversaryDate) return null;

@@ -4,6 +4,10 @@ from main import app
 
 
 def test_validation_error_response_format():
+    """
+    Verify validation error response format flow.
+    Action: Send request missing required `credential` body field to /auth/google
+    """
     client = TestClient(app)
     # Send request missing required `credential` body field to /auth/google
     response = client.post("/auth/google", json={})
@@ -19,6 +23,10 @@ def test_validation_error_response_format():
 
 
 def test_http_exception_404_format():
+    """
+    Verify http exception 404 format flow.
+    Execute standard test flow for test_http_exception_404_format.
+    """
     client = TestClient(app)
     # Request a non-existent route
     response = client.get("/non-existent-route-12345")
@@ -32,6 +40,10 @@ def test_http_exception_404_format():
 
 
 def test_auth_unauthorized_missing_token_format():
+    """
+    Verify auth unauthorized missing token format flow.
+    Execute standard test flow for test_auth_unauthorized_missing_token_format.
+    """
     client = TestClient(app)
     # Request protected route without token -> Blocked by OAuth2PasswordBearer
     response = client.get("/spaces/me")
@@ -45,6 +57,10 @@ def test_auth_unauthorized_missing_token_format():
 
 
 def test_auth_unauthorized_invalid_token_format():
+    """
+    Verify auth unauthorized invalid token format flow.
+    Execute standard test flow for test_auth_unauthorized_invalid_token_format.
+    """
     client = TestClient(app)
     # Request with invalid token -> Blocked by JWT auth logic (CredentialsError)
     response = client.get(

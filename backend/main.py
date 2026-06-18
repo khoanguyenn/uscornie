@@ -1,3 +1,5 @@
+"""Application entry point and routing config initialization."""
+
 import os
 
 from fastapi import FastAPI
@@ -44,4 +46,9 @@ app.include_router(items_router, tags=["Items"])
 
 @app.get("/")
 async def root():
+    """Welcome root endpoint returning API health status.
+
+    Returns:
+        dict: A welcome message indicating the API is running.
+    """
     return {"message": "Welcome to Uscornie API"}

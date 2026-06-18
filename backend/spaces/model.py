@@ -1,3 +1,5 @@
+"""Database models representing spaces and memberships."""
+
 from datetime import datetime
 from typing import TYPE_CHECKING
 
@@ -11,6 +13,8 @@ if TYPE_CHECKING:
 
 
 class Space(Base):
+    """Model representing a workspace (either personal or shared) containing items and members."""
+
     __tablename__ = "spaces"
     id: Mapped[str] = mapped_column(String, primary_key=True, default=generate_uuid)
     name: Mapped[str] = mapped_column(String, default="Our Space")
@@ -28,6 +32,8 @@ class Space(Base):
 
 
 class SpaceMember(Base):
+    """Model representing a user's membership and role within a specific space."""
+
     __tablename__ = "space_members"
     id: Mapped[str] = mapped_column(String, primary_key=True, default=generate_uuid)
     space_id: Mapped[str] = mapped_column(String, ForeignKey("spaces.id"))
