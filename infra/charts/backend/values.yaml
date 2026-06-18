@@ -7,7 +7,7 @@ image:
   # -- The Docker image repository
   repository: ghcr.io/khoanguyenn/uscornie-backend
   # -- Overrides the image tag (default is the chart appVersion)
-  tag: v1.0.0
+  tag: v1.1.0
   # -- Image pull policy
   pullPolicy: IfNotPresent
 

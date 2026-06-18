@@ -1,4 +1,0 @@
-component: backend
-kind: changed
-body: refactor get_invite_status and join_space to reduce McCabe complexity and remove C901 ignores
-time: 2026-06-15T23:02:11.48051+07:00

@@ -1,4 +1,0 @@
-component: backend
-kind: changed
-body: upgrade join space logic and resolve type checking diagnostics in test suites
-time: 2026-06-15T22:57:33.360911+07:00

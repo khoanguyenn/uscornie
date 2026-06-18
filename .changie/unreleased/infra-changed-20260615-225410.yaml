@@ -1,4 +1,0 @@
-component: infra
-kind: changed
-body: enable CiliumNetworkPolicy by default in Helm chart
-time: 2026-06-15T22:54:10.601709+07:00
