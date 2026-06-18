@@ -1,17 +1,17 @@
 "use client";
 
+import { AnimatePresence, domAnimation, LazyMotion, m } from "framer-motion";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect } from "react";
-import { AnimatePresence, domAnimation, LazyMotion, m } from "framer-motion";
+import { create } from "zustand";
 import AnimatedBackground from "@/components/AnimatedBackground";
 import DoubleStatsPanel from "@/components/space/DoubleStatsPanel";
 import GhibliIcon from "@/components/ui/GhibliIcon";
 import GhibliScenery from "@/components/ui/GhibliScenery";
 import api from "@/lib/api";
 import { spaceService } from "@/lib/services/spaceService";
-import { useAuthStore, useAuthActions } from "@/lib/stores/useAuthStore";
+import { useAuthActions, useAuthStore } from "@/lib/stores/useAuthStore";
 import { cn } from "@/lib/utils/cn";
-import { create } from "zustand";
 
 interface GoogleCredentialResponse {
   credential: string;
